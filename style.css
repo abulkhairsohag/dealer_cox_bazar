@@ -1,0 +1,21 @@
+.delar{
+	padding-right: 310px;
+    padding-top: 10px;
+}
+
+@media only screen and (max-width: 360px) {
+.delar{
+	display: none;
+}
+}
+@media only screen and (max-width: 767px) {
+.delar{
+	padding-right: 100px;
+	font-size: 16px;
+}
+}
+@media only screen and (max-width: 998px) {
+.delar{
+	display: none;
+}
+}

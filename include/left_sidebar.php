@@ -74,6 +74,15 @@ if ($user_type == "employee") {
              </ul>
             </li>
           <?php } ?>
+          
+          <li><a><i class="fa fa-home"></i> Ware House <span class="fa fa-chevron-down"></span></a>
+              <ul class="nav child_menu">
+
+                <li><a href="ware_house.php"><i class="fas fa-list-ul"></i> Ware House Info</a></li>
+
+              </ul>
+          </li>
+
 
           <?php 
           if (permission_check('company')) {

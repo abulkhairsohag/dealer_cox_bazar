@@ -79,6 +79,32 @@ if(!permission_check('truck_load_for_delivery')){
               </div>
             </div>
 
+
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="inputDefault">Select Vehicle <span class="required"
+                  style="color: red">*</span></label>
+              <div class="col-md-6">
+                <select name="vehicle_reg_no" id="vehicle_reg_no" class="form-control" required="">
+                  <option value="">Please Select A Vehicle</option>
+
+                  <?php 
+                  $query = "SELECT * FROM transport order by vehicle_name";
+                  $get_vehicle = $dbOb->select($query);
+                  if ($get_vehicle) {
+                    while ($row = $get_vehicle->fetch_assoc()) {
+                      // $vehicle_name = $row["vehicle_name"];
+                      ?>
+                      <option value="<?php echo $row['reg_no'] ?>"><?php echo $row['reg_no'].', '.$row['vehicle_name'] ; ?></option>
+                  <?php
+                    }
+                  }
+                  ?>
+
+                </select>
+              </div>
+            </div>
+
+
             <div class="form-group">
               <label class="col-md-3 control-label" for="inputDefault">Area <span class="required"
                   style="color: red">*</span></label>
@@ -102,6 +128,7 @@ if(!permission_check('truck_load_for_delivery')){
                 </select>
               </div>
             </div>
+
 
             <!-- in the following div product info will be placed using ajax while changing the area  -->
 
@@ -146,11 +173,14 @@ if(!permission_check('truck_load_for_delivery')){
       var employee_name = $("#employee_name").val();
       var employee_phone_no= $("#employee_phone_no").val();
       var area = $(this).val();
+      var vehicle_reg_no = $("#vehicle_reg_no").val();
+      
+      
 
-      if(employee_id == ""){
+      if(employee_id == "" || vehicle_reg_no ==""){
         swal({
               title: "warning",
-              text: "Please Select Delivery Man First",
+              text: "Please Select Delivery Man And Vehicle First.",
               icon: "warning",
               button: "Done",
             });
@@ -162,7 +192,8 @@ if(!permission_check('truck_load_for_delivery')){
               area: area,
               employee_id: employee_id,
               employee_name: employee_name,
-              employee_phone_no: employee_phone_no
+              employee_phone_no: employee_phone_no,
+              vehicle_reg_no: vehicle_reg_no
             },
             type: "post",
             dataType: 'html',

@@ -35,9 +35,16 @@ if (isset($_POST['submit'])) {
 	$deliv_emp_phone = $_POST['deliv_emp_phone'];
 	$area = $_POST['area'];
 	$summery_id = $_POST['summery_id'];
+
+	// die($summery_id);
 	
 	$printing_date = $_POST['printing_date'];
 	$time = $_POST['time'];
+
+	$vehicle_reg_no = $_POST['vehicle_reg_no'];
+	$vehicle_name = $_POST['vehicle_name'];
+	$driver_name = $_POST['driver_name'];
+
 	$total_payable_amt = $_POST['total_payable_amt'];
 	
 	$product_id = $_POST['product_id'];
@@ -53,9 +60,9 @@ if (isset($_POST['submit'])) {
 	$insert_shop = "";
 	if ($total_payable_amt != '') {
 		$query = "INSERT INTO order_summery 
-				  (summery_id,deliv_emp_id,deliv_emp_name,deliv_emp_phone,area,printing_date,printing_time,total_payable_amt)
+				  (summery_id,deliv_emp_id,deliv_emp_name,deliv_emp_phone,area,printing_date,printing_time,total_payable_amt,vehicle_reg_no,vehicle_name,driver_name)
 				  VALUES
-				  ('$summery_id','$deliv_emp_id','$deliv_emp_name','$deliv_emp_phone','$area','$printing_date','$time','$total_payable_amt')";
+				  ('$summery_id','$deliv_emp_id','$deliv_emp_name','$deliv_emp_phone','$area','$printing_date','$time','$total_payable_amt','$vehicle_reg_no','$vehicle_name','$driver_name')";
 
 		$summery_serial_no = $dbOb->custom_insert($query);
 
@@ -82,9 +89,9 @@ if (isset($_POST['submit'])) {
 					$pbl_amt = $payable_amt[$i];
 					
 					$query = "INSERT INTO  order_summery_shop_info 
-							 (summery_serial_no,summery_id,order_no,shop_name,customer_name,mobile_no,payable_amt)
+							 (summery_serial_no,summery_id,order_no,shop_name,customer_name,mobile_no,payable_amt,vehicle_reg_no,vehicle_name,driver_name)
 							 VALUES
-							 ('$summery_serial_no','$summery_id','$ord_no','$shp_name','$cust_name','$mob_no','$pbl_amt')";
+							 ('$summery_serial_no','$summery_id','$ord_no','$shp_name','$cust_name','$mob_no','$pbl_amt','$vehicle_reg_no','$vehicle_name','$driver_name')";
 					$insert_shop = $dbOb->insert($query);
 				}
 			}

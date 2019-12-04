@@ -6,36 +6,46 @@ if (isset($_POST['area'])) {
     
     
   
+    $today = date("Ymd");
 
     $query = "SELECT * FROM order_summery ORDER BY serial_no DESC LIMIT 1";
-$get_summery = $dbOb->select($query);
+    $get_summery = $dbOb->select($query);
     if ($get_summery) {
-  $today = date("Ymd");
-    $last_id = $get_summery->fetch_assoc()['summery_id'];
-    $exploded_id = explode('-', $last_id);
-  $exploded_id = str_split($exploded_id[1],8);
+            $last_id = $get_summery->fetch_assoc()['summery_id'];
+            $exploded_id = explode('-', $last_id);
+        $exploded_id = str_split($exploded_id[1],8);
 
-  if ($exploded_id[0] == $today) {
-    $last_id = $exploded_id[1] * 1 + 1;
-    $id_length = strlen($last_id);
-    $remaining_length = 4 - $id_length;
-    $zeros = "";
+        if ($exploded_id[0] == $today) {
+            $last_id = $exploded_id[1] * 1 + 1;
+            $id_length = strlen($last_id);
+            $remaining_length = 4 - $id_length;
+            $zeros = "";
 
-    if ($remaining_length > 0) {
-      for ($i = 0; $i < $remaining_length; $i++) {
-        $zeros = $zeros . '0';
-      }
-      $summery_new_id = 'SUM-'.$exploded_id[0] . $zeros . $last_id;
+            if ($remaining_length > 0) {
+            for ($i = 0; $i < $remaining_length; $i++) {
+                $zeros = $zeros . '0';
+            }
+            $summery_new_id = 'SUM-'.$exploded_id[0] . $zeros . $last_id;
+            }
+        }else {
+            $summery_new_id = 'SUM-'.$today."0001";
+        }
+    }else{
+        $summery_new_id = 'SUM-'.$today."0001";
     }
-  }else {
-    $summery_new_id = 'SUM-'.$today."0001";
-  }
-}
 
 	$area_name = $_POST['area'];
 	$employee_id = $_POST['employee_id'];
 	$employee_name = $_POST['employee_name'];
-	$employee_phone_no = $_POST['employee_phone_no'];
+    $employee_phone_no = $_POST['employee_phone_no'];
+    
+    $vehicle_reg_no = $_POST['vehicle_reg_no'];
+    // die("reg".$vehicle_reg_no);
+    $query = "SELECT * FROM transport WHERE reg_no = '$vehicle_reg_no'";
+    $get_vehicle = $dbOb->find($query);
+    $vehicle_name = $get_vehicle['vehicle_name'];
+    $driver_name = $get_vehicle['driver_name'];
+
 
 	$print_table = 'print_table';
 	$printing_date = date('d F, Y');
@@ -48,7 +58,6 @@ $get_summery = $dbOb->select($query);
 		$company_profile = $get_profile->fetch_assoc();
 		// die('sohag');
 	}
-
 
 		$query = "SELECT * FROM new_order_details WHERE delivery_report <> '1' AND delivery_cancel_report <> '1' AND area_employee = '$area_name'";
 		$get_order_info = $dbOb->select($query);
@@ -126,8 +135,10 @@ $get_summery = $dbOb->select($query);
                         <h5 style="margin:0px ; margin-top: -8px;">Printing Date :
                             <span><?php echo $printing_date ; ?></span></span>
                         </h5>
-                        <h5 style="margin:0px ; margin-top: -8px;">Time :
-                            <span><?php echo $printing_time;?></span></span></span></h5>
+                        <h5 style="margin:0px ; margin-top: -8px;">Time : <span><?php echo $printing_time;?></span></span></span></h5>
+                        <h5 style="margin:0px ; margin-top: -8px;">Vehicle Reg : <span><?php echo $vehicle_reg_no;?></span></span></span></h5>
+                        <h5 style="margin:0px ; margin-top: -8px;">Vehicle Name : <span><?php echo $vehicle_name;?></span></span></span></h5>
+                        <h5 style="margin:0px ; margin-top: -8px;">Driver Name : <span><?php echo $driver_name;?></span></span></span></h5>
                     </td>
                 </tr>
 
@@ -268,7 +279,7 @@ $get_summery = $dbOb->select($query);
 <!-- --------------------------------------------------->
 <div align="center">
     <form method="post" action="" id="summery_form">
-        <div style="display:none">
+        <div style="display: none">
         <div class="row text-center my-5" style="margin-bottom:20px">
             <h2>Summery Main Table Info</h2>
         </div>
@@ -308,6 +319,21 @@ $get_summery = $dbOb->select($query);
             <div class="col-md-6 from-group">
                 <label>Time</label>
                 <input class="form-control" type="text" readonly name="time" id="time" value="<?php echo $printing_time;?>" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 from-group">
+                <label>Vehicle Reg No </label>
+                <input class="form-control" type="text" readonly name="vehicle_reg_no" id="vehicle_reg_no"
+                    value="<?php echo $vehicle_reg_no;?>" />
+            </div>
+            <div class="col-md-4 from-group">
+                <label>Vehicle Name</label>
+                <input class="form-control" type="text" readonly name="vehicle_name" id="vehicle_name" value="<?php echo $vehicle_name;?>" />
+            </div>
+            <div class="col-md-4 from-group">
+                <label>Driver Name</label>
+                <input class="form-control" type="text" readonly name="driver_name" id="driver_name" value="<?php echo $driver_name;?>" />
             </div>
         </div>
         <div class="row text-center my-5" style="margin-top:20px">

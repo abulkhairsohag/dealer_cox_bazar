@@ -1,8 +1,8 @@
 <?php 
 $user_id    = Session::get("user_id");
-$user_type = Session::get("user_type");
-$user_name = Session::get("username");
-$password  = Session::get("password");
+$user_type  = Session::get("user_type");
+$user_name  = Session::get("username");
+$password   = Session::get("password");
 
 if ($user_type == "employee") {
   $query = "SELECT * FROM employee_main_info WHERE serial_no = '$user_id' ";
@@ -175,6 +175,7 @@ if ($user_type == "employee") {
             ?>
             <li><a><i class="fas fa-bus-alt"></i> Transport <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
+              <li><a href="transport.php"><i class="fas fa-car"></i> Transport Info</a></li>
                 <?php 
         
           if (permission_check('truck_load_for_delivery')) {

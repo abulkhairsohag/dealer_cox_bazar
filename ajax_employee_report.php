@@ -1023,21 +1023,22 @@ if (isset($_POST['report_type'])) {
 							   </tr>
 								 </thead>
 								 <tbody>';
-				$query = "SELECT  DISTINCT order_employee_id,order_employee_name FROM `order_delivery` " ;
+				$query = "SELECT  DISTINCT order_employee_id FROM `order_delivery` " ;
 				$get_emp = $dbOb->select($query);
 				if ($get_emp) {
 					while ($emp = $get_emp->fetch_assoc()) {
 						
 						$total_payable = 0;
 						$emp_id = $emp['order_employee_id'];
-						$emp_name = $emp['order_employee_name'];
 						$query = "SELECT * FROM order_delivery WHERE order_employee_id = '$emp_id'";
+						$emp_name = '';
 						$get_orders = $dbOb->select($query);
 						if ($get_orders) {
 							while ($row = $get_orders->fetch_assoc()) {
 								$order_date = strtotime($row['order_date']);
 								if ($order_date >= $from_date &&  $order_date <= $to_date) {
 									$total_payable += $row['payable_amt'];
+									$emp_name = $row['order_employee_name'];
 								}
 							}
 						}

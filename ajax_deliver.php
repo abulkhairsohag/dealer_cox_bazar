@@ -117,7 +117,7 @@ if (isset($_POST['submit'])) {
 				
 				$discount_tp = ($total_tp[$i]*$discount_on_tp/100);
 				$sell_price = $total_price[$i] - $discount_tp;
-				$sell_price = round(($sell_price - ($sell_price*$extra_discount/100)),2);
+				$sell_price = round(($sell_price - ($sell_price*$extra_discount/100)),3);
 				
 				$date = date('d-m-Y');
 				$query = "INSERT INTO  order_delivery_expense
@@ -203,7 +203,5 @@ if (isset($_POST['new_order_tbl_serial_no'])) {
 
 	}
 }
-
-
 
 ?>

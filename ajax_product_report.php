@@ -1122,15 +1122,15 @@ if (isset($_POST['from_date'])) {
 									<td> '. $stock_taka.'</td>
 									<td> '. $return.'</td>
 									<td> '. $product_sell.'</td>
-									<td> '. round($product_sell_price).'</td>
-									<td> '. (round($product_sell_profit)).'</td>
+									<td> '. $product_sell_price.'</td>
+									<td> '. (round($product_sell_profit,3)).'</td>
 									<td> '. $row['quantity'].'</td>
 									<td> '. $row['quantity']*$row['company_price'].'</td>
 								</tr>';
 
 				$total_purchase_amt += $stock*$row['company_price'];
-				$total_product_sell_amt += round($product_sell_price);
-				$total_profit_on_sell_amt +=  (round($product_sell_profit));
+				$total_product_sell_amt += $product_sell_price;
+				$total_profit_on_sell_amt +=  $product_sell_profit;
 				$total_in_stock_amt += $row['quantity']*$row['company_price'];
 
 			}
@@ -1139,8 +1139,8 @@ if (isset($_POST['from_date'])) {
 							<td colspan="3" class="text-right">Total Amount</td>
 							<td colspan=""> '.$total_purchase_amt.'</td>
 							<td colspan="2"></td>
-							<td> '.$total_product_sell_amt.'</td>
-							<td> '.$total_profit_on_sell_amt.'</td>
+							<td> '.round($total_product_sell_amt).'</td>
+							<td> '.round($total_profit_on_sell_amt).'</td>
 							<td colspan=""></td>
 							<td colspan="2"> '.$total_in_stock_amt.'</td>
 						</tr>';

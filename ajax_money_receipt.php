@@ -24,8 +24,8 @@ if (isset($_POST['from_date'])) {
 
 	$query = "SELECT * FROM money_receipt_main_tbl ORDER BY serial_no DESC LIMIT 1";
 	$get_receipt = $dbOb->select($query);
+	$today = date("Ymd");
 		if ($get_receipt) {
-	  $today = date("Ymd");
 		$last_id = $get_receipt->fetch_assoc()['receipt_no'];
 		$exploded_id = explode('-', $last_id);
 	  $exploded_id = str_split($exploded_id[1],8);
@@ -45,7 +45,9 @@ if (isset($_POST['from_date'])) {
 	  }else {
 	    $new_receipt_no = 'MR-'.$today."0001";
 	  }
-	}
+	}else {
+	    $new_receipt_no = 'MR-'.$today."0001";
+	  }
 
 
 	$printing_date = date('d F, Y');

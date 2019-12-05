@@ -71,7 +71,7 @@ if (isset($_POST['submit'])) {
 	$extra_discount = $_POST['extra_discount'];
 	$payable_amt = $_POST['net_payable_amt'];
 	// $pay              = $_POST['pay'];
-	$order_date = date("d-m-Y");
+	$order_date = $_POST['date'];
 
 	//          $message = $products_id_no;
 	// $type = 'warning';

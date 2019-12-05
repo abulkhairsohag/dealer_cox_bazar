@@ -2,7 +2,7 @@
 
 <?php
 if (!permission_check('new_order')) {
-	?>
+  ?>
   <script>
     window.location.href = '403.php';
   </script>
@@ -87,7 +87,7 @@ if (!permission_check('new_order')) {
                $get_duty_employee = $dbOb->find($query);
                $duty_employee_area = $get_duty_employee['area'];
 
-	// $company = $get_duty_employee['company'];
+  // $company = $get_duty_employee['company'];
 
                ?>
                <tr>
@@ -124,7 +124,7 @@ if (!permission_check('new_order')) {
                 </td>
               </tr>
             <?php } else {
-	// this else section is for admin. if admin wants to take a order then he will work in this section
+  // this else section is for admin. if admin wants to take a order then he will work in this section
              ?>
              <tr>
               <td>
@@ -175,8 +175,8 @@ if (!permission_check('new_order')) {
            <?php
            $query = "SELECT * FROM new_order_details ORDER BY serial_no DESC LIMIT 1";
            $get_order = $dbOb->select($query);
+           $today = date("Ymd");
            if ($get_order) {
-            $today = date("Ymd");
             $last_id = $get_order->fetch_assoc()['order_no'];
             $exploded_id = explode('-', $last_id);
             $exploded_id = str_split($exploded_id[1],8);
@@ -196,7 +196,9 @@ if (!permission_check('new_order')) {
             }else {
               $order_new_id = 'INV-'.$today."0001";
             }
-          } 
+          } else {
+              $order_new_id = 'INV-'.$today."0001";
+            }
           ?>
           <input type="text" class="form-control" id="order_no" name="order_no" readonly="" value="<?php echo $order_new_id; ?>">
         </div>
@@ -682,10 +684,17 @@ $(document).on('change','#cust_id',function(){
       }else{
         swal({
           title: 'warning',
-          text: 'Sales Man Not Assigned In "'+$('.area_employee').val()+'" area. Please Assign A Sales Man.',
+          text: 'Sales Man Not Assigned In The Shop "'+data.organization_name+'". Please Assign A Sales Man.',
           icon: 'warning',
           button: "Done",
         });
+        $("#customer_name").val('');
+        $("#cust_id").val('');
+        $("#shop_name").val('');
+        $('#address').val('');
+        $("#mobile_no").val('');
+        $(".employee_id").val('');
+        $(".employee_name").val('');
 
       }
       
@@ -695,6 +704,7 @@ $(document).on('change','#cust_id',function(){
 
 $(document).on('change','.area_employee',function(){
   $("#customer_name").val("");
+  $("#cust_id").val("");
   $("#shop_name").val("");
   $('#address').val("");
   $("#mobile_no").val("");

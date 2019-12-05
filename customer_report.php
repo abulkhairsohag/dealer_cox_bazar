@@ -26,13 +26,12 @@
 
                 <div class="form-group col-md-12" id="customer_id_div"  style="display:none">
                     <div class="col-md-1"></div>
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select
-                        Client<span class="required" style="color: red">*</span></label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select Client<span class="required" style="color: red">*</span></label>
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <select name="customer_id" id="customer_id" class="form-control">
+                        <select name="customer_id" id="customer_id" class="form-control select2">
                             <option value="">Please Select A Customer</option>
                             <?php 
-                                $query = "SELECT * FROM `client`";
+                                $query = "SELECT * FROM `client` ORDER BY organization_name";
                                 $get_client = $dbOb->select($query);
                                 if ($get_client) {
                                     while ($row = $get_client->fetch_assoc()) {
@@ -53,10 +52,10 @@
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select
                         Area<span class="required" style="color: red">*</span></label>
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <select name="area" id="area" class="form-control">
+                        <select name="area" id="area" class="form-control select2">
                             <option value="">Please Select An Area</option>
                             <?php 
-                                $query = "SELECT * FROM `area`";
+                                $query = "SELECT * FROM `area` ORDER BY area_name";
                                 $get_area = $dbOb->select($query);
                                 if ($get_area) {
                                     while ($row = $get_area->fetch_assoc()) {
@@ -176,6 +175,8 @@
         document.body.innerHTML = a;
         return window.location.reload(true);
     }
+    $("#customer_id").select2({ width: '100%' }); 
+    $("#area").select2({ width: '100%' }); 
 </script>
 
 </body>

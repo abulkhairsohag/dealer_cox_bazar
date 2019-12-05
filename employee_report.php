@@ -49,7 +49,7 @@ if(!permission_check('employee_report')){
       <div class="col-md-1"></div>
       <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select Sales Man<span class="required" style="color: red">*</span></label>
       <div class="col-md-4 col-sm-6 col-xs-12">
-        <select name="employee_id" id="employee_id" class="form-control">
+        <select name="employee_id" id="employee_id" class="form-control select2">
           <option value="">Please Select A Sales Man</option>
           <?php 
           $query = "SELECT * FROM `employee_duty`";
@@ -71,7 +71,7 @@ if(!permission_check('employee_report')){
       <div class="col-md-1"></div>
       <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select Sales Man<span class="required" style="color: red">*</span></label>
       <div class="col-md-4 col-sm-6 col-xs-12">
-        <select name="employee_id_sales" id="employee_id_sales" class="form-control">
+        <select name="employee_id_sales" id="employee_id_sales" class="form-control select2">
           <option value="">Please Select One</option>
           <option value="all_employee">All Sales Man</option>
           <?php 
@@ -95,7 +95,7 @@ if(!permission_check('employee_report')){
       <div class="col-md-1"></div>
       <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select Delivery Man<span class="required" style="color: red">*</span></label>
       <div class="col-md-4 col-sm-6 col-xs-12">
-        <select name="deliv_employee_id" id="deliv_employee_id" class="form-control">
+        <select name="deliv_employee_id" id="deliv_employee_id" class="form-control select2">
           <option value="">Please Select A Delivery  Man</option>
           <?php 
           $query = "SELECT * FROM `delivery_employee`";
@@ -347,6 +347,9 @@ if(!permission_check('employee_report')){
     return window.location.reload(true);
 
   } 
+  $("#employee_id").select2({ width: '100%' }); 
+  $("#employee_id_sales").select2({ width: '100%' }); 
+    $("#deliv_employee_id").select2({ width: '100%' }); 
 </script>
 
 </body>

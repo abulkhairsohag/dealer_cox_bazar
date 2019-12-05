@@ -33,7 +33,7 @@ if(!permission_check('company_wise_product_list')){
                 <?php 
                 include_once('class/Database.php');
                 $dbOb = new Database();
-                $query = "SELECT distinct company FROM products";
+                $query = "SELECT distinct company FROM products ORDER BY company";
                 $get_company = $dbOb->select($query);
 
                 if ($get_company) {

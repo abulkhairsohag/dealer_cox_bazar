@@ -79,7 +79,7 @@ if(!permission_check('product_report')){
       <div class="col-md-1"></div>
       <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select Product <span class="required" style="color: red">*</span></label>
       <div class="col-md-4 col-sm-6 col-xs-12">
-        <select name="product_id" id="product_id" class="form-control">
+        <select name="product_id" id="product_id" class="form-control select2">
                 <option value="">Please Select One</option>
                 <?php 
               
@@ -107,11 +107,11 @@ if(!permission_check('product_report')){
       <div class="col-md-1"></div>
       <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select Area <span class="required" style="color: red">*</span></label>
       <div class="col-md-4 col-sm-6 col-xs-12">
-        <select name="area" id="area" class="form-control">
+        <select name="area" id="area" class="form-control select2">
                 <option value="">Please Select One</option>
                 <?php 
                
-                $query = "SELECT * FROM area";
+                $query = "SELECT * FROM area ORDER BY area_name";
                 $get_area = $dbOb->select($query);
 
                 if ($get_area) {
@@ -184,24 +184,24 @@ if(!permission_check('product_report')){
 
 
     $(document).on('change','#report_type',function(){
-    	var report_type = $(this).val();
+      var report_type = $(this).val();
 
-    	if (report_type == "top_sell" || report_type == "lowest_sell" || report_type == "top_profit" ||report_type == "lowest_profit" || report_type == "all_product_stock_and_sell" || report_type == "" || report_type == "sales_dues") {
-    		$("#product_info").hide('1500');
-    		$("#product_id").val('');
-    		$("#area_div").hide('1500');
-    	}else if(report_type == 'area_wise_sales_dues'){
-    		$("#product_info").hide('1500');
-    		$("#product_id").val('');
-    		$("#area_div").show('1500');
-    		$("#area").val('');
+      if (report_type == "top_sell" || report_type == "lowest_sell" || report_type == "top_profit" ||report_type == "lowest_profit" || report_type == "all_product_stock_and_sell" || report_type == "" || report_type == "sales_dues") {
+        $("#product_info").hide('1500');
+        $("#product_id").val('');
+        $("#area_div").hide('1500');
+      }else if(report_type == 'area_wise_sales_dues'){
+        $("#product_info").hide('1500');
+        $("#product_id").val('');
+        $("#area_div").show('1500');
+        $("#area").val('');
       }else{
-    		$("#area_div").hide('1500');
-    		$("#area").val('');
-    		$("#product_id").val('');
-    		$("#product_info").show('1500');
+        $("#area_div").hide('1500');
+        $("#area").val('');
+        $("#product_id").val('');
+        $("#product_info").show('1500');
 
-    	}
+      }
     });
   });
 
@@ -214,6 +214,8 @@ if(!permission_check('product_report')){
     return window.location.reload(true);
 
   }
+  $("#area").select2({ width: '100%' }); 
+  $("#product_id").select2({ width: '100%' }); 
 </script>
 
 </body>

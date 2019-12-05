@@ -98,7 +98,7 @@ if (!permission_check('new_order')) {
                   <input type="text" class="form-control employee_name" id="employee_name" name="employee_name" readonly="" value="<?php echo $employee_name ?>" >
                 </td>
                 <td>
-                  <select name="area_employee" id="area_employee"  required="" class="form-control area_employee" >
+                  <select name="area_employee" id="area_employee"  required="" class="form-control area_employee " >
                     <option value="">Please Select</option>
                     <?php
 
@@ -135,7 +135,7 @@ if (!permission_check('new_order')) {
               <input type="text" class="form-control employee_name" id="employee_name" name="employee_name" readonly="" value="" >
             </td>
             <td>
-              <select name="area_employee" id="area_employee"  required="" class="form-control area_employee">
+              <select name="area_employee" id="area_employee"  required="" class="form-control area_employee ">
                 <option value="">Please Select</option>
                 <?php
 
@@ -744,6 +744,7 @@ $(document).on('change','#employee_id',function(){
 function roundToTwo (num){
   return +(Math.round(num + "e+2")+"e-2");
 }
+// $("#area_employee").select2({ width: '100%' }); 
 </script>
 
 </body>

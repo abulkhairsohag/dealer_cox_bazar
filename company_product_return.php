@@ -137,7 +137,7 @@ if(!permission_check('company_product_return')){
                             <?php 
                             include_once("class/Database.php");
                             $dbOb = new Database();
-                            $query = "SELECT * FROM `products`";
+                            $query = "SELECT * FROM `products` ORDER BY products_name";
                             $get_products = $dbOb->select($query);
                             if ($get_products) {
                               while ($row = $get_products->fetch_assoc()) {

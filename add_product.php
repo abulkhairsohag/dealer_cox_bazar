@@ -257,7 +257,7 @@ if(!permission_check('add_product')){
                       <select required="" id="company" name="company" class="form-control col-md-7 col-xs-12" >
                         <option value="">Select a company name</option>
                         <?php 
-                        $query = "SELECT * FROM company";
+                        $query = "SELECT * FROM company ORDER BY company_name ";
                         $get_company_name = $dbOb->select($query);
                         if ($get_company_name) {
                           while ($row = $get_company_name->fetch_assoc()) {

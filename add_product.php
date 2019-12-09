@@ -322,7 +322,7 @@ if(!permission_check('add_product')){
                     </div>
                   </div>
 
-                  <div class="form-group" style="display:none">
+                  <div class="form-group"  id="company_price_div" >
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Company Price <span class="required" style="color: red"> *</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="number" min="0" step="0.01"  id="company_price" name="company_price" class="form-control col-md-7 col-xs-12" >
@@ -383,6 +383,32 @@ if(!permission_check('add_product')){
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Offer End Date </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="text" id="offer_end_date" name="offer_end_date" class="date-picker form-control col-md-7 col-xs-12 "   readonly=""  >
+                    </div>
+                  </div>
+
+                  <div class="form-group" id="ware_house" >
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Ware House<span class="required" style="color: red">*</span></label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <select name="ware_house_serial_no" id="ware_house_serial_no" class=" form-control col-md-7 col-xs-12 " required="">
+                           <?php
+                            $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+                            $get_warehouse = $dbOb->select($query);
+                            if ($get_warehouse) {
+                              ?>
+                              <option value="">Select A Warehouse</option>
+                              <?php
+                              while ($row = $get_warehouse->fetch_assoc()) {
+                                ?>
+                                  <option value="<?php echo $row['serial_no']?>"><?php echo $row['ware_house_name']?></option>
+                                <?php
+                              }
+                            }else{
+                              ?>
+                              <option value="">Please Add Ware House First</option>
+                              <?php
+                            }
+                           ?>
+                      </select>
                     </div>
                   </div>
 
@@ -731,6 +757,12 @@ if(!permission_check('add_product')){
 
           $("#quantity_div").hide();
           $("#quantity_div").val("");
+          $("#ware_house").hide();
+          $("#ware_house_serial_no").val("");
+          $("#ware_house_serial_no").attr('required',false);
+          
+          $("#company_price_div").hide();
+          $("#company_price").attr('required',false);
           
 
         }
@@ -748,6 +780,8 @@ if(!permission_check('add_product')){
       $("#weight").val("");
       $("#color").val("");
       $("#company_price").val("");
+      $("#company_price").attr('required',true);
+      $("#company_price_div").show();
       $("#dealer_price").val("");
       $("#marketing_sell_price").val("");
       $("#marketing_sell_price").val("");
@@ -766,6 +800,10 @@ if(!permission_check('add_product')){
       $("#photo_div").css("margin-top","0px");
       $("#photo_label").css("margin-top","0px");
       $("#quantity_div").show();
+
+      $("#ware_house").show();
+      $("#ware_house_serial_no").val("");
+      $("#ware_house_serial_no").attr('required',true);
 
     });
 

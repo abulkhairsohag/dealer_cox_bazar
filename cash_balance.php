@@ -151,7 +151,7 @@ $printing_time = date('h:i:s A');
                 </tr>
 
                 <tr>
-                  <td>Sell Invoice  </td>
+                  <td>Income Invoice  </td>
                   <td id="sell_invoice" class="text-right"> 0.0  </td>
                   <td>Bank Deposit  </td>
                   <td id="bank_deposite" class="text-right"> 0.0  </td>
@@ -167,7 +167,7 @@ $printing_time = date('h:i:s A');
                 <tr>
                   <td>Bank Loan </td>
                   <td id="bank_loan" class="text-right"> 0.0  </td>
-                  <td>Buy Invoice  </td>
+                  <td>Expense Invoice  </td>
                   <td id="buy_invoice" class="text-right"> 0.0  </td>
                 </tr>
                 

@@ -34,7 +34,7 @@ if (isset($_POST['submit'])) {
 	$category = $_POST["category"];
 	$weight = $_POST["weight"];
 	$color = $_POST["color"];
-	// $company_price = $_POST["company_price"];
+	$company_price = $_POST["company_price"];
 	$dealer_price = $_POST["dealer_price"];
 	$marketing_sell_price = $_POST["marketing_sell_price"];
 	$mrp_price = $_POST["mrp_price"];
@@ -167,8 +167,8 @@ if (isset($_POST['submit'])) {
 					('$company' ,'$products_id_no' ,'$products_name' ,'$category' ,'$weight' ,'$color' ,'$company_price' ,'$dealer_price' ,'$marketing_sell_price' ,'$mrp_price'  ,'$pack_size' ,'$quantity' ,'$promo_offer' ,'$offer_start_date' ,'$offer_end_date','$uploaded_image','$description','$stock_date')";
 					$insert = $dbOb->insert($query);
 					if ($insert) {
-						$query = "INSERT INTO product_stock (products_id_no, quantity, stock_date)
-						VALUES ('$products_id_no', '$quantity', '$stock_date')";
+						$query = "INSERT INTO product_stock (products_id_no, quantity, stock_date,company_price)
+						VALUES ('$products_id_no', '$quantity', '$stock_date','$company_price')";
 						$insert_stock = $dbOb->insert($query);
 
 						$message = "Congratulations! Information Is Successfully Saved.";
@@ -188,8 +188,8 @@ if (isset($_POST['submit'])) {
 			('$company' ,'$products_id_no' ,'$products_name' ,'$category' ,'$weight' ,'$color' ,'$company_price' ,'$dealer_price' ,'$marketing_sell_price' ,'$mrp_price','$pack_size' ,'$quantity' ,'$promo_offer' ,'$offer_start_date' ,'$offer_end_date','$description','$stock_date')";
 			$insert = $dbOb->insert($query);
 			if ($insert) {
-				$query = "INSERT INTO product_stock (products_id_no, quantity, stock_date)
-				VALUES ('$products_id_no', '$quantity', '$stock_date')";
+				$query = "INSERT INTO product_stock (products_id_no, quantity, stock_date,company_price)
+				VALUES ('$products_id_no', '$quantity', '$stock_date','$company_price')";
 				$insert_stock = $dbOb->insert($query);
 
 				$message = "Congratulations! Information Is Successfully Saved.";

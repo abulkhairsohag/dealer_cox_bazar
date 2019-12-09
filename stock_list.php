@@ -36,6 +36,7 @@ if(!permission_check('product')){
               <th style="width: 12px" >#</th>
               <th style="width: 100px">ID</th>
               <th style="width: 150px">Name</th>
+              <th style="width: 150px">Ware House</th>
               <th style="width: 100px">Stock Qty</th>
               <th style="width: 100px">Company Price</th>
               <th style="width: 100px">Total Amt(Taka)</th>
@@ -82,6 +83,7 @@ if(!permission_check('product')){
                   <td><?php echo $i; ?></td>
                   <td><?php echo $products_id; ?></td>
                   <td><?php echo $product_name; ?></td>
+                  <td><?php echo $row['ware_house_name']; ?></td>
                   <td><?php echo $row['quantity']; ?></td>
                   <td><?php echo $row['company_price']; ?></td>
                   <td><?php echo $row['company_price'] * $row['quantity']; ?></td>
@@ -136,30 +138,56 @@ if(!permission_check('product')){
                   
 
                   <div class="form-group">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity </label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity<span class="required" style="color: red">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="number" id="quantity" name="quantity" class="form-control col-md-7 col-xs-12"  required>
                     </div>
                   </div>
                   
                   <div class="form-group" style="display:none"> 
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Existing Quantity </label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Existing Quantity<span class="required" style="color: red">*</span> </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="number" id="existing_quantity" name="existing_quantity" class="form-control col-md-7 col-xs-12"  required>
                     </div>
                   </div>
                   
                   <div class="form-group" style="display:none">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Product ID</label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Product ID<span class="required" style="color: red">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="text" id="products_id_no" name="products_id_no" class="form-control col-md-7 col-xs-12"  required>
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Company Price </label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Company Price<span class="required" style="color: red">*</span> </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="number" id="company_price" name="company_price" class="form-control col-md-7 col-xs-12"  required>
+                    </div>
+                  </div>
+
+                  <div class="form-group" id="ware_house" >
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Ware House<span class="required" style="color: red">*</span></label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <select name="ware_house_serial_no" id="ware_house_serial_no" class=" form-control col-md-7 col-xs-12 " required="">
+                           <?php
+                            $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+                            $get_warehouse = $dbOb->select($query);
+                            if ($get_warehouse) {
+                              ?>
+                              <option value="">Select A Warehouse</option>
+                              <?php
+                              while ($row = $get_warehouse->fetch_assoc()) {
+                                ?>
+                                  <option value="<?php echo $row['serial_no']?>"><?php echo $row['ware_house_name']?></option>
+                                <?php
+                              }
+                            }else{
+                              ?>
+                              <option value="">Please Add Ware House First</option>
+                              <?php
+                            }
+                           ?>
+                      </select>
                     </div>
                   </div>
 
@@ -234,6 +262,7 @@ if(!permission_check('product')){
           $("#existing_quantity").val(data.quantity);
           $("#products_id_no").val(data.products_id_no);
           $("#company_price").val(data.company_price);
+          $("#ware_house_serial_no").val(data.ware_house_serial_no);
           $("#stock_date").val(data.stock_date);
           $("#serial_no_edit").val(serial_no_edit);
         }

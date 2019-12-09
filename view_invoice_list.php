@@ -38,10 +38,10 @@ if(!permission_check('view_invoice_list')){
               <tr>
                 <th style="text-align: center;">Sl No.</th>
                 <th style="text-align: center;">Type</th>
-                <th style="text-align: center;">Organization</th>
-                <th style="text-align: center;">Total Amount</th>
-                <th style="text-align: center;">Paid Amount</th>
-                <th style="text-align: center;">Due Amount</th>
+                <th style="text-align: center;">Name</th>
+                <th style="text-align: center;">Designation</th>
+                <th style="text-align: center;">Phone</th>
+                <th style="text-align: center;">Amount(৳)</th>
                 <th style="text-align: center;">Date</th>
                 <th style="text-align: center;">Action</th>
               </tr>
@@ -61,21 +61,16 @@ if(!permission_check('view_invoice_list')){
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
-                    <td><?php echo $row['invoice_option']; ?></td>
-                    <?php 
-                    if ($row['office_organization_name'] !='') {
-                      ?>
-                      <td><?php echo $row['office_organization_name']; ?></td>
-                      <?php
-                    }else if ($row['new_organization_name'] !='') {
-                      ?>
-                      <td><?php echo $row['new_organization_name']; ?></td>
-                      <?php
-                    }
-                    ?>
-                    <td><?php echo $row['grand_total']; ?></td>
+                    <td><?php if ($row['invoice_option'] == 'Sell Invoice') {
+                      echo '<span class="badge bg-green">Income</span>';
+                    }else{
+                      echo '<span class="badge bg-orange">Expense</span>';
+                    } ?></td>
+                    
+                    <td><?php echo $row['name']; ?></td>
+                    <td><?php echo $row['designation']; ?></td>
+                    <td><?php echo $row['phone_no']; ?></td>
                     <td><?php echo $row['pay']; ?></td>
-                    <td><?php echo $row['due']; ?></td>
                     <td><?php echo $row['invoice_date']; ?></td>
                     <td align="center">
                       <?php 
@@ -122,7 +117,7 @@ if(!permission_check('view_invoice_list')){
       <div class="modal-dialog " style="width: 700px" role="document">
         <div class="modal-content modal-lg">
           <div class="modal-header" style="background: #006666">
-            <h3 class="modal-title" id="ModalLabel" style="color: white">Client Information In Detail</h3>
+            <h3 class="modal-title" id="ModalLabel" style="color: white">Convence Bill Information</h3>
             <div style="float:right;">
 
             </div>
@@ -148,107 +143,57 @@ if(!permission_check('view_invoice_list')){
 
                       <div class="row" style="margin-top:10px">
                         <div class="col-md-3"></div>
-                        <div class="col-md-3"><h4 style="color: #0181E4">Invoice Type </h4></div>
+                        <div class="col-md-3"><h4 style="color: #0181E4">Bill Type </h4></div>
                         <div class="col-md-3" style="color: #0181E4"><h4 id="invoice_option" ></h4></div>
                         <div class="col-md-3"></div>
                       </div>
 
-                      <div id="office_account" style="display: none;">  <!--THIS DIV IS FOR SHOWING OFFICE ACCOUNT INFORMATION-->
+                      <div id="office_account" >  <!--THIS DIV IS FOR SHOWING OFFICE ACCOUNT INFORMATION-->
 
                         <div class="row" style="margin-top:10px">
                           <div class="col-md-3"></div>
-                          <div class="col-md-3"><h4>Organization Name</h4></div>
-                          <div class="col-md-3" ><h4 id="office_organization_name"></h4></div>
+                          <div class="col-md-3"><h4>Name</h4></div>
+                          <div class="col-md-3" ><h4 id="name"></h4></div>
                           <div class="col-md-3"></div>
                         </div>
 
                         <div class="row" style="margin-top:10px">
                           <div class="col-md-3"></div>
-                          <div class="col-md-3"><h4>Account Number</h4></div>
-                          <div class="col-md-3"><h4 id="office_account_no"></h4></div>
+                          <div class="col-md-3"><h4>Designation</h4></div>
+                          <div class="col-md-3"><h4 id="designation"></h4></div>
                           <div class="col-md-3"></div>
                         </div>
 
 
                         <div class="row" style="margin-top:10px">
                           <div class="col-md-3"></div>
-                          <div class="col-md-3"><h4>Bank Name</h4></div>
-                          <div class="col-md-3"><h4 id="office_bank_name"></h4></div>
+                          <div class="col-md-3"><h4>Phone No</h4></div>
+                          <div class="col-md-3"><h4 id="phone_no"></h4></div>
                           <div class="col-md-3"></div>
                         </div>
 
-                        <div class="row" style="margin-top:10px">
-                          <div class="col-md-3"></div>
-                          <div class="col-md-3"><h4>Branch Name</h4></div>
-                          <div class="col-md-3"><h4 id="office_branch_name"></h4></div>
-                          <div class="col-md-3"></div>
-                        </div>
+                   
 
                         <div class="row" style="margin-top:10px">
                           <div class="col-md-3"></div>
                           <div class="col-md-3"><h4>Date</h4></div>
-                          <div class="col-md-3"><h4 id="office_invoice_date"> </h4></div>
+                          <div class="col-md-3"><h4 id="invoice_date"> </h4></div>
                           <div class="col-md-3"></div>
                         </div>
 
                       </div> <!--End of div for showing office account information-->
 
-                      <div id="new_client" style="display: none">  <!--THIS DIV IS FOR SHOWING NEW CLIENT INFORMATION-->
-
-                        <div class="row" style="margin-top:10px">
-                          <div class="col-md-3"></div>
-                          <div class="col-md-3"><h4>Client Name</h4></div>
-                          <div class="col-md-3"><h4 id="new_client_name"> </h4></div>
-                          <div class="col-md-3"></div>
-                        </div>
-
-                        <div class="row" style="margin-top:10px">
-                          <div class="col-md-3"></div>
-                          <div class="col-md-3"><h4>Organization Name</h4></div>
-                          <div class="col-md-3"><h4 id="new_organization_name"> </h4></div>
-                          <div class="col-md-3"></div>
-                        </div>
-
-
-                        <div class="row" style="margin-top:10px">
-                          <div class="col-md-3"></div>
-                          <div class="col-md-3"><h4>Address</h4></div>
-                          <div class="col-md-3"><h4 id="new_address"> </h4></div>
-                          <div class="col-md-3"></div>
-                        </div>
-
-                        <div class="row" style="margin-top:10px">
-                          <div class="col-md-3"></div>
-                          <div class="col-md-3"><h4>Mobile/Phone Nuber</h4></div>
-                          <div class="col-md-3"><h4 id="new_phone_no"> </h4></div>
-                          <div class="col-md-3"></div>
-                        </div>
-
-                        <div class="row" style="margin-top:10px">
-                          <div class="col-md-3"></div>
-                          <div class="col-md-3"><h4>Date</h4></div>
-                          <div class="col-md-3"><h4 id="new_invoice_date"> </h4></div>
-                          <div class="col-md-3"></div>
-                        </div>
-                      </div> <!--End of div for showing NEW CLIENT information-->
-
-
-
-
-                      <div class="row" style="margin-top:10px"><div class="col"> <h3 style="color:  #34495E">Invoice Details</h3><hr></div></div>
+                      <div class="row" style="margin-top:10px"><div class="col"> <h3 style="color:  #34495E">Bill Details</h3><hr></div></div>
 
 
                       <div class="table-responsive">
                         <table class="table table-striped mb-none">
                           <thead>
                             <tr>
-                              <th>#</th>
-                              <th>Service</th>
+                              <th>Sl No.</th>
                               <th>Description</th>
-                              <th>Unit</th>
-                              <th>Quantity</th>
-                              <th>Price (৳)</th>
-                              <th class="text-right">Total (৳)</th>
+                              <th>Purpose</th>
+                              <th>Amount (৳)</th>
                             </tr>
                           </thead>
                           <tbody id="expense_table">
@@ -338,30 +283,23 @@ $(document).on('click','.view_data',function(){
     data : {serial_no_view:serial_no},
     dataType: "json",
     success:function(data){
-      $("#invoice_option").html(data.details.invoice_option);
+      
+      if (data.details.invoice_option == 'Buy Invoice') {
+        var type = 'Expense';
+      }else{
+        var type = "Income"
+      }
+        
+      $("#invoice_option").html(type);
 
-      if (data.details.client_option == 'Office Account') {
-        $("#office_account").show();
-        $("#new_client").hide();
+
+       
 
         $("#office_account_no").html(data.details.office_account_no);
-        $("#office_organization_name").html(data.details.office_organization_name);
-        $("#office_bank_name").html(data.details.office_bank_name);
-        $("#office_phone").html(data.details.office_phone);
-        $("#office_branch_name").html(data.details.office_branch_name);
-        $("#office_invoice_date").html(data.details.invoice_date);
-
-
-      }else if (data.details.client_option == 'New Client') {
-        $("#office_account").hide();
-        $("#new_client").show();
-
-        $("#new_client_name").html(data.details.new_client_name);
-        $("#new_organization_name").html(data.details.new_organization_name);
-        $("#new_address").html(data.details.new_address);
-        $("#new_phone_no").html(data.details.new_phone_no);
-        $("#new_invoice_date").html(data.details.invoice_date);
-      }
+        $("#name").html(data.details.name);
+        $("#designation").html(data.details.designation);
+        $("#phone_no").html(data.details.phone_no);
+        $("#invoice_date").html(data.details.invoice_date);
 
       $("#expense_table").html(data.expense);
 

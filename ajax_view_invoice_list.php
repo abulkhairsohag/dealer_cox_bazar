@@ -33,47 +33,17 @@ if (isset($_POST['serial_no_view'])) {
 			$tr .='<tr><td>';
 			$tr .= $i;
 			$tr .= '</td><td>';
-			$tr .=($row["service"]);
-			$tr .= '</td><td>';
 			$tr .= $row["description"] ;
 			$tr .= '</td><td>';
-			$tr .= $row["unit"];
+			$tr .= $row["purpose"];
 			$tr .= '</td><td>';
-			$tr .= $row["quantity"] ;
-			$tr .= '</td><td>';
-			$tr .= $row["price"];
-			$tr .= '</td><td class="text-right">';
-			$tr .= number_format($row["total"],2);
+			$tr .= $row["amount"] ;
 			$tr .= '</td></tr>';
 		}
 
-		$tr .= '<tr><td colspan="6" style="text-align: right;">Net Total (৳)  </td><td colspan="1" class="text-right">';
-		$tr .= number_format($invoice_details['net_total'],2);
-
-		$tr .= '</td></tr><tr><td colspan="6" style="text-align: right;">vat  (';
-		$tr .= $invoice_details['vat'];
-		$tr .=' % )  </td>';
-
-
-		$tr .= '<td colspan="1" class="text-right">';
-		$tr .= number_format($invoice_details['vat_amount'],2);
-
-		$tr .='</td></tr>';
-
-		$tr .= '<tr><td colspan="6" style="text-align: right;">Discount (';
-		$tr .= $invoice_details['discount'];
-		$tr .= '%)  </td>';
-		$tr .= '<td colspan="1" class="text-right">';
-		$tr .= number_format($invoice_details['discount_amount'],2);
-
-		$tr .= '</td></tr>';
-
-		$tr .= '<tr><td colspan="6" style="text-align: right;">Grand Total (৳)  </td><td colspan="1" class="text-right">';
-		$tr .= number_format($invoice_details['grand_total'],2);
-		$tr .= '</td></tr><tr><td colspan="6" style="text-align: right;">Total Paid (৳)  </td><td colspan="1" class="text-right">';
+		$tr .= '<tr><td colspan="3" style="text-align: right;">Net Total (৳)  </td><td colspan="" >';
 		$tr .= number_format($invoice_details['pay'],2);
-		$tr .= '</td></tr><tr><td colspan="6" style="text-align: right;">due (৳)  </td><td colspan="1" class="text-right">';
-		$tr .= number_format($invoice_details['due'],2);
+
 		$tr .= '</td></tr>';
 	}
 
@@ -111,8 +81,7 @@ if (isset($_POST['serial_no_delete'])) {
 
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
-              
-$query = "SELECT * FROM invoice_details  ORDER BY serial_no DESC";
+   $query = "SELECT * FROM invoice_details ORDER BY serial_no DESC";
               $get_invoice = $dbOb->select($query);
               if ($get_invoice) {
                 $i=0;
@@ -121,21 +90,16 @@ $query = "SELECT * FROM invoice_details  ORDER BY serial_no DESC";
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
-                    <td><?php echo $row['invoice_option']; ?></td>
-                    <?php 
-                    if ($row['office_organization_name'] !='') {
-                      ?>
-                      <td><?php echo $row['office_organization_name']; ?></td>
-                      <?php
-                    }else if ($row['new_organization_name'] !='') {
-                      ?>
-                      <td><?php echo $row['new_organization_name']; ?></td>
-                      <?php
-                    }
-                    ?>
-                    <td><?php echo $row['grand_total']; ?></td>
+                    <td><?php if ($row['invoice_option'] == 'Sell Invoice') {
+                      echo '<span class="badge bg-green">Income</span>';
+                    }else{
+                      echo '<span class="badge bg-orange">Expense</span>';
+                    } ?></td>
+                    
+                    <td><?php echo $row['name']; ?></td>
+                    <td><?php echo $row['designation']; ?></td>
+                    <td><?php echo $row['phone_no']; ?></td>
                     <td><?php echo $row['pay']; ?></td>
-                    <td><?php echo $row['due']; ?></td>
                     <td><?php echo $row['invoice_date']; ?></td>
                     <td align="center">
                       <?php 
@@ -163,6 +127,7 @@ $query = "SELECT * FROM invoice_details  ORDER BY serial_no DESC";
                       <?php } ?>    
                     </td>
                   </tr>
+
                   <?php
                 }
               }

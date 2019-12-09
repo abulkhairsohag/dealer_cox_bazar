@@ -116,6 +116,7 @@ if (isset($_POST["sohag"])) {
           <td><?php echo $i; ?></td>
           <td><?php echo $products_id; ?></td>
           <td><?php echo $product_name; ?></td>
+          <td><?php echo $row['ware_house_name']; ?></td>
           <td><?php echo $row['quantity']; ?></td>
           <td><?php echo $row['company_price']; ?></td>
           <td><?php echo $row['company_price'] * $row['quantity']; ?></td>

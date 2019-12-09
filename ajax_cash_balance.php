@@ -20,8 +20,12 @@ if (isset($_POST['from_date'])) {
 	$total_credit = 0;
 	$cash_balance = 0;
 
+
 	$from_date_show = $_POST['from_date'];
 	$to_date_show = $_POST['to_date'];
+
+	// die($from_date_show);
+
 
 	if ($from_date_show == $to_date_show) {
 		$show_date = 'Date :'.$from_date_show ;
@@ -54,10 +58,12 @@ if (isset($_POST['from_date'])) {
 	if ($get_order_delivery) {
 		while ($row = $get_order_delivery->fetch_assoc()) {
 			if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
-				$delivery = (int)$delivery + (int)$row['pay_amt'];
+				$delivery = $delivery*1 + $row['pay_amt']*1;
 			}
 		}
 	}
+
+	// die($delivery.'sdf');
 
 	// calculating Own Shop Sell
 	$own_shop_sell = 0;

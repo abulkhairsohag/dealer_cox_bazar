@@ -7,22 +7,11 @@ Session::init();
 Session::checkSession();
 error_reporting(1);
 include_once ('helper/helper.php');
-?>
-
-
-<?php 
+  
 	include_once("class/Database.php");
 	$dbOb = new Database();
 
-	// fetching account info using an account number
-	if (isset($_POST['office_account_no_sohag'])) {
-		$office_account_no = $_POST['office_account_no_sohag'];
-		$query = "SELECT * FROM account WHERE bank_account_no = '$office_account_no'";
-		$get_bank_account = $dbOb->find($query);
-		if ($get_bank_account) {
-			echo json_encode($get_bank_account);
-		}
-	}
+
 	// end of fetching account info 
 
 	// now we are going to add data into database
@@ -30,53 +19,31 @@ include_once ('helper/helper.php');
 	 if (isset($_POST['submit'])) {
 
             $invoice_option     = $_POST['invoice_option'];
-            $client_option      = $_POST['client_option'];
-            $office_account_no  = $_POST['office_account_no'];
-            $office_organization_name = $_POST['office_organization_name'];
-            $office_bank_name   = $_POST['office_bank_name'];
-            $office_branch_name = $_POST['office_branch_name'];
-            $new_client_name    = $_POST['new_client_name'];
-            $new_organization_name = $_POST['new_organization_name'];
-            $new_address        = $_POST['new_address'];
-            $new_phone_no       = $_POST['new_phone_no'];
-
-            $net_total          = $_POST['net_total'];
-            $vat                = $_POST['vat'];
-            $vat_amount         = $_POST['vat_amount'];
-            $discount           = $_POST['discount'];
-            $discount_amount    = $_POST['discount_amount'];
-            $grand_total        = $_POST['grand_total'];
-            $pay                = $_POST['pay'];
-            $due                = $_POST['due'];
-            $invoice_date 		= date("d-m-Y");
-
-
-
-            $service     = $_POST['service'];
-            $description = $_POST['description'];
-            $unit       = $_POST['unit'];
-            $quantity    = $_POST['quantity'];
-            $price       = $_POST['price'];
-            $total       = $_POST['total'];
+            $name = $_POST['name'];
+            $designation   = $_POST['designation'];
+            $phone_no = $_POST['phone_no'];
+            $description    = $_POST['description'];
+            $purpose = $_POST['purpose'];
+            $amount        = $_POST['amount'];
+            $total_amount       = $_POST['net_total'];
+            $pay       = $_POST['net_total'];
+            $invoice_date       = $_POST['invoice_date'];
 //echo $office_organization_name;
 			$query = "INSERT INTO  invoice_details
-			(invoice_option,	client_option,	office_account_no, office_organization_name,	office_bank_name,	office_branch_name,	new_client_name,	new_organization_name,	new_address,	new_phone_no,	net_total,	vat,	vat_amount,	discount,	discount_amount,	grand_total,	pay,	due, invoice_date)
+			(invoice_option,name,designation,phone_no,total_amount,pay, invoice_date)
 			VALUES
-			('$invoice_option',	'$client_option',	'$office_account_no','$office_organization_name',	'$office_bank_name',	'$office_branch_name',	'$new_client_name',	'$new_organization_name',	'$new_address',	'$new_phone_no',	'$net_total',	'$vat',	'$vat_amount',	'$discount',	'$discount_amount',	'$grand_total',	'$pay',	'$due','$invoice_date')";
+			('$invoice_option',	'$name','$designation','$phone_no',	'$total_amount','$pay',	'$invoice_date')";
 
 			$last_id =$dbOb->custom_insert($query);
 			$insert_invoice_expense = '';
 
 			if ($last_id != null) {
-				for ($i=0; $i < count($service); $i++) {
+				for ($i=0; $i < count($purpose); $i++) {
 					$query = "INSERT INTO  invoice_expense
-					(invoice_serial_no,	service,	description,	unit,	quantity,	price,	total)
+					(invoice_serial_no,description,	purpose,amount)
 					VALUES
-					('$last_id',	'$service[$i]',	'$description[$i]',	'$unit[$i]',	'$quantity[$i]',	'$price[$i]',	'$total[$i]')	";
+					('$last_id','$description[$i]',	'$purpose[$i]','$amount[$i]')";
 					$insert_invoice_expense =$dbOb->insert($query);
-
-					
-
 				}
 				if ($insert_invoice_expense) {
 						$message = "Congratulaiton! Information Is Successfully Saved.";

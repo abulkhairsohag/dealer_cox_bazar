@@ -19,48 +19,23 @@ $dbOb = new Database();
 
   if (isset($_POST['submit'])) {
 
-    $invoice_option     = $_POST['invoice_option'];
-    $client_option      = $_POST['client_option'];
-    $office_account_no  = $_POST['office_account_no'];
-    $office_organization_name = $_POST['office_organization_name'];
-    $office_bank_name   = $_POST['office_bank_name'];
-    $office_branch_name = $_POST['office_branch_name'];
-    $new_client_name    = $_POST['new_client_name'];
-    $new_organization_name = $_POST['new_organization_name'];
-    $new_address        = $_POST['new_address'];
-    $new_phone_no       = $_POST['new_phone_no'];
-    $net_total          = $_POST['net_total'];
-    $vat                = $_POST['vat'];
-    $vat_amount         = $_POST['vat_amount'];
-    $discount           = $_POST['discount'];
-    $discount_amount    = $_POST['discount_amount'];
-    $grand_total        = $_POST['grand_total'];
-    $pay                = $_POST['pay'];
-    $x_paid_amount      = $_POST['x_paid_amount'];
-    $due                = $_POST['due'];
-
-    $service     = $_POST['service'];
+    $invoice_option = $_POST['invoice_option'];
+    $name = $_POST['name'];
+    $designation = $_POST['designation'];
+    $phone_no = $_POST['phone_no'];
     $description = $_POST['description'];
-    $unit       = $_POST['unit'];
-    $quantity    = $_POST['quantity'];
-    $price       = $_POST['price'];
-    $total       = $_POST['total'];
+    $purpose = $_POST['purpose'];
+    $amount = $_POST['amount'];
+    $total_amount = $_POST['net_total'];
+    $pay = $_POST['net_total'];
+    $invoice_date = $_POST['invoice_date'];
+
 
     $edit_id = $_POST['edit_id'];
     
-    $payment_date = date("d-m-Y");
+    // $payment_date = date("d-m-Y");
 
-    if ($x_paid_amount != $pay) {
-      $given_amount = $pay - $x_paid_amount ;
-      if ($given_amount > 0) {
-        $query = "INSERT INTO due_payment_invoice
-           (invoice_serial_no, pay_amount, due, payment_date)
-           VALUES
-           ('$edit_id', '$given_amount', '$due', '$payment_date')" ;
-        $add_payment = $dbOb->insert($query);
-      }
 
-    }
 
     
     $query = "DELETE FROM invoice_expense WHERE invoice_serial_no = '$edit_id'";
@@ -70,23 +45,12 @@ $dbOb = new Database();
       $query = "UPDATE invoice_details 
                 SET
                 invoice_option = '$invoice_option', 
-                client_option = '$client_option', 
-                office_account_no = '$office_account_no',
-                office_organization_name = '$office_organization_name', 
-                office_bank_name = '$office_bank_name', 
-                office_branch_name = '$office_branch_name',
-                new_client_name = '$new_client_name', 
-                new_organization_name = '$new_organization_name', 
-                new_address = '$new_address', 
-                new_phone_no = '$new_phone_no', 
-                net_total = '$net_total', 
-                vat = '$vat', 
-                vat_amount = '$vat_amount', 
-                discount = '$discount', 
-                discount_amount = '$discount_amount', 
-                grand_total = '$grand_total', 
-                pay = '$pay', 
-                due = '$due'
+                name = '$name', 
+                designation = '$designation',
+                phone_no = '$phone_no', 
+                total_amount = '$total_amount', 
+                pay = '$pay',
+                invoice_date = '$invoice_date'
                 WHERE 
                 serial_no = '$edit_id'";
 
@@ -94,14 +58,14 @@ $dbOb = new Database();
 
       if ($update_invoice) {
         $insert_invoice_expense = '';
-        for ($i=0; $i < count($service); $i++) {
-        $query = "INSERT INTO  invoice_expense
-                (invoice_serial_no, service,  description,  unit,  quantity, price,  total)
-                VALUES
-                ('$edit_id', '$service[$i]', '$description[$i]', '$unit[$i]', '$quantity[$i]',  '$price[$i]', '$total[$i]') ";
-        $insert_invoice_expense = $dbOb->insert($query);
-
+       for ($i = 0; $i < count($purpose); $i++) {
+            $query = "INSERT INTO  invoice_expense
+                  (invoice_serial_no,description,	purpose,amount)
+                  VALUES
+                  ('$edit_id','$description[$i]',	'$purpose[$i]','$amount[$i]')";
+            $insert_invoice_expense = $dbOb->insert($query);
         }
+
         if ($insert_invoice_expense) {
           $message = "Congratulations! Informaiton Is Successfully Updated.";
           $type = "success";

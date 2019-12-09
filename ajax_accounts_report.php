@@ -558,7 +558,7 @@ if (isset($_POST['from_date'])) {
 				 
 		 </span>
 		 <div class="text-center">
-			 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>BUY INVOICE</b></h4>
+			 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>EXPENSE INVOICE</b></h4>
 		 </div>
 		 <br>
 			 <table class="table table-responsive">
@@ -585,13 +585,10 @@ if (isset($_POST['from_date'])) {
 						  <thead style="background:#4CAF50; color:white" >
 						    <tr>
 								<th scope="col">Sl No</th>
-								<th scope="col">Organization</th>
-								<th scope="col">Bank/Client Name</th>
-								<th scope="col">Branch/Address</th>
-								<th scope="col">Account/Phone no</th>
+								<th scope="col">Name</th>
+								<th scope="col">Designation</th>
+								<th scope="col">Phone No</th>
 								<th scope="col">Amount</th>
-								<th scope="col">Pay</th>
-								<th scope="col">Due</th>
 								<th scope="col">Date</th>
 						    </tr>
 						  </thead>
@@ -602,32 +599,17 @@ if (isset($_POST['from_date'])) {
  					
  				if (strtotime($row['invoice_date']) >= $from_date && strtotime($row['invoice_date']) <= $to_date) {
 
- 					if ($row['client_option'] == 'New Client') {
-						$Organization = $row['new_organization_name'];
-						$bank_client_name  = $row['new_client_name'];
-						$branch_address  = $row['new_address'];
-						$account_phn  = $row['new_phone_no'];
- 					}else{
-						$Organization = $row['office_organization_name'];
-						$bank_client_name  = $row['office_bank_name'];
-						$branch_address  = $row['office_branch_name'];
-						$account_phn  = $row['office_account_no'];
- 					}
+ 					
 
  					$buy_invoice_tbl .='<tr style="color:black" align="left">
 								      <td>'.++$i.'</td>
-								      <td>'.$Organization.'</td>
-								      <td>'.$bank_client_name.'</td>
-								      <td>'.$branch_address.'</td>
-								      <td>'.$account_phn.'</td>
-								      <td>'.$row['grand_total'].'</td>
+								      <td>'.$row['name'].'</td>
+								      <td>'.$row['designation'].'</td>
+								      <td>'.$row['phone_no'].'</td>
 								      <td>'.$row['pay'].'</td>
-								      <td>'.$row['due'].'</td>
 								      <td>'.$row['invoice_date'].'</td>
 								    </tr>';
-					$total_buy_invoice_amount += $row['grand_total'];
 					$total_buy_invoice_pay += $row['pay'];
-					$total_buy_invoice_due += $row['due'];
  					
  				}
  			}
@@ -635,15 +617,12 @@ if (isset($_POST['from_date'])) {
 			}
 			if ($i == 0) {
 				$buy_invoice_tbl .='<tr>
-										<td colspan="11"  align="center" style="color:red">No Record Found</td>
+										<td colspan="10"  align="center" style="color:red">No Record Found</td>
 									</tr>';
 			}else{
 				$buy_invoice_tbl .='<tr class="bg-success">
-				<td colspan="5"  align="right" style="color:red">Total Amount</td>
-				<td style="color:red; text-align:left">'.$total_buy_invoice_amount.'</td>
-				<td style="color:red; text-align:left">'.$total_buy_invoice_pay.'</td>
-				<td colspan="2" style="color:red; text-align:left">'.$total_buy_invoice_due.'</td>
-				
+				<td colspan="4"  align="right" style="color:red">Total Amount</td>
+				<td colspan="2" style="color:red; text-align:left">'.$total_buy_invoice_pay.'</td>
 				</tr>';
 			}
 			$buy_invoice_tbl.= '  </tbody>
@@ -661,82 +640,65 @@ if (isset($_POST['from_date'])) {
  		$total_sell_invoice_due = 0;
 
  		$i = 0;
-
- 		if ($get_sell_invoice) {
- 			$sell_invoice_tbl = '<div  id="print_table" style="color:black">
+$sell_invoice_tbl = '<div  id="print_table" style="color:black">
 			 <span class="text-center">
-				 <h3><b>'.strtoupper($company_profile['organization_name']).'</b></h3>
-				 <h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
-				 <h5>'.$show_date.'</h5>
-				 
+				 <h3><b>' . strtoupper($company_profile['organization_name']) . '</b></h3>
+				 <h5>' . $company_profile['address'] . ', ' . $company_profile['mobile_no'] . '</h5>
+				 <h5>' . $show_date . '</h5>
+
 		 </span>
 		 <div class="text-center">
-			 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>SELL INVOICE</b></h4>
+			 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>INCOME INVOICE</b></h4>
 		 </div>
 		 <br>
 			 <table class="table table-responsive">
 				 <tbody>
 					 <tr>
 						 <td>
-							 
+
 						 </td>
 						 <td class="text-center">
-							 
+
 						 </td>
 						 <td class="text-right">
-							 <h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
-							 <h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
+							 <h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>' . $printing_date . '</span></h5>
+							 <h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>' . $printing_time . '</span></h5>
 						 </td>
 					 </tr>
-				 
+
 				 </tbody>
 			 </table>
-		 <!--     
+		 <!--
 		 <hr> -->';
- 			$sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
+$sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 						  <thead style="background:#4CAF50; color:white" >
 						    <tr>
 								<th scope="col">Sl No</th>
-								<th scope="col">Organization</th>
-								<th scope="col">Bank/Client Name</th>
-								<th scope="col">Branch/Address</th>
-								<th scope="col">Account/Phone no</th>
+								<th scope="col">Name</th>
+								<th scope="col">Designation</th>
+								<th scope="col">Phone no</th>
 								<th scope="col">Amount</th>
-								<th scope="col">Pay</th>
-								<th scope="col">Due</th>
 								<th scope="col">Date</th>
 						    </tr>
 						  </thead>
 						  <tbody>';
+
+ 		if ($get_sell_invoice) {
+ 			
  			while ($row = $get_sell_invoice->fetch_assoc()) {
  				if (strtotime($row['invoice_date']) >= $from_date && strtotime($row['invoice_date']) <= $to_date) {
 
- 					if ($row['client_option'] == 'New Client') {
-						$Organization = $row['new_organization_name'];
-						$bank_client_name  = $row['new_client_name'];
-						$branch_address  = $row['new_address'];
-						$account_phn  = $row['new_phone_no'];
- 					}else{
-						$Organization = $row['office_organization_name'];
-						$bank_client_name  = $row['office_bank_name'];
-						$branch_address  = $row['office_branch_name'];
-						$account_phn  = $row['office_account_no'];
- 					}
+ 					
 
  					$sell_invoice_tbl .='<tr  style="color:black" align="left">
 								      <td>'.++$i.'</td>
-								      <td>'.$Organization.'</td>
-								      <td>'.$bank_client_name.'</td>
-								      <td>'.$branch_address.'</td>
-								      <td>'.$account_phn.'</td>
-								      <td>'.$row['grand_total'].'</td>
+								      <td>'.$row['name'].'</td>
+								      <td>'.$row['designation'].'</td>
+								      <td>'.$row['phone_no'].'</td>
 								      <td>'.$row['pay'].'</td>
-								      <td>'.$row['due'].'</td>
 								      <td>'.$row['invoice_date'].'</td>
 								    </tr>';
-					$total_sell_invoice_amount += $row['grand_total'];
 					$total_sell_invoice_pay += $row['pay'];
-					$total_sell_invoice_due += $row['due'];
  					
  				}
  			}
@@ -744,14 +706,13 @@ if (isset($_POST['from_date'])) {
 		}
 		if ($i == 0) {
 			$sell_invoice_tbl .='<tr>
-									<td colspan="11"  align="center" style="color:red">No Record Found</td>
+									<td colspan="6"  align="center" style="color:red">No Record Found</td>
 								</tr>';
 		}else{
 			$sell_invoice_tbl .='<tr class="bg-success">
-							<td colspan="5"  align="right" style="color:red">Total Amount</td>
-							<td style="color:red; text-align:left">'.$total_sell_invoice_amount.'</td>
-							<td style="color:red; text-align:left">'.$total_sell_invoice_pay.'</td>
-							<td colspan="2" style="color:red; text-align:left" >'.$total_sell_invoice_due.'</td>
+							<td colspan="4"  align="right" style="color:red">Total Amount</td>
+							
+							<td colspan="2" style="color:red text-align:left">'.$total_sell_invoice_pay.'</td>
 							
 						</tr>';
 		}
@@ -778,90 +739,74 @@ if (isset($_POST['from_date'])) {
 
  		$i = 0;
  		$k=0;
-
- 		if ($get_sell_invoice) {
- 			$sell_invoice_tbl = '<div  id="print_table" style="color:black">
+$sell_invoice_tbl = '<div  id="print_table" style="color:black">
 			 <span class="text-center">
-				 <h3><b>'.strtoupper($company_profile['organization_name']).'</b></h3>
-				 <h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
-				 <h5>'.$show_date.'</h5>
-				 
+				 <h3><b>' . strtoupper($company_profile['organization_name']) . '</b></h3>
+				 <h5>' . $company_profile['address'] . ', ' . $company_profile['mobile_no'] . '</h5>
+				 <h5>' . $show_date . '</h5>
+
 		 </span>
 		 <div class="text-center">
-			 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>BUY & SELL INVOICE</b></h4>
+			 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>INCOME & EXPENCE INVOICE</b></h4>
 		 </div>
 		 <br>
 			 <table class="table table-responsive">
 				 <tbody>
 					 <tr>
 						 <td>
-							 
+
 						 </td>
 						 <td class="text-center">
-							 
+
 						 </td>
 						 <td class="text-right">
-							 <h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
-							 <h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
+							 <h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>' . $printing_date . '</span></h5>
+							 <h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>' . $printing_time . '</span></h5>
 						 </td>
 					 </tr>
-				 
+
 				 </tbody>
 			 </table>
-		 <!--     
+		 <!--
 		 <hr> -->';
 
- 			$sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
+$sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 						  <thead style="background:#4CAF50; color:white" >
 						    <tr>
 								<th scope="col">Sl No</th>
 								<th scope="col">Invoice Type</th>
-								<th scope="col">Organization</th>
-								<th scope="col">Bank/Client Name</th>
-								<th scope="col">Branch/Address</th>
-								<th scope="col">Account/Phone no</th>
+								<th scope="col">Name</th>
+								<th scope="col">Designation</th>
+								<th scope="col">Phone no</th>
 								<th scope="col">Amount</th>
-								<th scope="col">Pay</th>
-								<th scope="col">Due</th>
 								<th scope="col">Date</th>
 						    </tr>
 						  </thead>
 						  <tbody>';
+
+ 		if ($get_sell_invoice) {
+ 			
  			while ($row = $get_sell_invoice->fetch_assoc()) {
  				if (strtotime($row['invoice_date']) >= $from_date && strtotime($row['invoice_date']) <= $to_date) {
 
- 					if ($row['client_option'] == 'New Client') {
-						$Organization = $row['new_organization_name'];
-						$bank_client_name  = $row['new_client_name'];
-						$branch_address  = $row['new_address'];
-						$account_phn  = $row['new_phone_no'];
- 					}else{
-						$Organization = $row['office_organization_name'];
-						$bank_client_name  = $row['office_bank_name'];
-						$branch_address  = $row['office_branch_name'];
-						$account_phn  = $row['office_account_no'];
- 					}
+ 					// $name = $row['name'];
+ 					// $desi = $row['desi'];
+ 					// $name = $row['name'];
 
  					if ($row['invoice_option'] == 'Buy Invoice') {
- 						$inv_option ='<span  class="badge bg-red">'.$row['invoice_option'].'</span>';
- 						$total_buy_invoice_amount += $row['grand_total'];
+ 						$inv_option ='<span  class="badge bg-red">Expense</span>';
 						$total_buy_invoice_pay += $row['pay'];
-						$total_buy_invoice_due += $row['due'];
  					}else{
- 						$inv_option ='<span class="badge bg-green">'.$row['invoice_option'].'</span>';
- 						$total_sell_invoice_amount += $row['grand_total'];
+ 						$inv_option ='<span class="badge bg-green">Income</span>';
 						$total_sell_invoice_pay += $row['pay'];
-						$total_sell_invoice_due += $row['due'];
  					}
  					
  					
  					if ($k==0) {
  						if ($row['invoice_option'] == 'Buy Invoice') {
  							$sell_invoice_tbl .='<tr>
-						      <td colspan="6"  align="right" style="color:red">Total Sell Invoice Amount</td>
-						      <td style="color:red; text-align:left">'.$total_sell_invoice_amount.'</td>
-						      <td style="color:red; text-align:left">'.$total_sell_invoice_pay.'</td>
-						      <td colspan="2" style="color:red; text-align:left">'.$total_sell_invoice_due.'</td>
+						      <td colspan="5"  align="right" style="color:red">Total Sell Invoice Amount</td>
+						      <td colspan="2" style="color:red; text-align:left">'.$total_sell_invoice_pay.'</td>
 						      
 						    </tr>';
 						    $k++;
@@ -871,13 +816,10 @@ if (isset($_POST['from_date'])) {
  					$sell_invoice_tbl .='<tr  style="color:black" align="left">
 								      <td>'.++$i.'</td>
 								      <td>'.$inv_option.'</td>
-								      <td>'.$Organization.'</td>
-								      <td>'.$bank_client_name.'</td>
-								      <td>'.$branch_address.'</td>
-								      <td>'.$account_phn.'</td>
-								      <td>'.$row['grand_total'].'</td>
+								      <td>'.$row['name'].'</td>
+								      <td>'.$row['designation'].'</td>
+								      <td>'.$row['phone_no'].'</td>
 								      <td>'.$row['pay'].'</td>
-								      <td>'.$row['due'].'</td>
 								      <td>'.$row['invoice_date'].'</td>
 								    </tr>';
 
@@ -887,14 +829,12 @@ if (isset($_POST['from_date'])) {
 		}
 		if ($i == 0) {
 			$sell_invoice_tbl .='<tr>
-									<td colspan="11"  align="center" style="color:red">No Record Found</td>
+									<td colspan="7"  align="center" style="color:red">No Record Found</td>
 								</tr>';
 		}else{
 			$sell_invoice_tbl .='<tr class="bg-success">
-						 <td colspan="6"  align="right" style="color:red">Total Buy Invoice Amount</td>
-						 <td style="color:red; text-align:left">'.$total_buy_invoice_amount.'</td>
-						 <td style="color:red; text-align:left">'.$total_buy_invoice_pay.'</td>
-						 <td colspan="2" style="color:red; text-align:left">'.$total_buy_invoice_due.'</td>
+						 <td colspan="5"  align="right" style="color:red">Total Buy Invoice Amount</td>
+						 <td colspan="2" style="color:red; text-align:left">'.$total_buy_invoice_pay.'</td>
 						 
 					   </tr>';
 		}

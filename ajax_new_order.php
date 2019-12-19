@@ -143,8 +143,12 @@ if (isset($_POST['customer_id'])) {
 	if ($get_cust) {
 		$data = $get_cust->fetch_assoc();
 	}
+
+	
 	echo json_encode($data);
 }
+
+
 
 if (isset($_POST['area_name'])) {
 	$area_name = $_POST['area_name'];
@@ -158,17 +162,69 @@ if (isset($_POST['area_name'])) {
 	} else {
 		$data = '<option value="">Customer Not Available In This Area</option>';
 	}
+
+	Session::set("area_employee",$area_name);
+	Session::set("customer_options",$data);
+	
 	echo json_encode($data);
 }
 
-if (isset($_POST['emp_id'])) {
-	$emp_id = $_POST['emp_id'];
-	$query = "SELECT * FROM employee_main_info WHERE id_no = '$emp_id'";
+// getting delivery mans info 
+if (isset($_POST['delivery_emp_id'])) {
+	$delivery_emp_id = $_POST['delivery_emp_id'];
+	$query = "SELECT * FROM delivery_employee WHERE id_no = '$delivery_emp_id'";
 	$employee = $dbOb->select($query);
 	if ($employee) {
 		$data = $employee->fetch_assoc()['name'];
 	}
+	Session::set("delivery_emp_id",$delivery_emp_id);
+	Session::set("delivery_employee_name",$data);
 	echo json_encode($data);
 }
 
+if (isset($_POST['order_emp_id'])) {
+	$order_emp_id = $_POST['order_emp_id'];
+	$query = "SELECT * FROM employee_duty WHERE id_no = '$order_emp_id'";
+	$employee = $dbOb->select($query);
+	if ($employee) {
+		$data = $employee->fetch_assoc()['name'];
+	}
+	Session::set("order_emp_id",$order_emp_id);
+	Session::set("order_employee_name",$data);
+	echo json_encode($data);
+}
+
+if (isset($_POST['zone_serial_no'])) {
+	$zone_serial_no = $_POST['zone_serial_no'];
+	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+	$zone = $dbOb->select($query);
+	$zone_name = "";
+	if ($zone) {
+		$zone_name = $zone->fetch_assoc()['zone_name'];
+	}
+	Session::set("zone_serial_no",$zone_serial_no);
+	Session::set("zone_name",$zone_name);
+	
+	$query = "SELECT * from area_zone WHERE zone_serial_no = '$zone_serial_no'";
+	$get_all_area = $dbOb->select($query);
+	if ($get_all_area) {
+		$area_options = '<option value="">Please Select One</option>';
+		while ($row = $get_all_area->fetch_assoc()) {
+			$area_options .= '<option value="'.$row["area_name"].'">'.$row['area_name'].'</option>';
+		}
+	}else{
+		$area_options = '<option value="">Area Not Assigned In This Zone</option>';
+	}
+	Session::set("area_options",$area_options);
+	Session::set("customer_options",'');
+
+	die(json_encode(['zone_name'=>$zone_name,'area_options'=>$area_options]));
+}
+
+
+if (isset($_POST['send_area_and_customer'])) {
+	$area = Session::get("area_employee");
+	$customer_id = Session::get("customer_id");
+	echo json_encode(['area'=>$area,'customer_id'=>$customer_id]);
+}
 ?>

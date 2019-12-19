@@ -182,10 +182,10 @@ if(!permission_check('customer_info')){
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <?php 
-                          $query = "SELECT * FROM client ORDER BY serial_no DESC LIMIT 1";
+                          $query = "SELECT * FROM id_no_generator WHERE id_type = 'client' ORDER BY serial_no DESC LIMIT 1";
                           $get_cust = $dbOb->select($query);
                           if ($get_cust) {
-                            $last_id = $get_cust->fetch_assoc()['cust_id'];
+                            $last_id = $get_cust->fetch_assoc()['id'];
                             $last_id = explode('-',$last_id)[1];
                             $last_id = $last_id*1+1;
                             $id_length = strlen ($last_id); 

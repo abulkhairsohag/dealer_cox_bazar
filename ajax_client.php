@@ -67,6 +67,8 @@ if (isset($_POST['submit'])) {
 				  	('$area_name','$category_name','$cust_id','$client_name','$organization_name','$address','$mobile_no','$email','$description')";
 		$insert = $dbOb->insert($query);
 		if ($insert) {
+			$query = "INSERT INTO id_no_generator (id,id_type) VALUES ('$cust_id','client')";
+			$insert_id = $dbOb->insert($query);
 			$message = "Congratulaitons! Information Is Successfully Saved.";
 			$type = 'success';
 			echo json_encode(['message'=>$message,'type'=>$type]);

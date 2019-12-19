@@ -198,7 +198,7 @@ if ($user_type == "employee") {
             </li>
           <?php } ?>
 
-
+<li><a href="offer_setup.php"><i class="fas fa-map-marker-alt"></i> Offer Setup</a></li>
 
           <?php 
           if (permission_check('product')) {
@@ -235,6 +235,7 @@ if ($user_type == "employee") {
 
                   <li><a href="productwise_stock_report.php"><i class="fas fa-scroll"></i> Productwise stock Report</a></li>
                 <?php } ?>
+                 <li><a href="add_offer_product.php"><i class="fas fa-plus-circle"></i> Add Offer Product</a></li>
               </ul>
             </li>
           <?php } ?>

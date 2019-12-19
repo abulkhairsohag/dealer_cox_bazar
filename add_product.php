@@ -1,32 +1,31 @@
-<?php include_once('include/header.php'); ?>
+<?php include_once 'include/header.php';?>
 
 
-<?php 
-if(!permission_check('add_product')){
+<?php
+if (!permission_check('add_product')) {
   ?>
   <script>
     window.location.href = '403.php';
   </script>
-  <?php 
+  <?php
 }
- ?>
- 
+?>
+
 <div class="right_col" role="main">
   <div class="row">
 
     <!-- page content -->
-
 
     <div class="col-md-12 col-sm-12 col-xs-12">
       <div class="x_panel">
         <div class="x_title">
           <h2>Product List</h2>
           <div class="row float-right" align="right">
-           <?php 
+           <?php
            if (permission_check('add_product')) {
             ?>
             <a href="" class="btn btn-primary" id="add_data" data-toggle="modal" data-target="#add_update_modal"> <span class="badge"><i class="fa fa-plus"> </i></span> Add New Product</a>
-          <?php } ?>
+          <?php }?>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -42,6 +41,7 @@ if(!permission_check('add_product')){
               <th style="width: 70px">Name</th>
               <th style="width: 80px">Category</th>
               <th style="width: 35px">Company Price</th>
+              <th style="width: 35px">Sell Price</th>
               <th style="width: 35px">MRP</th>
               <th style="width: 35px">Pack Size</th>
               <th style="width: 35px">Available QTY</th>
@@ -52,13 +52,13 @@ if(!permission_check('add_product')){
 
 
           <tbody id="data_table_body">
-            <?php 
-            include_once('class/Database.php');
+            <?php
+            include_once 'class/Database.php';
             $dbOb = new Database();
             $query = "SELECT * FROM products ORDER BY serial_no DESC";
             $get_products = $dbOb->select($query);
             if ($get_products) {
-              $i=0;
+              $i = 0;
               while ($row = $get_products->fetch_assoc()) {
                 $i++;
                 ?>
@@ -69,6 +69,7 @@ if(!permission_check('add_product')){
                   <td><?php echo $row['products_name']; ?></td>
                   <td><?php echo $row['category']; ?></td>
                   <td><?php echo $row['company_price']; ?></td>
+                  <td><?php echo $row['sell_price']; ?></td>
                   <td><?php echo $row['mrp_price']; ?></td>
                   <td><?php echo $row['pack_size']; ?></td>
                   <td><?php echo $row['quantity']; ?></td>
@@ -77,41 +78,41 @@ if(!permission_check('add_product')){
 
                   <td align="center">
 
-                   <?php 
+                   <?php
                    if (permission_check('product_edit_button')) {
                     ?>
-                    <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a>
-                  <?php } ?>
+                    <a  class="badge bg-blue edit_data" id="<?php echo ($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a>
+                  <?php }?>
 
-                  <?php 
+                  <?php
                   if (permission_check('product_stock_button')) {
                     ?>
 
-                    <a class="badge bg-green stock_data" id="<?php echo($row['products_id_no']) ?>"   data-toggle="modal" data-target="#stock_data_modal">Stock This Product </a>
-                  <?php } ?>
-                  
+                    <a class="badge bg-green stock_data" id="<?php echo ($row['products_id_no']) ?>"   data-toggle="modal" data-target="#stock_data_modal">Stock This Product </a>
+                  <?php }?>
 
-                  <?php 
+
+                  <?php
                   if (permission_check('product_delete_button')) {
-                    ?> 
+                    ?>
 
-                    <a  class="badge  bg-red delete_data" id="<?php echo($row['products_id_no']) ?>"  style="margin:2px"> Delete</a> 
-                  <?php } ?>
-              
-                  
+                    <a  class="badge  bg-red delete_data" id="<?php echo ($row['products_id_no']) ?>"  style="margin:2px"> Delete</a>
+                  <?php }?>
 
-                  <?php 
+
+
+                  <?php
                   if (permission_check('product_view_button')) {
                     ?>
-                    
+
                     <a class="badge bg-orange view_details"  id="<?php echo $row['products_id_no'] ?>" data-toggle="modal" data-target="#view_modal" style="margin:2px">View</a>
-                  <?php } ?>
-                  
-                  
-                  
-                  
+                  <?php }?>
+
+
+
+
                 </td>
-                
+
               </tr>
 
               <?php
@@ -146,7 +147,7 @@ if(!permission_check('add_product')){
                 <br />
                 <!-- Form starts From here  -->
                 <form id="form_stock_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
-                  
+
 
                   <div class="form-group">
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Product ID </label>
@@ -188,7 +189,7 @@ if(!permission_check('add_product')){
                       <input type="number" min="0" id="total_quantity" name="total_quantity"  class="form-control col-md-7 col-xs-12" readonly="">
                     </div>
                   </div>
-                  
+
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Company Price
                     </label>
@@ -219,7 +220,7 @@ if(!permission_check('add_product')){
               </div>
             </div>
           </div>
-        </div>  
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -249,14 +250,14 @@ if(!permission_check('add_product')){
                 <br />
                 <!-- Form starts From here  -->
                 <form id="form_edit_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
-                  
+
 
                   <div class="form-group">
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Company <span class="required" style="color: red">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <select required="" id="company" name="company" class="form-control col-md-7 col-xs-12" >
                         <option value="">Select a company name</option>
-                        <?php 
+                        <?php
                         $query = "SELECT * FROM company ORDER BY company_name ";
                         $get_company_name = $dbOb->select($query);
                         if ($get_company_name) {
@@ -280,68 +281,48 @@ if(!permission_check('add_product')){
                       <input type="text"  required=""id="products_name" name="products_name"  class="form-control col-md-7 col-xs-12">
                     </div>
                   </div>
-                  
 
 
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Product Category<span class="required" style="color: red">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <select name="category" id="category" required="" class="form-control col-md-7 col-xs-12">
-                            <option value="">Select Category Name</option>
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Product Category<span class="required" style="color: red">*</span>
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <select name="category" id="category" required="" class="form-control col-md-7 col-xs-12">
+                        <option value="">Select Category Name</option>
+                        <?php
+                        $query = "SELECT * FROM category ORDER BY category_name";
+                        $get_category = $dbOb->select("$query");
+                        if ($get_category) {
+                          while ($row = $get_category->fetch_assoc()) {
+                            ?>
+                            <option value="<?php echo $row['category_name']; ?>"><?php echo $row['category_name'] ?></option>
+
                             <?php
-                            $query = "SELECT * FROM category ORDER BY category_name";
-                            $get_category = $dbOb->select("$query");
-                            if ($get_category) {
-                             while ($row = $get_category->fetch_assoc()) {
-                               ?>
-                               <option value="<?php echo $row['category_name'];?>"><?php echo $row['category_name'] ?></option>
-
-                               <?php
-                             }
-                           } 
-                           ?>
-                         </select>
-                       </div>
-                     </div>
-
-
-
-
-                  <div class="form-group" style="display:none">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Weight <span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="number"  id="weight" name="weight" class="form-control col-md-7 col-xs-12" >
+                          }
+                        }
+                        ?>
+                      </select>
                     </div>
                   </div>
 
-                  <div class="form-group" style="display:none">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Color <span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" id="color" name="color" class="form-control col-md-7 col-xs-12" >
-                    </div>
-                  </div>
 
-                  <div class="form-group"  id="company_price_div" >
+
+                  <div class="form-group" id="company_price_div">
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Company Price <span class="required" style="color: red"> *</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="number" min="0" step="0.01"  id="company_price" name="company_price" class="form-control col-md-7 col-xs-12" >
                     </div>
                   </div>
 
-                  <div class="form-group" style="display:none">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Dealer Price <span class="required" style="color: red">*</span></label>
+                  <div class="form-group" id="company_price_div">
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Sell Price <span class="required" style="color: red"> *</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="number" min="0" step="0.01"  id="dealer_price" name="dealer_price" class="form-control col-md-7 col-xs-12" >
+                      <input type="number" min="0" step="0.01"  id="sell_price" name="sell_price" class="form-control col-md-7 col-xs-12" >
                     </div>
                   </div>
 
-                  <div class="form-group"  style="display:none">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Marketing Sell Price<span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input  type="number" min="0" step="0.01" id="marketing_sell_price" name="marketing_sell_price" class="form-control col-md-7 col-xs-12" >
-                    </div>
-                  </div>
+
 
                   <div class="form-group">
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">MRP Price<span class="required" style="color: red">*</span></label>
@@ -365,52 +346,7 @@ if(!permission_check('add_product')){
                   </div>
 
 
-                  <div class="form-group" style="display:none">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Promo Offer </label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input  type="text" id="promo_offer" name="promo_offer" class="form-control col-md-7 col-xs-12" >
-                    </div>
-                  </div>
 
-                  <div class="form-group" style="display:none">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Offer Start Date </label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" id="offer_start_date" name="offer_start_date" class="date-picker form-control col-md-7 col-xs-12 datepicker"   readonly=""  >
-                    </div>
-                  </div>
-
-                  <div class="form-group" style="display:none">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Offer End Date </label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" id="offer_end_date" name="offer_end_date" class="date-picker form-control col-md-7 col-xs-12 "   readonly=""  >
-                    </div>
-                  </div>
-
-                  <div class="form-group" id="ware_house" >
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Ware House<span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <select name="ware_house_serial_no" id="ware_house_serial_no" class=" form-control col-md-7 col-xs-12 " required="">
-                           <?php
-                            $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-                            $get_warehouse = $dbOb->select($query);
-                            if ($get_warehouse) {
-                              ?>
-                              <option value="">Select A Warehouse</option>
-                              <?php
-                              while ($row = $get_warehouse->fetch_assoc()) {
-                                ?>
-                                  <option value="<?php echo $row['serial_no']?>"><?php echo $row['ware_house_name']?></option>
-                                <?php
-                              }
-                            }else{
-                              ?>
-                              <option value="">Please Add Ware House First</option>
-                              <?php
-                            }
-                           ?>
-                      </select>
-                    </div>
-                  </div>
 
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" id="photo_label">Product Photo </label>
@@ -430,6 +366,31 @@ if(!permission_check('add_product')){
                   </div>
 
 
+                  <div class="form-group" id="warehouse_div">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ware_house_serial_no">Ware House <span class="required" style="color: red">*</span>
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <select name="ware_house_serial_no" id="ware_house_serial_no" required="" class="form-control col-md-7 col-xs-12" required="">
+                        <option value="">Please Select A Warehouse</option>
+                        <?php
+                        $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+                        $get_warehouse = $dbOb->select("$query");
+                        if ($get_warehouse) {
+                          while ($row = $get_warehouse->fetch_assoc()) {
+                            ?>
+                            <option value="<?php echo $row['serial_no']; ?>"><?php echo $row['ware_house_name'] ?></option>
+
+                            <?php
+                          }
+                        }
+                        ?>
+                      </select>
+                    </div>
+                  </div>
+
+               
+
+
                   <div style="display: none;">
                     <input type="number" id="edit_id" name="edit_id">
                   </div>
@@ -447,7 +408,7 @@ if(!permission_check('add_product')){
               </div>
             </div>
           </div>
-        </div>  
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -477,7 +438,7 @@ if(!permission_check('add_product')){
                 <br />
                 <!-- Form starts From here  -->
                 <form id="update_original_price_form" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
-                  
+
 
 
                   <div class="form-group">
@@ -487,7 +448,7 @@ if(!permission_check('add_product')){
                       <input type="number"  required=""id="original_price" name="original_price"  class="form-control col-md-7 col-xs-12">
                     </div>
                   </div>
-                  
+
 
 
 
@@ -508,7 +469,7 @@ if(!permission_check('add_product')){
               </div>
             </div>
           </div>
-        </div>  
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -518,78 +479,64 @@ if(!permission_check('add_product')){
 </div>
 <!-- End of update original price of a product -->
 
-        <!-- Modal For Showing data  -->
-        <div class="modal fade" id="view_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog " style="width: 700px" role="document">
-            <div class="modal-content modal-lg">
-              <div class="modal-header" style="background: #006666" align="center">
-                <h3 class="modal-title" id="ModalLabel" style="color: white">Product Information In Detail</h3>
-                
-              </div>
-              <div class="modal-body">
+<!-- Modal For Showing data  -->
+<div class="modal fade" id="view_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog " style="width: 700px" role="document">
+    <div class="modal-content modal-lg">
+      <div class="modal-header" style="background: #006666" align="center">
+        <h3 class="modal-title" id="ModalLabel" style="color: white">Product Information In Detail</h3>
 
-                <div class="row">
-                  <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="x_panel" style="">
+      </div>
+      <div class="modal-body">
 
-                      <div class="x_content" style="">
-                        <br />
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel" style="">
 
-                        <div style="margin : 20px; color:black" id="info_table" class="col-md-12 text-dark">
-                          <div class="col-md-6">
+              <div class="x_content" style="">
+                <br />
 
-                            <div class="row" style="margin-top:10px">
-                              <div class="col-md-6"><h5>Company Name : </h5></div>
-                              <div class="col-md-6"><h5 id="company_name_show"></h5></div>
-                            </div>
-                            <hr> 
+                <div style="margin : 20px; color:black" id="info_table" class="col-md-12 text-dark">
+                  <div class="col-md-6">
 
-                            <div class="row" style="margin-top:10px">
-                              <div class="col-md-6"><h5>Product ID Number : </h5></div>
-                              <div class="col-md-6"><h5 id="products_id_no_show"></h5></div>
-                            </div>
-                            <hr>
+                    <div class="row" style="margin-top:10px">
+                      <div class="col-md-6"><h5>Company Name : </h5></div>
+                      <div class="col-md-6"><h5 id="company_name_show"></h5></div>
+                    </div>
+                    <hr>
+
+                    <div class="row" style="margin-top:10px">
+                      <div class="col-md-6"><h5>Product ID Number : </h5></div>
+                      <div class="col-md-6"><h5 id="products_id_no_show"></h5></div>
+                    </div>
+                    <hr>
 
 
-                            <div class="row" style="margin-top:10px">
-                              <div class="col-md-6"><h5>Products Name : </h5></div>
-                              <div class="col-md-6"><h5 id="products_name_show"></h5></div>
-                            </div>
-                            <hr>
+                    <div class="row" style="margin-top:10px">
+                      <div class="col-md-6"><h5>Products Name : </h5></div>
+                      <div class="col-md-6"><h5 id="products_name_show"></h5></div>
+                    </div>
+                    <hr>
 
-                            <div class="row" style="margin-top:10px">
-                              <div class="col-md-6"><h5>Category : </h5></div>
-                              <div class="col-md-6"><h5 id="category_show"></h5></div>
-                            </div>
-                            <hr>
+                    <div class="row" style="margin-top:10px">
+                      <div class="col-md-6"><h5>Category : </h5></div>
+                      <div class="col-md-6"><h5 id="category_show"></h5></div>
+                    </div>
+                    <hr>
 
-                            <!-- <div class="row" style="margin-top:10px" style="display:none">
-                              <div class="col-md-6"><h5>Weight : </h5></div>
-                              <div class="col-md-6"><h5 id="weight_show"> </h5></div>
-                            </div>
-                            <hr> -->
-
-        <!-- 
-            <div class="row" style="margin-top:10px" style="display:none">
-              <div class="col-md-6"><h5>Color : </h5></div>
-              <div class="col-md-6"><h5 id="color_show"> </h5></div>
-            </div>
-            <hr> -->
-                    
-                  
 
                     <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Company Price : </h5></div>
                       <div class="col-md-6"><h5 id="company_price_show"> </h5></div>
                     </div>
                     <hr>
-                    
-                  <div class="row" style="margin-top:10px">
+
+                    <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>MRP Price : </h5></div>
                       <div class="col-md-6"><h5 id="mrp_price_show"> </h5></div>
                     </div>
                     <hr>
-                    
+
                     <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Pack Size : </h5></div>
                       <div class="col-md-6"><h5 id="pack_size_show"> </h5></div>
@@ -602,7 +549,7 @@ if(!permission_check('add_product')){
                   <!-- Start of second row --->
                   <div class="col-md-6">
 
-                 
+
 
 
                     <div class="row" style="margin-top:10px">
@@ -611,7 +558,7 @@ if(!permission_check('add_product')){
                     </div>
                     <hr>
 
-                  
+
 
                     <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Total Sell (QTY) : </h5></div>
@@ -636,20 +583,20 @@ if(!permission_check('add_product')){
                       <div class="col-md-6"><h5 id="in_stock"> </h5></div>
                     </div>
                     <hr>
-                      
+
                     <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Product Photo : </h5></div>
                       <div class="col-md-6"><h5 id="product_photo_show"> </h5></div>
                     </div>
                     <hr>
-                     
+
                     <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Description : </h5></div>
                       <div class="col-md-6"><h5 id="description_show"> </h5></div>
                     </div>
                     <hr>
 
-                  
+
 
                   </div>
                   <!-- end of second row --->
@@ -658,7 +605,7 @@ if(!permission_check('add_product')){
               </div>
             </div>
           </div>
-        </div>  
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -671,11 +618,11 @@ if(!permission_check('add_product')){
 
 </div>
 </div>
-<?php include_once('include/footer.php'); ?>
+<?php include_once 'include/footer.php';?>
 
 <script>
   $(document).ready(function(){
-    
+
     // showing product information
     $(document).on('click','.view_details',function(){
       var products_id_no_view = $(this).attr("id");
@@ -739,9 +686,9 @@ if(!permission_check('add_product')){
           $("#mrp_price").val(data.mrp_price);
           $("#pack_size").val(data.pack_size);
           $("#quantity").val(data.quantity);
-          $("#promo_offer").val(data.promo_offer);
-          $("#offer_start_date").val(data.offer_start_date);
-          $("#offer_end_date").val(data.offer_end_date);
+          $("#quantity").val(data.quantity);
+          $("#sell_price").val(data.sell_price);
+       
           $("#edit_id").val(data.serial_no);
 
           $("#photo_div").removeClass();
@@ -757,13 +704,13 @@ if(!permission_check('add_product')){
 
           $("#quantity_div").hide();
           $("#quantity_div").val("");
-          $("#ware_house").hide();
-          $("#ware_house_serial_no").val("");
-          $("#ware_house_serial_no").attr('required',false);
-          
-          $("#company_price_div").hide();
+
+          $("#company_price").val("");
           $("#company_price").attr('required',false);
-          
+          $("#company_price_div").hide();
+          $("#warehouse_div").hide();
+          $("#ware_house_serial_no").attr('required',false);
+
 
         }
       });
@@ -780,8 +727,6 @@ if(!permission_check('add_product')){
       $("#weight").val("");
       $("#color").val("");
       $("#company_price").val("");
-      $("#company_price").attr('required',true);
-      $("#company_price_div").show();
       $("#dealer_price").val("");
       $("#marketing_sell_price").val("");
       $("#marketing_sell_price").val("");
@@ -801,13 +746,16 @@ if(!permission_check('add_product')){
       $("#photo_label").css("margin-top","0px");
       $("#quantity_div").show();
 
-      $("#ware_house").show();
-      $("#ware_house_serial_no").val("");
+      $("#company_price").val("");
+      $("#company_price").attr('required',true);
+      $("#company_price_div").show();
+      $("#warehouse_div").show();
+      $("#ware_house_serial_no").val('');
       $("#ware_house_serial_no").attr('required',true);
 
     });
 
-      // now we are going to update and insert data 
+      // now we are going to update and insert data
       $(document).on('submit','#form_edit_data',function(e){
         e.preventDefault();
         var formData = new FormData($("#form_edit_data")[0]);
@@ -834,44 +782,44 @@ if(!permission_check('add_product')){
             }
           }
         });
-    }); // end of insert and update 
-  
-      
-      
+    }); // end of insert and update
+
+
+
         // now update original price
         $(document).on('submit','#update_original_price_form',function(e){
-        e.preventDefault();
-        var formData = new FormData($("#update_original_price_form")[0]);
-        formData.append('submit_original_price','submit_original_price');
+          e.preventDefault();
+          var formData = new FormData($("#update_original_price_form")[0]);
+          formData.append('submit_original_price','submit_original_price');
 
-        $.ajax({
-          url:'ajax_add_product.php',
-          data:formData,
-          type:'POST',
-          dataType:'json',
-          cache: false,
-          processData: false,
-          contentType: false,
-          success:function(data){
-            swal({
-              title: data.type,
-              text: data.message,
-              icon: data.type,
-              button: "Done",
-            });
-            if (data.type == 'success') {
-              $("#update_original_price_modal").modal("hide");
-              get_data_table();
+          $.ajax({
+            url:'ajax_add_product.php',
+            data:formData,
+            type:'POST',
+            dataType:'json',
+            cache: false,
+            processData: false,
+            contentType: false,
+            success:function(data){
+              swal({
+                title: data.type,
+                text: data.message,
+                icon: data.type,
+                button: "Done",
+              });
+              if (data.type == 'success') {
+                $("#update_original_price_modal").modal("hide");
+                get_data_table();
+              }
             }
-          }
-        });
+          });
     }); // end of update original price
-      
-      
 
 
 
-      // this time we are adding new stock 
+
+
+      // this time we are adding new stock
       $(document).on('submit','#form_stock_data',function(event){
         event.preventDefault();
         var formDataStock = new FormData($("#form_stock_data")[0]);
@@ -902,7 +850,7 @@ if(!permission_check('add_product')){
         });
       });
 
-    //delete data by id 
+    //delete data by id
     $(document).on('click','.delete_data',function(){
       var serial_no_delete = $(this).attr("id");
       swal({
@@ -931,10 +879,10 @@ if(!permission_check('add_product')){
             }
           });
 
-        } 
+        }
       });
 
-  }); // end of delete 
+  }); // end of delete
 
     //getting and setting data for adding stock.
     $(document).on('click','.stock_data',function(){
@@ -955,34 +903,34 @@ if(!permission_check('add_product')){
     });
 
   // calculating total number of avaulable product after adding new stock
-  $(document).on('keyup blur','#new_quantity',function(){
+  $(document).on('keyup blur change','#new_quantity',function(){
     var new_quantity = $(this).val();
     var available_quantity = $("#available_quantity").val();
     if (isNaN(new_quantity) || new_quantity == "") {
       new_quantity = 0;
     }
     var total_quantity = parseInt(available_quantity) + parseInt(new_quantity);
-    $("#total_quantity").val(total_quantity);  
+    $("#total_quantity").val(total_quantity);
   });
-  
+
   $(document).on('click','.original_price',function(){
     var serial_no_edit  = $(this).attr('id');
     $("#original_price").val('');
     $.ajax({
-    url:"ajax_add_product.php",
-    data:{serial_no_edit:serial_no_edit},
-    type:"POST",
-    dataType:"json",
-    success:function(data){
-      $("#product_id_orig_price").val(data.serial_no);
-      $("#original_price").val(data.actual_purchase_price);
+      url:"ajax_add_product.php",
+      data:{serial_no_edit:serial_no_edit},
+      type:"POST",
+      dataType:"json",
+      success:function(data){
+        $("#product_id_orig_price").val(data.serial_no);
+        $("#original_price").val(data.actual_purchase_price);
 
-    }
-  });
-    
+      }
+    });
+
   });
 
-  }); // end of document ready function 
+  }); // end of document ready function
 
 // the following function is defined for showing data into the table
 function get_data_table(){

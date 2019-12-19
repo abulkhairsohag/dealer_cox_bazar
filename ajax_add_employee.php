@@ -164,6 +164,9 @@ if (isset($_POST['submit'])) {
 
 					if ($last_insert_id) {
 
+						$query = "INSERT INTO id_no_generator (id,id_type) VALUES ('$id_no','employee')";
+						$insert_id = $dbOb->insert($query);
+
 						if (!empty($file_name_file)) { // here data will be inserted if a document is selected
 							if (!in_array($file_extension_file, $permitted_file)) {
 								$message = "Please Upload Document With Extension : " . implode(', ', $permitted_file);

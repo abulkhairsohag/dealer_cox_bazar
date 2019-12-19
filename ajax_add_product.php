@@ -28,21 +28,42 @@ if (isset($_POST['serial_no_edit'])) {
 if (isset($_POST['submit'])) {
 
 	$company = strtolower($_POST["company"]);
-	$products_id_no = substr(uniqid('', true), -4).substr(number_format(time() * rand(),0,'',''),0,2);
-	$products_id_no = "PR-".$products_id_no;
+
+
+
+	$query = "SELECT * FROM id_no_generator WHERE id_type = 'product' ORDER BY serial_no DESC LIMIT 1";
+                          $get_prod = $dbOb->select($query);
+                          if ($get_prod) {
+                            $last_id = $get_prod->fetch_assoc()['id'];
+                            $last_id = explode('-',$last_id)[1];
+                            $last_id = $last_id*1+1;
+                            $id_length = strlen ($last_id); 
+                            $remaining_length = 6 - $id_length;
+                            $zeros = "";
+                            if ($remaining_length > 0) {
+                              for ($i=0; $i < $remaining_length ; $i++) { 
+                                $zeros = $zeros.'0';
+                              }
+                              $last_id = $zeros.$last_id ;
+                            }
+                            $products_id_no = "PR-".$last_id;
+                          }else{
+                            $products_id_no = "PR-000001";
+                          }
+
+
+
+
+
+
+
 	$products_name = $_POST["products_name"];
 	$category = $_POST["category"];
-	$weight = $_POST["weight"];
-	$color = $_POST["color"];
 	$company_price = $_POST["company_price"];
-	$dealer_price = $_POST["dealer_price"];
-	$marketing_sell_price = $_POST["marketing_sell_price"];
+	$sell_price = $_POST["sell_price"];
 	$mrp_price = $_POST["mrp_price"];
 	$pack_size = $_POST["pack_size"];
 	$quantity = $_POST["quantity"];
-	$promo_offer = $_POST["promo_offer"];
-	$offer_start_date = $_POST["offer_start_date"];
-	$offer_end_date = $_POST["offer_end_date"];
 
 	$product_photo = $_FILES['product_photo'];
 	if ($product_photo) {
@@ -62,6 +83,9 @@ if (isset($_POST['submit'])) {
 
 	$description =  $_POST["description"];
 	$stock_date = date("d-m-Y");
+	$ware_house_serial_no = $_POST["ware_house_serial_no"];
+	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
+	$ware_house_name = $dbOb->find($query)['ware_house_name'];
 
 	$edit_id = $_POST["edit_id"];
 
@@ -89,16 +113,10 @@ if (isset($_POST['submit'])) {
 					company = '$company',
 					products_name = '$products_name',
 					category = '$category',
-					weight = '$weight',
-					color = '$color',
 					
-					dealer_price = '$dealer_price',
-					marketing_sell_price = '$marketing_sell_price',
+					sell_price = '$sell_price',
 					mrp_price = '$mrp_price',
 					pack_size = '$pack_size',
-					promo_offer = '$promo_offer',
-					offer_start_date = '$offer_start_date',
-					offer_end_date = '$offer_end_date',
 					product_photo = '$uploaded_image',
 					description = '$description'
 
@@ -123,16 +141,11 @@ if (isset($_POST['submit'])) {
 			company = '$company',
 			products_name = '$products_name',
 			category = '$category',
-			weight = '$weight',
-			color = '$color',
 			
-			dealer_price = '$dealer_price',
-			marketing_sell_price = '$marketing_sell_price',
+			sell_price = '$sell_price',
 			mrp_price = '$mrp_price',
 			pack_size = '$pack_size',
-			promo_offer = '$promo_offer',
-			offer_start_date = '$offer_start_date',
-			offer_end_date = '$offer_end_date',
+			
 			description = '$description'
 
 			WHERE
@@ -162,13 +175,17 @@ if (isset($_POST['submit'])) {
 			}else{
 				if (move_uploaded_file($file_temp, $uploaded_image)) {
 					$query = "INSERT INTO products 
-					(company ,products_id_no ,products_name ,category ,weight ,color ,company_price ,dealer_price ,marketing_sell_price ,mrp_price,pack_size ,quantity ,promo_offer ,offer_start_date ,offer_end_date,product_photo,description,stock_date )
+					(company ,products_id_no ,products_name ,category ,company_price ,sell_price,mrp_price,pack_size ,quantity, product_photo,description,stock_date )
 					VALUES 
-					('$company' ,'$products_id_no' ,'$products_name' ,'$category' ,'$weight' ,'$color' ,'$company_price' ,'$dealer_price' ,'$marketing_sell_price' ,'$mrp_price'  ,'$pack_size' ,'$quantity' ,'$promo_offer' ,'$offer_start_date' ,'$offer_end_date','$uploaded_image','$description','$stock_date')";
+					('$company' ,'$products_id_no' ,'$products_name' ,'$category'  ,'$company_price' ,'$sell_price','$mrp_price'  ,'$pack_size' ,'$quantity','$uploaded_image','$description','$stock_date')";
 					$insert = $dbOb->insert($query);
 					if ($insert) {
-						$query = "INSERT INTO product_stock (products_id_no, quantity, stock_date,company_price)
-						VALUES ('$products_id_no', '$quantity', '$stock_date','$company_price')";
+
+						$query = "INSERT INTO id_no_generator (id,id_type) VALUES ('$products_id_no','product')";
+						$insert_id = $dbOb->insert($query);
+
+						$query = "INSERT INTO product_stock (products_id_no, quantity, stock_date,company_price,ware_house_serial_no,ware_house_name)
+						VALUES ('$products_id_no', '$quantity', '$stock_date','$company_price','$ware_house_serial_no','$ware_house_name')";
 						$insert_stock = $dbOb->insert($query);
 
 						$message = "Congratulations! Information Is Successfully Saved.";
@@ -183,13 +200,16 @@ if (isset($_POST['submit'])) {
 			}
 		}else{ //end of    if (!empty($file_name))   ie no image is choosen 
 			$query = "INSERT INTO products 
-			(company ,products_id_no ,products_name ,category ,weight ,color ,company_price ,dealer_price ,marketing_sell_price ,mrp_price,pack_size ,quantity ,promo_offer ,offer_start_date ,offer_end_date,description,stock_date )
-			VALUES 
-			('$company' ,'$products_id_no' ,'$products_name' ,'$category' ,'$weight' ,'$color' ,'$company_price' ,'$dealer_price' ,'$marketing_sell_price' ,'$mrp_price','$pack_size' ,'$quantity' ,'$promo_offer' ,'$offer_start_date' ,'$offer_end_date','$description','$stock_date')";
+				(company ,products_id_no ,products_name ,category ,company_price ,sell_price,mrp_price,pack_size ,quantity,description,stock_date )
+					VALUES 
+				('$company' ,'$products_id_no' ,'$products_name' ,'$category'  ,'$company_price' ,'$sell_price','$mrp_price'  ,'$pack_size' ,'$quantity','$description','$stock_date')";
 			$insert = $dbOb->insert($query);
 			if ($insert) {
-				$query = "INSERT INTO product_stock (products_id_no, quantity, stock_date,company_price)
-				VALUES ('$products_id_no', '$quantity', '$stock_date','$company_price')";
+				$query = "INSERT INTO id_no_generator (id,id_type) VALUES ('$products_id_no','product')";
+				$insert_id = $dbOb->insert($query);
+
+				$query = "INSERT INTO product_stock (products_id_no, quantity, stock_date,company_price,ware_house_serial_no,ware_house_name)
+				VALUES ('$products_id_no', '$quantity', '$stock_date','$company_price','$ware_house_serial_no','$ware_house_name')";
 				$insert_stock = $dbOb->insert($query);
 
 				$message = "Congratulations! Information Is Successfully Saved.";
@@ -319,14 +339,15 @@ if (isset($_POST["sohag"])) {
 			?>
 			<tr>
 				<td><?php echo $i; ?></td>
-				<td><?php echo strtoupper($row['company']); ?></td>
-				<td><?php echo $row['products_id_no']; ?></td>
-				<td><?php echo $row['products_name']; ?></td>
-				<td><?php echo $row['category']; ?></td>
-				<td><?php echo $row['company_price']; ?></td>
-				<td><?php echo $row['mrp_price']; ?></td>
-				<td><?php echo $row['pack_size']; ?></td>
-				<td><?php echo $row['quantity']; ?></td>
+                  <td><?php echo strtoupper($row['company']); ?></td>
+                  <td><?php echo $row['products_id_no']; ?></td>
+                  <td><?php echo $row['products_name']; ?></td>
+                  <td><?php echo $row['category']; ?></td>
+                  <td><?php echo $row['company_price']; ?></td>
+                  <td><?php echo $row['sell_price']; ?></td>
+                  <td><?php echo $row['mrp_price']; ?></td>
+                  <td><?php echo $row['pack_size']; ?></td>
+                  <td><?php echo $row['quantity']; ?></td>
 				<!-- <td><img src='https://barcode.tec-it.com/barcode.ashx?data=<?php //echo($row['products_id_no']) ?>' alt='Barcode Generator TEC-IT'/ width="100px" height=70px></td> -->
 				<td align="center">
 

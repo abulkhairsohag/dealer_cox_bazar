@@ -1,4 +1,10 @@
-<?php include_once 'include/header.php';?>
+<?php 
+
+include_once 'include/header.php';
+include_once "class/Session.php";
+Session::init();
+Session::checkSession();
+?>
 
 <?php
 if (!permission_check('new_order')) {
@@ -54,97 +60,37 @@ if (!permission_check('new_order')) {
             </div>
           </div>
 
-          <div class="col-md-12" style="margin-bottom: 30px;width: 100%" align="center" >
+          
+<!-- delivery man info -->
+      <div class="col-md-12" style="margin-bottom: 30px;width: 100%" align="center" >
            <table style="width: 100%">
 
 
             <thead>
               <tr>
-                <th style="text-align: center;padding-bottom: 10px; color: red">Employee ID</th>
-                <th style="text-align: center;padding-bottom: 10px; color: red">Employee Name</th>
-                <th style="text-align: center;padding-bottom: 10px; color: red">Area</th>
-                <!-- <th style="text-align: center;padding-bottom: 10px; color: red">Company</th> -->
-                <th style="text-align: center;padding-bottom: 10px; color: red">Date</th>
+                <th style="text-align: center;padding-bottom: 10px; color: red">Sales Man's ID</th>
+                <th style="text-align: center;padding-bottom: 10px; color: red">Name</th>
+                <th style="text-align: center;padding-bottom: 10px; color: red">Delivery Man's ID</th>
+                <th style="text-align: center;padding-bottom: 10px; color: red">Name</th>
               </tr>
             </thead>
 
             <tbody>
-              <?php
-              include_once "class/Database.php";
-              $dbOb = new Database();
-              $employee_name = Session::get("name");
-              $user_name = Session::get("username");
-              $password = Session::get("password");
-
-              $query = "SELECT * FROM employee_main_info where name = '$employee_name' and user_name = '$user_name' and password = '$password' ";
-              $get_employee_iformation = '';
-              $get_employee = $dbOb->select($query);
-              if ($get_employee) {
-               $get_employee_iformation = $get_employee->fetch_assoc();
-               $get_employee_id = $get_employee_iformation['id_no'];
-
-               $query = "SELECT * from employee_duty where id_no = '$get_employee_id' AND active_status = 'Active'";
-               $get_duty_employee = $dbOb->find($query);
-               $duty_employee_area = $get_duty_employee['area'];
-
-  // $company = $get_duty_employee['company'];
-
-               ?>
-               <tr>
-                <td>
-                  <input type="text" class="form-control employee_id" id="employee_id" name="employee_id" readonly="" value="<?php echo ($get_duty_employee['id_no']) ?>" >
-                </td>
-                <td>
-                  <input type="text" class="form-control employee_name" id="employee_name" name="employee_name" readonly="" value="<?php echo $employee_name ?>" >
-                </td>
-                <td>
-                  <select name="area_employee" id="area_employee"  required="" class="form-control area_employee " >
-                    <option value="">Please Select</option>
-                    <?php
-
-                    $query = "SELECT * FROM area ORDER BY area_name";
-                    $get_area = $dbOb->select($query);
-                    if ($get_area) {
-                      while ($row = $get_area->fetch_assoc()) {
-                       ?>
-                       <option value="<?php echo $row['area_name']; ?>"><?php echo $row['area_name']; ?></option>
-                       <?php
-                     }
-                   }
-
-                   ?>
-
-                 </select>
-               </td>
-               <!--  <td>
-                  <input type="text" class="form-control" id="employee_company" name="employee_company" readonly="" value="<?php //echo $company ?>" >
-                </td> -->
-                <td>
-                  <input type="text" class="form-control datepicker" id="date" name="date" readonly="" value="" required="">
-                </td>
-              </tr>
-            <?php } else {
-  // this else section is for admin. if admin wants to take a order then he will work in this section
-             ?>
+          
              <tr>
               <td>
-
-               <input type="text" name="employee_id" id="employee_id" class="form-control employee_id" readonly="" required>
-             </td>
-             <td>
-              <input type="text" class="form-control employee_name" id="employee_name" name="employee_name" readonly="" value="" >
-            </td>
-            <td>
-              <select name="area_employee" id="area_employee"  required="" class="form-control area_employee ">
+                <select name="order_employee_id" id="order_employee_id"  required="" class="form-control order_employee_id ">
                 <option value="">Please Select</option>
                 <?php
 
-                $query = "SELECT * FROM area ORDER BY area_name";
-                $get_area = $dbOb->select($query);
-                if ($get_area) {
-                  while ($row = $get_area->fetch_assoc()) {
+                $query = "SELECT * FROM employee_duty WHERE active_status = 'Active' ORDER BY id_no";
+                $get_sales_man = $dbOb->select($query);
+                if ($get_sales_man) {
+                  while ($row = $get_sales_man->fetch_assoc()) {
                    ?>
-                   <option value="<?php echo $row['area_name']; ?>"><?php echo $row['area_name']; ?></option>
+                   <option value="<?php echo $row['id_no']; ?>" <?php if (Session::get("order_emp_id") == $row['id_no']) {
+                    echo "selected";
+                   } ?>><?php echo $row['id_no'].', '.$row['name']; ?></option>
                    <?php
                  }
                }
@@ -152,18 +98,40 @@ if (!permission_check('new_order')) {
                ?>
 
              </select>
+             </td>
+             <td>
+                <input type="text" class="form-control order_employee_name" id="order_employee_name" name="order_employee_name" readonly="" value="<?php if (Session::get("order_employee_name")) {
+                    echo Session::get("order_employee_name");
+                   } ?>" >
+              </td>
+            <td>
+                <select name="delivery_employee_id" id="delivery_employee_id"  required="" class="form-control delivery_employee_id ">
+                <option value="">Please Select</option>
+                <?php
+                $query = "SELECT * FROM delivery_employee WHERE active_status = 'Active' ORDER BY id_no";
+                $get_delivery_man = $dbOb->select($query);
+                if ($get_delivery_man) {
+                  while ($row = $get_delivery_man->fetch_assoc()) {
+                   ?>
+                   <option value="<?php echo $row['id_no']; ?>" <?php if (Session::get("delivery_emp_id") == $row['id_no']) {
+                    echo "selected";
+                   } ?>><?php echo $row['id_no'].', '.$row['name']; ?></option>
+                   <?php
+                 }
+               }
+               ?>
+
+             </select>
+           </td> 
+           <td>
+             <input type="text" class="form-control delivery_employee_name" id="delivery_employee_name" name="delivery_employee_name" readonly="" value="<?php if (Session::get("delivery_employee_name")) {
+                    echo Session::get("delivery_employee_name");
+                   } ?>" >
            </td>
-               <!--  <td>
-                  <input type="text" class="form-control" id="employee_company" name="employee_company" readonly="" value="<?php //echo $company ?>" >
-                </td> -->
-                <td>
-                  <input type="text" class="form-control datepicker" id="date" name="date" readonly="" value="" required="">
-                </td>
-              </tr>
 
-              <?php
+          </tr>
 
-            }?>
+            
           </tbody>
         </table>
       </div>
@@ -204,28 +172,76 @@ if (!permission_check('new_order')) {
         </div>
       </div>
 
+          <div class="form-group" >
+      <label class="col-md-3 control-label" for="inputDefault">Zone <span class="required" style="color: red">*</span></label>
+      <div class="col-md-6">
+         <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+                <option value="">Please Select One</option>
+                <?php
+// die(Session::get("zone_serial_no"));
+                $query = "SELECT * FROM zone ORDER BY zone_name";
+                $get_zone = $dbOb->select($query);
+                if ($get_zone) {
+                  while ($row = $get_zone->fetch_assoc()) {
+                  
+               ?>
+               <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("zone_serial_no") == $row["serial_no"]) {
+                    echo "selected";
+                   } ?>
+                   ><?php echo $row['zone_name']; ?></option>
+                   <?php
+                 }
+               }
+
+               ?>
+
+             </select>
+             <input type="hidden" name="zone_name" id="zone_name" class="zone_name" value="<?php if (Session::get("zone_name")) {
+                    echo Session::get("zone_name");
+                   } ?>">
+      </div>
+    </div>
+
+     <div class="form-group" >
+      <label class="col-md-3 control-label" for="inputDefault">Area <span class="required" style="color: red">*</span></label>
+      <div class="col-md-6">
+         <select name="area_employee" id="area_employee"  required="" class="form-control area_employee ">
+                
+               <?php 
+
+               if (Session::get("area_options")) {
+                 echo Session::get("area_options");
+               }else{
+                ?>
+                <option value="">Please Select Zone First</option>
+                <?php
+               }
+                ?>
+
+             </select>
+      </div>
+    </div>
+
       <div class="form-group row">
         <label class="col-md-3 col-6 control-label" for="inputDefault">Select Customer<span class="required" style="color: red">*</span></label>
         <div class="col-md-6 col-6">
           <select class="form-control" id="cust_id" name="cust_id" required="">
-            <option value="">Select Area First</option>
+            
 
             <?php
-            $query = "SELECT * FROM client WHERE area_name = '$duty_employee_area'";
-            $get_client = $dbOb->select($query);
-            if ($get_client) {
-             while ($row = $get_client->fetch_assoc()) {
-              ?>
-              <option value="<?php echo $row['cust_id'] ?>"><?php echo $row['client_name'] ?></option>
-              <?php
-            }
-          }
+            if (Session::get("customer_options")) {
+                 echo Session::get("customer_options");
+               }else{
+                ?>
+                <option value="">Select Area First</option>
+                <?php
+               }
           ?>
         </select>
       </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row" style="display: none">
       <label class="col-md-3 col-6 control-label" for="inputDefault">Customer Name <span class="required" style="color: red">*</span></label>
       <div class="col-md-6 col-6">
         <input type="text" class="form-control" id="customer_name" name="customer_name" readonly>
@@ -239,17 +255,26 @@ if (!permission_check('new_order')) {
       </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row" style="display: none">
       <label class="col-md-3 col-6 control-label" for="inputDefault">Address <span class="required" style="color: red">*</span></label>
       <div class="col-md-6 col-6">
         <input type="text" class="form-control" id="address" name="address" readonly>
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" style="display: none">
       <label class="col-md-3 control-label" for="inputDefault">Mobile Number <span class="required" style="color: red">*</span></label>
       <div class="col-md-6">
         <input type="text" class="form-control" id="mobile_no" name="mobile_no" readonly>
+      </div>
+    </div>
+
+
+
+     <div class="form-group">
+      <label class="col-md-3 control-label" for="inputDefault">Date<span class="required" style="color: red">*</span></label>
+      <div class="col-md-6">
+        <input type="text" class="form-control datepicker" id="date" name="date" readonly="" value="" required="">  
       </div>
     </div>
 
@@ -270,11 +295,9 @@ if (!permission_check('new_order')) {
         <tr>
           <th style="text-align: center;">Product ID</th>
           <th style="text-align: center;">Name</th>
-          <th style="text-align: center;">Unit TP</th>
-          <th style="text-align: center;">Unit VAT</th>
-          <!-- <th style="text-align: center;">TP + VAT</th> -->
+          <th style="text-align: center;">Price</th>
           <th style="text-align: center;">QTY</th>
-          <th style="text-align: center;">Total TP</th>
+          <th style="text-align: center;">Offer QTY</th>
           <th style="text-align: center;">Total Price</th>
           <th><button type="button" class="btn btn-success" id="add_more"><i class="fas fa-plus"></i></button></th>
         </tr>
@@ -283,7 +306,7 @@ if (!permission_check('new_order')) {
 
         <tr>
           <td>
-            <select name="products_id_no[]" class="form-control main_product_id" id="products_id_no" name="products_id_no[]"  required>
+            <select name="products_id_no[]" class="form-control main_product_id product_id" id="products_id_no" name="products_id_no[]"  required>
               <option value=""></option>
               <?php
               include_once 'class/Database.php';
@@ -302,13 +325,11 @@ if (!permission_check('new_order')) {
           </select>
         </td>
         <td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly=""></td>
-        <td style="display:none"><input type="text" class="form-control main_pack_size pack_size" name="pack_size[]" readonly="" ></td>
-        <td><input type="text"  class="form-control main_unit_tp unit_tp" id="unit_tp" name="unit_tp[]" readonly="" ></td>
-        <td><input type="text"   class="form-control main_unit_vat unit_vat" id="unit_vat" name="unit_vat[]" readonly=""></td>
-        <td style="display:none"><input type="text"   class="form-control main_tp_plus_vat tp_plus_vat" id="tp_plus_vat" name="tp_plus_vat[]" readonly=""></td>
-        <td><input type="text"  class="form-control main_qty" id="qty" name="qty[]" value="0"></td>
-        <td><input type="text" class="form-control main_total_tp total_tp" id="total_tp" name="total_tp[]" readonly=""></td>
-        <td style="display:none"><input type="text" class="form-control main_total_vat total_vat" id="total_vat" name="total_vat[]" readonly=""></td>
+       
+        <td><input type="text"  class="form-control main_sell_price sell_price" id="sell_price" name="sell_price[]" readonly="" ></td>
+        <td><input type="text"  class="form-control main_qty" id="qty" name="qty[]" value="" readonly=""></td>
+        <td><input type="text"   class="form-control main_offer_qty offer_qty" id="offer_qty" name="offer_qty[]" readonly=""></td>
+        
         <td><input type="text" class="form-control main_total_price total_price" id="total_price" name="total_price[]" readonly=""></td>
         <td><button type="button" class="btn btn-danger remove_button"><i class="fas fa-times"></i></button></td>
 
@@ -330,52 +351,13 @@ if (!permission_check('new_order')) {
     <label class="col-md-3 control-label" for="inputDefault"  style="text-align: left; color: #34495E"></label></h3>
   </div>
 
-  <div class="form-group">
-    <label class="col-md-3 control-label" for="inputDefault">Net Total Price (৳)</label>
-    <div class="col-md-6">
-      <input type="text" class="form-control" id="net_total" name="net_total" value="0" readonly="">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="col-md-3 control-label" for="inputDefault">Net Total TP (৳)</label>
-    <div class="col-md-6">
-      <input type="text" class="form-control" id="net_total_tp" name="net_total_tp" value="0" readonly="">
-    </div>
-  </div>
 
-  <div class="form-group">
-    <label class="col-md-3 control-label" for="inputDefault">Total Vat Amount (৳)</label>
-    <div class="col-md-6">
-      <input type="text"  class="form-control" id="net_total_vat" name="net_total_vat" value="0" readonly="">
-    </div>
-  </div>
 
-  <div class="form-group">
-    <label class="col-md-3 control-label" for="inputDefault">Discount On TP (%)</label>
-    <div class="col-md-6">
-      <input type="text"   class="form-control" id="discount" name="discount" value="<?php echo $invoice_setting['discount_on_tp'] ?>" readonly="" placeholder="0">
-    </div>
-  </div>
 
-  <div class="form-group">
-    <label class="col-md-3 control-label" for="inputDefault">Discount Amount (৳)</label>
-    <div class="col-md-6">
-      <input type="text"  class="form-control" id="discount_amount" name="discount_amount" value="0" readonly="">
-    </div>
-  </div>
 
-  <div class="form-group">
-    <label class="col-md-3 control-label" for="inputDefault">Payable Amount(৳)</label>
-    <div class="col-md-6">
-      <input type="text" class="form-control" id="payable_amt" name="payable_amt" readonly="" value="0">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="col-md-3 control-label" for="extra_discount">Extra Discount(%)</label>
-    <div class="col-md-6">
-      <input type="text" class="form-control" id="extra_discount" name="extra_discount" readonly="" value="<?php echo $invoice_setting['special_discount'] ?>">
-    </div>
-  </div>
+
+
+  
   <div class="form-group">
     <label class="col-md-3 control-label" for="net_payable_amt">Net Payable Amount(৳)</label>
     <div class="col-md-6">
@@ -383,18 +365,7 @@ if (!permission_check('new_order')) {
     </div>
   </div>
 
-  <div class="form-group" style="display:none">
-    <label class="col-md-3 control-label" for="vat">vat(%)</label>
-    <div class="col-md-6">
-      <input type="text" class="form-control" id="vat" name="vat" readonly="" value="<?php echo $invoice_setting['vat'] ?>">
-    </div>
-  </div>
-  <div class="form-group" style="display:none">
-    <label class="col-md-3 control-label" for="discount_on_mrp">discount on MRP (%)</label>
-    <div class="col-md-6">
-      <input type="text" class="form-control" id="discount_on_mrp" name="discount_on_mrp" readonly="" value="<?php echo $invoice_setting['discount_on_mrp'] ?>">
-    </div>
-  </div>
+ 
 
   <div class="form-group" align="center">
     <input type="submit" name="submit" value="Save" class="btn btn-success" style="">
@@ -422,7 +393,7 @@ if (!permission_check('new_order')) {
   $(document).ready(function(){
 
     $("#add_more").click(function(){
-      $('#invoice_details').append('<tr><td><select  required name="products_id_no[]" class="form-control main_product_id secondary_product_id" id="products_id_no" name="products_id_no[]"><option value=""></option><?php
+      $('#invoice_details').append('<tr><td><select  required name="products_id_no[]" class="form-control  product_id secondary_product_id" id="products_id_no" name="products_id_no[]"><option value=""></option><?php
         include_once 'class/Database.php';
         $dbOb = new Database();
         $employee_name = Session::get("name");
@@ -446,7 +417,7 @@ if (!permission_check('new_order')) {
           <option value="<?php echo ($row['products_id_no']) ?>"> <?php echo ($row['products_id_no'] . ', ' . $row['products_name']) ?> </option><?php
         }
       }
-      ?></select></td><td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly=""></td><td  style="display:none"><input type="text" class="form-control main_pack_size pack_size" name="pack_size[]" readonly="" ></td><td><input type="text"  class="form-control main_unit_tp unit_tp" id="unit_tp" name="unit_tp[]" readonly="" ></td><td><input type="text"   class="form-control main_unit_vat unit_vat" id="unit_vat" name="unit_vat[]" readonly=""></td><td style="display:none"><input type="text"   class="form-control main_tp_plus_vat tp_plus_vat" id="tp_plus_vat" name="tp_plus_vat[]" readonly="" ></td><td><input type="text"  class="form-control main_qty" id="qty" name="qty[]" value="0"></td><td "><input type="text" class="form-control main_total_tp total_tp" id="total_tp" name="total_tp[]" readonly=""></td><td  style="display:none"><input type="text" class="form-control main_total_vat total_vat" id="total_vat" name="total_vat[]" readonly=""></td><td><input type="text" class="form-control main_total_price  total_price" id="total_price" name="total_price[]" readonly=""></td><td><button type="button" class="btn btn-danger remove_button"><i class="fas fa-times"></i></button></td></tr>');
+      ?></select></td><td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly=""></td><td><input type="text"  class="form-control main_sell_price sell_price" id="sell_price" name="sell_price[]" readonly="" ></td><td><input type="text"  class="form-control main_qty" id="qty" name="qty[]" value="" readonly=""></td><td><input type="text"   class="form-control main_offer_qty offer_qty" id="offer_qty" name="offer_qty[]" readonly=""></td><td><input type="text" class="form-control main_total_price total_price" id="total_price" name="total_price[]" readonly=""></td><td><button type="button" class="btn btn-danger remove_button"><i class="fas fa-times"></i></button></td></tr>');
     });
 
     $(document).on('click','.remove_button', function(e) {
@@ -455,9 +426,17 @@ if (!permission_check('new_order')) {
       cal();
     });
 
-    $(document).on('change','.main_product_id', function() {
+
+
+
+  $(document).on('change','.main_product_id', function() {
+
       var tr=$(this).parent().parent();
       var products_id_no_get_info =tr.find("#products_id_no").val();
+   
+
+   
+
       var qty = tr.find("#qty").val();
       if (isNaN(qty) || qty == '') {
         qty = 0;
@@ -484,6 +463,8 @@ if (!permission_check('new_order')) {
           var unit_vat = (unit_tp*vat/100);
           tr.find(".unit_vat").val(unit_vat);
 
+          
+
           var tp_plus_vat = (unit_vat + unit_tp);
           tr.find(".tp_plus_vat").val(tp_plus_vat);
           // console.log(qty);
@@ -494,10 +475,118 @@ if (!permission_check('new_order')) {
           tr.find(".total_tp").val(total_tp);
           tr.find(".total_vat").val(total_vat);
           tr.find(".total_price").val(total_price );
+
+          tr.find(".qty").attr("readonly", false);
+          tr.find(".qty").attr("placeholder", data.products.quantity);
+          tr.find(".qty").attr("data-available", data.products.quantity);
+          tr.find(".qty").focus();
+
+          if (data.products.quantity <= $("#product_warning_qty").val()) {
+                swal({
+                    title: 'warning',
+                    text: 'REMEMBER: Available Product Quantity Is '+data.products.quantity,
+                    icon: 'warning',
+                    button: "Done",
+                  });
+          }
           cal();
         }
       });
+      // cal();
+    });
 
+
+    
+    $(document).on('change','.secondary_product_id', function() {
+
+      var tr=$(this).parent().parent();
+      var products_id_no_get_info =tr.find("#products_id_no").val();
+      var confirm_availability = false;
+      var product_all_id = []
+      var i = 0;
+    $(".product_id").each(function(){
+      // console.log($(this).val());
+        
+        product_all_id[i] = $(this).val();
+        i++;
+      });
+
+    product_all_id.pop();
+    var j;
+      for (j = 0; j < product_all_id.length; ++j) {
+          if (products_id_no_get_info == product_all_id[j] && product_all_id[j] != '') {
+                confirm_availability = 'sohag';
+              }
+      }
+
+    if (confirm_availability == 'sohag') {
+        swal({
+                    title: 'warning',
+                    text: 'This Product Has Already Been Selected. You Can Change The Quantity',
+                    icon: 'warning',
+                    button: "Done",
+                  });
+        tr.find("#products_id_no").val('');
+
+    }else{
+
+    
+      var qty = tr.find("#qty").val();
+      if (isNaN(qty) || qty == '') {
+        qty = 0;
+      }
+
+      var discount_on_mrp = $("#discount_on_mrp").val();
+      var vat = $("#vat").val();
+
+      // console.log(tr);
+      // tr.find(".main_category").val(products_id_no);
+      // console.log(qty);
+      $.ajax({
+        url:"ajax_new_order.php",
+        data:{products_id_no_get_info:products_id_no_get_info},
+        type:"post",
+        dataType:'json',
+        success:function(data){
+          tr.find(".products_name").val(data.products.products_name);
+          tr.find(".pack_size").val(data.products.pack_size);
+          var mrp_price = data.products.mrp_price;
+          var unit_tp = mrp_price - mrp_price*(discount_on_mrp/100);
+          tr.find(".unit_tp").val(unit_tp);
+
+          var unit_vat = (unit_tp*vat/100);
+          tr.find(".unit_vat").val(unit_vat);
+
+          
+
+          var tp_plus_vat = (unit_vat + unit_tp);
+          tr.find(".tp_plus_vat").val(tp_plus_vat);
+          // console.log(qty);
+          var total_tp = (tr.find(".unit_tp").val() * qty) ;
+          var total_vat = (tr.find(".unit_vat").val() * qty) ;
+          var total_price = (tr.find(".tp_plus_vat").val() * qty) ;
+
+          tr.find(".total_tp").val(total_tp);
+          tr.find(".total_vat").val(total_vat);
+          tr.find(".total_price").val(total_price );
+
+          tr.find(".qty").attr("readonly", false);
+          tr.find(".qty").attr("placeholder", data.products.quantity);
+          tr.find(".qty").attr("data-available", data.products.quantity);
+          tr.find(".qty").focus();
+
+          if (data.products.quantity <= $("#product_warning_qty").val()) {
+                swal({
+                    title: 'warning',
+                    text: 'REMEMBER: Available Product Quantity Is '+data.products.quantity,
+                    icon: 'warning',
+                    button: "Done",
+                  });
+          }
+          cal();
+        }
+      });
+    }
       // cal();
     });
 
@@ -542,11 +631,23 @@ if (!permission_check('new_order')) {
 
 
 // invoice calculation
-$("#invoice_details").delegate('#qty','keyup blur',function(){
+$("#invoice_details").delegate('#qty','keyup blur change',function(){
   var tr=$(this).parent().parent();
 
   var quantity =tr.find("#qty").val();
+  var available =tr.find("#qty").data('available');
+  // alert(available);
 
+  if (quantity > available) {
+     swal({
+          title: 'warning',
+          text: 'Sell Quantity Is Out Of Stock',
+          icon: 'warning',
+          button: "Done",
+        });
+     tr.find("#qty").val('');
+     return 0;
+  }
 
   if (isNaN(quantity) || quantity == '') {
     quantity = 0;
@@ -560,6 +661,16 @@ $("#invoice_details").delegate('#qty','keyup blur',function(){
   tr.find(".total_tp").val(total_tp);
   tr.find(".total_vat").val(total_vat);
   tr.find(".total_price").val(total_price);
+  var total_price = tr.find(".total_price").val();
+  // if (total_price == 0) {
+  //   swal({
+  //         title: 'warning',
+  //         text: 'Quantity Is Less Than 1 Or Calculation Problem. Please Check The Calculation And Quantity',
+  //         icon: 'warning',
+  //         button: "Done",
+  //       });
+  // }
+
   cal();
 });
 
@@ -724,6 +835,7 @@ $(document).on('change','.area_employee',function(){
     }
   });
 });
+
 $(document).on('change','#employee_id',function(){
  var emp_id = $(this).val();
  $.ajax({
@@ -745,6 +857,7 @@ function roundToTwo (num){
   return +(Math.round(num + "e+2")+"e-2");
 }
 // $("#area_employee").select2({ width: '100%' }); 
+$("#area").select2({ width: '100%' }); 
 </script>
 
 </body>

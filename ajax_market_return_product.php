@@ -15,29 +15,15 @@ include_once("class/Database.php");
 $dbOb = new Database();
 
 
-// gettting product information 
+// getting product information 
 if (isset($_POST['get_products_id_no'])) {
 	$products_id_no = $_POST['get_products_id_no'];
 	$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
 	$get_products = $dbOb->find($query);
-	
-	$query = "SELECT * FROM invoice_setting";
-	$get_invoice = $dbOb->select($query);
-	if ($get_invoice) {
-	$invoice_setting = $get_invoice->fetch_assoc();
-	}
 
-	$mrp = $get_products['mrp_price'];
-	$unit_tp = $mrp - ($mrp* $invoice_setting['discount_on_mrp'])/100;
-	$unit_vat = $unit_tp*$invoice_setting['vat']/100;
-	$total_tp = $unit_tp;
-	$total_vat = $unit_vat;
-	$total_price = (float)$total_tp + (float)$total_vat; 
-	$discount_on_total_tp = $total_tp * $invoice_setting['discount_on_tp'] / 100 ;
-	$sell_price = $total_price - $discount_on_total_tp;
-	$sell_price = $sell_price -($sell_price*$invoice_setting['special_discount']/100);
 
-	echo json_encode(['product_info'=>$get_products,'sell_price'=>$sell_price]);
+
+	echo json_encode($get_products);
 
 
 
@@ -53,32 +39,81 @@ if (isset($_POST['serial_no_edit'])) {
 	$get_return_products_info = $dbOb->find($query);
 	$products_id_no = $get_return_products_info['products_id_no'];
 
+	$zone_serial_no = $get_return_products_info['zone_serial_no'];
+	$query = "SELECT * FROM area_zone WHERE zone_serial_no = '$zone_serial_no'";
+	$area_name = $get_return_products_info['area_employee_delivery'];
+	$get_area_zone = $dbOb->select($query);
+	if ($get_area_zone) {
+		$area_options = '<option value="">Please Select One</option>';
+
+		while ($row = $get_area_zone->fetch_assoc()) {
+			$area_options .= '<option value="'.$row["area_name"].'"'. ($area_name == $row["area_name"] ?  "selected" : "") .'>'.$row['area_name'].'</option>';
+		}
+	}else{
+		$area_options = '<option value="">Area Not Assigned In This Zone</option>';
+	}
+
+
+
+
+	$query = "SELECT * FROM client WHERE area_name = '$area_name'";
+	$get_client = $dbOb->select($query);
+	if ($get_client) {
+		$client_options = '<option value="">Please Select One</option>';
+
+		while ($row = $get_client->fetch_assoc()) {
+			$client_options .= '<option value="'.$row["cust_id"].'"'. ($get_return_products_info['cust_id'] == $row["cust_id"] ?  "selected" : "") .'>'.$row['cust_id'].', '.$row['client_name'].'</option>';
+		}
+	}else{
+		$client_options = '<option value="">Client Not Found In This Area</option>';
+	}
+
 	$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
 	$current_quantity = $dbOb->find($query)['quantity'];
-	echo json_encode(['info'=>$get_return_products_info,'current_quantity'=>$current_quantity]);
+
+	echo json_encode(['info'=>$get_return_products_info,'current_quantity'=>$current_quantity,'area_options'=>$area_options,'client_options'=>$client_options]);
 
 }
 
 
-// now performing action after submittion of the form 
+// now performing action after submission of the form 
 if (isset($_POST['submit'])) {
 	$employee_id_delivery = $_POST['employee_id_delivery'];
 	$employee_name_delivery = $_POST['employee_name_delivery'];
-	$area_employee_delivery = $_POST['area_employee_delivery'];
-	$employee_company_delivery = $_POST['employee_company_delivery'];
+	$zone_serial_no = $_POST['zone_serial_no'];
+	$query ="SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+	$zone = $dbOb->select($query);
+	$zone_name = "";
+	if ($zone) {
+		$zone_name = $zone->fetch_assoc()['zone_name'];
+	}
+
+	$area_employee = $_POST['area_employee'];
+	$ware_house_serial_no = $_POST['ware_house_serial_no'];
+	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
+	$get_ware_house = $dbOb->select($query);
+	$ware_house_name ="";
+	if ($get_ware_house) {
+		$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
+	}
+	$cust_id =  $_POST['cust_id'];
+	$shop_name = $_POST['shop_name'];
+	$shop_phn = $_POST['shop_phn'];
 	$products_id_no = $_POST['products_id_no'];
 	$products_name = $_POST['products_name'];
 	$company = $_POST['company'];
 	$marketing_sell_price = $_POST['marketing_sell_price'];
-	$current_quantity = $_POST['current_quantity'];
 	$return_quantity = $_POST['return_quantity'];
 	$total_price = $_POST['total_price'];
 	$return_reason = $_POST['return_reason'];
 	$description = $_POST['description'];
-	$shop_name = $_POST['shop_name'];
-	$shop_phn = $_POST['shop_phn'];
+	$return_date = $_POST['return_date'];
+
+	$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
+	$current_quantity = $dbOb->find($query)['quantity'];
+
 	$edit_id = $_POST['edit_id'];
-	$return_date = date("d-m-Y");
+	// $return_date = date("d-m-Y");
 
 	if ($edit_id) {
 		$query = "SELECT * FROM market_products_return WHERE serial_no = '$edit_id'";
@@ -123,12 +158,12 @@ if (isset($_POST['submit'])) {
 		}
 	}else{ // now inserting data into database 
 		$query = "INSERT INTO `market_products_return` 
-				  (employee_id_delivery,employee_name_delivery,	area_employee_delivery,shop_name,shop_phn,products_id_no,products_name,company,marketing_sell_price,return_quantity,total_price,return_reason, description,return_date) 
+				  (employee_id_delivery,employee_name_delivery,	area_employee_delivery,cust_id,shop_name,shop_phn,products_id_no,products_name,company,marketing_sell_price,return_quantity,total_price,return_reason, description,return_date,ware_house_serial_no,ware_house_name,zone_serial_no,zone_name) 
 				 VALUES 
-				 ('$employee_id_delivery','$employee_name_delivery','$area_employee_delivery','$shop_name','$shop_phn','$products_id_no','$products_name','$company','$marketing_sell_price','$return_quantity','$total_price','$return_reason','$description','$return_date')";
+				 ('$employee_id_delivery','$employee_name_delivery','$area_employee','$cust_id','$shop_name','$shop_phn','$products_id_no','$products_name','$company','$marketing_sell_price','$return_quantity','$total_price','$return_reason','$description','$return_date','$ware_house_serial_no','$ware_house_name','$zone_serial_no','$zone_name')";
 		$insert = $dbOb->insert($query);
 		if ($insert) {
-				$update_qty = (int)$current_quantity + (int)$return_quantity;
+				$update_qty = (int)$current_quantity*1 + (int)$return_quantity*1;
 
 				$query = "UPDATE products SET quantity = '$update_qty' WHERE products_id_no = '$products_id_no'";
 				$update_products = $dbOb->update($query);
@@ -203,7 +238,7 @@ if (isset($_POST['view_id'])) {
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
              
-$query = "SELECT * FROM market_products_return ORDER BY serial_no DESC";
+	$query = "SELECT * FROM market_products_return ORDER BY serial_no DESC";
                 $get_return_products = $dbOb->select($query);
                 if ($get_return_products) {
                   $i=0;

@@ -79,7 +79,7 @@ if (isset($_POST['submit'])) {
 	// echo json_encode(['message'=>$message,'type'=>$type]);
 	// die();
 
-//echo $office_organization_name;
+	
 
 	$query = "INSERT INTO  new_order_details
 
@@ -220,6 +220,14 @@ if (isset($_POST['zone_serial_no'])) {
 
 	die(json_encode(['zone_name'=>$zone_name,'area_options'=>$area_options]));
 }
+
+
+if (isset($_POST['ware_house_serial_no'])) {
+	Session::set("ware_house_serial_no",$_POST['ware_house_serial_no']);
+	die();
+}
+
+
 
 
 if (isset($_POST['send_area_and_customer'])) {

@@ -182,11 +182,7 @@ if ($user_type == "employee") {
             ?>
                 <li><a href="truck_load.php"><i class="fas fa-arrow-right"></i> Truck Load For Delivery</a></li>
                 <?php 
-         }
-         if (permission_check('printed_summery_list')) {
-         ?>
-       <li><a href="order_summery_list.php"><i class="fas fa-arrow-right"></i> Printed Summery List</a></li>
-         <?php
+        
          }
           if (permission_check('take_back_market_product_return')) {
             ?>
@@ -257,14 +253,6 @@ if ($user_type == "employee") {
                 <li><a href="new_order.php"><i class="fas fa-list-ul"></i> New Order</a></li>
               <?php } 
 
-              
-
-              if (permission_check('delivery_pending')) {
-                ?>
-                <li><a href="delivery_pending.php"><i class="fas fa-spinner"></i> Delivery Pending</a></li>
-              <?php } ?>
-
-              <?php
               if (permission_check('paid_and_delivered')) {
                 ?>
                 <li><a href="delivery_complete.php"><i class="fas fa-arrow-right"></i> Paid & Delivered</a></li>
@@ -272,10 +260,6 @@ if ($user_type == "employee") {
               if (permission_check('unpaid_but_delivered')) { ?>
               <li><a href="unpaid_but_delivered.php"><i class="fas fa-arrow-right"></i> Unpaid But Delivered</a></li>
 
-              <?php }
-              if (permission_check('cancelled_order')) {
-                ?>
-               <li><a href="order_cancel.php"><i class="fas fa-cut"></i></i>Cancelled Orders </a></li>
               <?php } 
               if (permission_check('return_sold_product_from_market')) {
                 ?>
@@ -427,11 +411,9 @@ if ($user_type == "employee") {
           ?>
             </ul>
           </li>
-        <?php }  if (permission_check('send_sms')) { ?>
+        <?php }  ?>
         
-                <li><a href="send-bulk-sms.php"><i class="fas fa-user"></i> Send SMS</a></li>
-     
-            <?php } ?>  
+              
         
 
       </ul>

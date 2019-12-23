@@ -179,7 +179,19 @@ if (isset($_POST['delivery_emp_id'])) {
 	}
 	Session::set("delivery_emp_id",$delivery_emp_id);
 	Session::set("delivery_employee_name",$data);
-	echo json_encode($data);
+
+	$query = "SELECT * FROM truck_load WHERE employee_id ='$delivery_emp_id' AND unload_status = 0";
+	$get_vehicle = $dbOb->select($query);
+	$vehicle = "";
+	if ($get_vehicle) {
+		$vehicle = $get_vehicle->fetch_assoc();
+	}else{
+		$message = "Please Assign ".$data.', With A Vehicle Then Take Order.. ';
+		$type = 'warning';
+		die(json_encode(['message'=>$message,'type'=>$type]));
+	}
+
+	echo json_encode(['delivery_emp_name'=>$data,'vehicle'=>$vehicle]);
 }
 
 if (isset($_POST['order_emp_id'])) {
@@ -233,6 +245,13 @@ if (isset($_POST['ware_house_serial_no'])) {
 if (isset($_POST['send_area_and_customer'])) {
 	$area = Session::get("area_employee");
 	$customer_id = Session::get("customer_id");
-	echo json_encode(['area'=>$area,'customer_id'=>$customer_id]);
+	$delivery_emp_id = Session::get("delivery_emp_id");
+	$query = "SELECT * FROM truck_load WHERE employee_id ='$delivery_emp_id' AND unload_status = 0";
+	$get_vehicle = $dbOb->select($query);
+	$vehicle = "";
+	if ($get_vehicle) {
+		$vehicle = $get_vehicle->fetch_assoc();
+	}
+	echo json_encode(['area'=>$area,'customer_id'=>$customer_id,'vehicle'=>$vehicle]);
 }
 ?>

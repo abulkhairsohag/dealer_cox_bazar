@@ -56,13 +56,14 @@ if (isset($_POST['serial_no_edit'])) {
 
 
 
-	$query = "SELECT * FROM client WHERE area_name = '$area_name'";
+	$query = "SELECT * FROM client WHERE area_name = '$area_name' ORDER BY organization_name";
 	$get_client = $dbOb->select($query);
 	if ($get_client) {
 		$client_options = '<option value="">Please Select One</option>';
 
 		while ($row = $get_client->fetch_assoc()) {
-			$client_options .= '<option value="'.$row["cust_id"].'"'. ($get_return_products_info['cust_id'] == $row["cust_id"] ?  "selected" : "") .'>'.$row['cust_id'].', '.$row['client_name'].'</option>';
+			$cust_id = $get_return_products_info['cust_id'];
+			$client_options .= '<option value="'.$row["cust_id"].'"'. ($cust_id == $row["cust_id"] ?  "selected" : "") .'>'.$row['organization_name'].'</option>';
 		}
 	}else{
 		$client_options = '<option value="">Client Not Found In This Area</option>';
@@ -123,14 +124,21 @@ if (isset($_POST['submit'])) {
 				  SET 
 				  employee_id_delivery = '$employee_id_delivery',
 				  employee_name_delivery = '$employee_name_delivery',
-				  employee_name_delivery = '$employee_name_delivery',
-				  area_employee_delivery = '$area_employee_delivery',
+				  area_employee_delivery = '$area_employee',
+				  cust_id = '$cust_id',
 				  shop_name = '$shop_name',
 				  shop_phn = '$shop_phn',
+				  company = '$company',
+				  marketing_sell_price = '$marketing_sell_price',
 				  return_quantity = '$return_quantity',
 				  total_price = '$total_price',
-				  return_reason = '$return_reason',
-				  description = '$description'
+				  return_reason = '$return_reason', 
+				  description = '$description',
+				  return_date = '$return_date',
+				  ware_house_serial_no = '$ware_house_serial_no',
+				  ware_house_name = '$ware_house_name',
+				  zone_serial_no = '$zone_serial_no',
+				  zone_name = '$zone_name'
 				  WHERE 
 				  serial_no = '$edit_id'";
 		$update_return = $dbOb->update($query);

@@ -41,7 +41,7 @@ if(!permission_check('company_product_return')){
                 <th style="">Product ID</th>
                 <th style="">Product Name</th>
                 <th style="">Company</th>
-                <th style="">Dealer Price</th>
+                <th style="">Purchase Price</th>
                 <th style="">Return Qty</th>
                 <th style="">Price</th>
                 <th style="">Reason</th>
@@ -127,6 +127,33 @@ if(!permission_check('company_product_return')){
                     <br />
                     <!-- Form starts From here  -->
                     <form id="form_edit_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
+
+                  <div class="form-group row">
+                    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+                    <div class="col-md-6 col-6">
+                        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
+                          <option value="">Please Select One</option>
+                          <?php
+
+                          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+                          $get_ware_house = $dbOb->select($query);
+                          if ($get_ware_house) {
+                            while ($row = $get_ware_house->fetch_assoc()) {
+
+                            ?>
+                            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+                              echo "selected";
+                            } ?>
+                            ><?php echo $row['ware_house_name']; ?></option>
+                            <?php
+                          }
+                        }
+
+                        ?>
+
+                     </select>
+                    </div>
+                  </div>
 
 
                       <div class="form-group" id="products_id_div">
@@ -219,6 +246,13 @@ if(!permission_check('company_product_return')){
                         </div>
                       </div>
 
+                    <div class="form-group">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Return Date</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text"  class="form-control date-picker datepicker" id="return_date" name="return_date" readonly="" value="" required>
+                      </div>
+                    </div>
+
 
                       <div style="display: none;">
                         <input type="number" id="edit_id" name="edit_id">
@@ -271,6 +305,7 @@ if(!permission_check('company_product_return')){
         type:"POST",
         dataType:'json',
         success:function(data){
+          $("#ware_house_serial_no").html(data.ware_house_option);
           $("#products_id_no").val(data.return_info.products_id_no);
           $("#products_id_div").hide();
           $("#products_name").val(data.return_info.products_name);
@@ -281,6 +316,7 @@ if(!permission_check('company_product_return')){
           $("#total_price").val(data.return_info.total_price);
           $("#return_reason").val(data.return_info.return_reason);
           $("#description").val(data.return_info.description);
+          $("#return_date").val(data.return_info.return_date);
           $("#edit_id").val(data.return_info.serial_no);
           // alert(data.current_quantity);
         }
@@ -292,7 +328,7 @@ if(!permission_check('company_product_return')){
 
       $("#ModalLabel").html("Add Return Product Information.");
       $("#submit_button").html("Save");
-
+       $("#ware_house_serial_no").val('');
       $("#products_id_div").show();
       $("#products_id_no").val("");
       $("#products_name").val('');
@@ -303,6 +339,7 @@ if(!permission_check('company_product_return')){
       $("#total_price").val('');
       $("#return_reason").val('');
       $("#description").val('');
+      $("#return_date").val('');
       $("#edit_id").val('');
       
 
@@ -401,6 +438,18 @@ $(document).on("keyup blur","#return_quantity",function(){
 
   }); // end of delete 
 
+    $(document).on('change','#ware_house_serial_no',function(){
+      var ware_house_serial_no = $(this).val();
+      $.ajax({
+          url:'ajax_new_order.php',
+          data:{ware_house_serial_no:ware_house_serial_no},
+          type:'POST',
+          dataType:'json',
+          success:function(data){
+            // $("#cust_id").html(data);
+          }
+        });
+    });
 
   });
 

@@ -114,7 +114,7 @@ if(!permission_check('return_sold_product_from_market')){
         </div>
       </div>
       <!-- Modal For Adding and Updating data  -->
-      <div class="modal fade" id="add_update_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+     <div class="modal fade" id="add_update_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg " role="document">
           <div class="modal-content">
             <div class="modal-header" style="background: #006666">
@@ -363,11 +363,6 @@ if(!permission_check('return_sold_product_from_market')){
           </div>
 
 
-
-
-
-
-
           <div style="display: none;">
             <input type="number" id="edit_id" name="edit_id">
           </div>
@@ -380,16 +375,16 @@ if(!permission_check('return_sold_product_from_market')){
           </div>
         </form>
       </div>
-    </div>
-  </div>
-</div>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-</div>
-</div>
-</div>
-</div> <!-- End of modal for  Adding and Updating data-->
+        </div>
+        </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+      </div>
+      </div>
+  </div> <!-- End of modal for  Adding and Updating data-->
 
 
 
@@ -447,7 +442,7 @@ if(!permission_check('return_sold_product_from_market')){
 
                 <div class="row" style="margin-top:0px">
                   <div class="col-md-3"></div>
-                  <div class="col-md-3"><h5 style="color:black">Shop Name</h5></div>
+                  <div class="col-md-3"><h5 style="color:black">Shop Phone No</h5></div>
                   <div class="col-md-3"><h5 id="show_shop_phn" style="color:black"></h5></div>
                   <div class="col-md-3"></div>
                 </div>
@@ -575,7 +570,7 @@ if(!permission_check('return_sold_product_from_market')){
           $("#employee_name_delivery").val(data.info.employee_name_delivery);
           $("#zone_serial_no").val(data.info.zone_serial_no);
           $("#area_employee").html(data.area_options);
-          $("#cust_id").html(data.customer_options);
+          $("#cust_id").html(data.client_options);
           // console.log(data.area_options);
           $("#ware_house_serial_no").val(data.info.ware_house_serial_no);
 
@@ -610,26 +605,27 @@ if(!permission_check('return_sold_product_from_market')){
       $("#edit_id").val('');
       $("#shop_phn").val('');
       $("#shop_name").val('');
+      $("#return_date").val('');
 
     });
 
 
   // getting data while changing the product id
   $(document).on('change','#products_id_no',function(){
-  //console.log('Sohag');
-  var get_products_id_no = $(this).val();
-  $.ajax({
-    url: "ajax_market_return_product.php",
-    data:{get_products_id_no:get_products_id_no},
-    type: "POST",
-    dataType:'json',
-    success:function(data){
-      $("#products_name").val(data.products_name);
-      $("#company").val(data.company);
-      $("#marketing_sell_price").val(data.sell_price);
-      cal();
-    }
-  });
+    //console.log('Sohag');
+    var get_products_id_no = $(this).val();
+    $.ajax({
+      url: "ajax_market_return_product.php",
+      data:{get_products_id_no:get_products_id_no},
+      type: "POST",
+      dataType:'json',
+      success:function(data){
+        $("#products_name").val(data.products_name);
+        $("#company").val(data.company);
+        $("#marketing_sell_price").val(data.sell_price);
+        cal();
+      }
+    });
   
 });
   // now calculating the total price while key up at return quantity
@@ -643,7 +639,7 @@ if(!permission_check('return_sold_product_from_market')){
     formData.append('submit','submit');
     $.ajax({
       url:'ajax_market_return_product.php',
-      data:formData,cust_id
+      data:formData,
       type:'POST',
       dataType:'json',
       cache: false,
@@ -741,19 +737,19 @@ if(!permission_check('return_sold_product_from_market')){
 
   $(document).on('change','#cust_id',function(){
     var cust_id = $(this).val();
-  // alert(cust_id);
-  $.ajax({
-    url:'ajax_new_order.php',
-    data:{customer_id:cust_id},
-    type:'POST',
-    dataType:'json',
-    success:function(data){
-      $("#customer_name").val(data.client_name);
-      $("#shop_name").val(data.organization_name);
-      $('#address').val(data.address);
-      $("#shop_phn").val(data.mobile_no);
-    }
-  });
+    // alert(cust_id);
+    $.ajax({
+      url:'ajax_new_order.php',
+      data:{customer_id:cust_id},
+      type:'POST',
+      dataType:'json',
+      success:function(data){
+        $("#customer_name").val(data.client_name);
+        $("#shop_name").val(data.organization_name);
+        $('#address').val(data.address);
+        $("#shop_phn").val(data.mobile_no);
+      }
+    });
 });
 
 

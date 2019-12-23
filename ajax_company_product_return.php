@@ -26,18 +26,41 @@ if (isset($_POST['serial_no_edit'])) {
 	$serial_no = $_POST['serial_no_edit'];
 	$query = "SELECT * FROM company_products_return WHERE serial_no = '$serial_no'";
 	$return_info = $dbOb->find($query);
+	$ware_house_serial_no = $return_info['ware_house_serial_no'];
 
 	$products_id_no = $return_info["products_id_no"];
 	$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
 	$product_info = $dbOb->find($query);
 	$current_quantity = $product_info["quantity"];
-	echo json_encode(['return_info'=>$return_info,'current_quantity'=>$current_quantity]);
+
+	$query = "SELECT * FROM ware_house ";
+	$get_ware_house = $dbOb->select($query);
+	if ($get_ware_house) {
+		$ware_house_option = '<option value="">Please Select One</option>';
+
+		while ($row = $get_ware_house->fetch_assoc()) {
+			
+			$ware_house_option .= '<option value="'.$row["serial_no"].'"'. ($ware_house_serial_no == $row["serial_no"] ?  "selected" : "") .'>'.$row['ware_house_name'].'</option>';
+		}
+	}else{
+		$ware_house_option = '<option value="">Ware House Not Found..</option>';
+	}
+
+
+	echo json_encode(['return_info'=>$return_info,'current_quantity'=>$current_quantity,'ware_house_option'=>$ware_house_option]);
 }
 
 
 // adding and updating data 
 
 if (isset($_POST['submit'])) {
+	$ware_house_serial_no = $_POST['ware_house_serial_no'];
+	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
+	$get_warehouse = $dbOb->select($query);
+	$ware_house_name = "";
+	if ($get_warehouse) {
+		$ware_house_name = $get_warehouse->fetch_assoc()['ware_house_name'];
+	}
 	$products_id_no = $_POST['products_id_no'];
 	$products_name = $_POST['products_name'];
 	$company = $_POST['company'];
@@ -48,7 +71,7 @@ if (isset($_POST['submit'])) {
 	$return_reason = $_POST['return_reason'];
 	$description = $_POST['description'];
 	$edit_id = $_POST['edit_id'];
-	$return_date = date("d-m-Y");
+	$return_date = $_POST['return_date'];
 
 	if ($edit_id) { // updating information 
 		$query = "SELECT * FROM company_products_return WHERE serial_no = '$edit_id'";
@@ -56,14 +79,14 @@ if (isset($_POST['submit'])) {
 
 		$query = "UPDATE company_products_return 
 		SET 
-		products_id_no = '$products_id_no',
-		products_name = '$products_name',
-		company = '$company',
-		dealer_price = '$dealer_price',
+		
 		return_quantity = '$return_quantity',
 		total_price = '$total_price',
 		return_reason = '$return_reason',
-		description = '$description'
+		description = '$description',
+		return_date = '$return_date',
+		ware_house_serial_no = '$ware_house_serial_no',
+		ware_house_name = '$ware_house_name'
 		WHERE 
 		serial_no = '$edit_id'";
 		$update_return = $dbOb->update($query);
@@ -100,9 +123,9 @@ if (isset($_POST['submit'])) {
 		}
 	}else{ // now inserting data into database 
 		$query = "INSERT INTO `company_products_return` 
-		(products_id_no,products_name,company,dealer_price,return_quantity,total_price,return_reason,description,return_date) 
+		(products_id_no,products_name,company,dealer_price,return_quantity,total_price,return_reason,description,return_date,ware_house_serial_no,ware_house_name) 
 		VALUES 
-		('$products_id_no','$products_name','$company','$dealer_price','$return_quantity','$total_price','$return_reason','$description','$return_date')";
+		('$products_id_no','$products_name','$company','$dealer_price','$return_quantity','$total_price','$return_reason','$description','$return_date','$ware_house_serial_no','$ware_house_name')";
 		$last_insert_id = $dbOb->custom_insert($query);
 		if ($last_insert_id) {
 			$query_get_product = "SELECT quantity FROM products WHERE products_id_no = '$products_id_no'";

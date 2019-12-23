@@ -53,7 +53,7 @@ if ($get_profile) {
 
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="icon" href="<?php echo $company_profile['favicon'];?>" type="image/ico" />
 	<title><?php echo $company_profile['organization_name']?></title>
 	<!--Made with love by Mutiullah Samim -->
@@ -90,11 +90,11 @@ if ($get_profile) {
 		}
 
 		.card{
-			height: 370px;
+			height: 380px;
 			margin-top: auto;
 			margin-bottom: auto;
 			width: 400px;
-			background-color: rgba(0,0,0,0.5) !important;
+			background-color: rgba(255, 255, 255, 0.55) !important;
 		}
 
 		.social_icon span{
@@ -163,16 +163,16 @@ if ($get_profile) {
 		}
 	</style>
 </head>
-<body style='background: url("images/deal.jpg"); background-size: cover'>
+<body style='background: url("img/Leadership.jpg"); background-size: cover'>
 
 	<div class="container">
 		<div class="d-flex justify-content-center h-100">
 			<div class="card">
 				<div class="card-header">
 					<div class=" justify-content-between">
-						<h3 class="text-light text-center"><?php echo $company_profile['organization_name']?></h3>
+						<h3 class="text-light text-center"><img src="http://nurulabsar.com/img/MS-Hazi-and-Sons.png" alt="" style="width:300px;"></h3>
 					</div>
-					<h3 class="pt-2 text-center">Sign In</h3>
+					<h3 class="pt-2 text-center font-weight-bold text-dark">Login</h3>
 
 				</div>
 				<div class="card-body">
@@ -192,7 +192,7 @@ if ($get_profile) {
 									</div>
 									<input type="password" name="password" class="form-control" placeholder="password" value="admin">
 								</div>
-								<div class="form-group">
+								<div class="form-group pb-5">
 									<input type="submit" name="submit" value="Login" class="btn float-right login_btn">
 								</div>
 							</form>

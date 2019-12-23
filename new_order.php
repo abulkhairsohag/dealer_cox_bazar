@@ -124,7 +124,7 @@ if (!permission_check('new_order')) {
             </select>
           </td> 
           <td>
-           <input type="text" class="form-control delivery_employee_name" id="delivery_employee_name" name="delivery_employee_name" readonly="" value="<?php if (Session::get("delivery_employee_name")) {
+           <input type="text" class="form-control delivery_employee_name" required="" id="delivery_employee_name" name="delivery_employee_name" readonly="" value="<?php if (Session::get("delivery_employee_name")) {
             echo Session::get("delivery_employee_name");
           } ?>" >
         </td>
@@ -136,7 +136,7 @@ if (!permission_check('new_order')) {
   </table>
 </div>
 
-<div class="form-group row">
+<div class="form-group row" style="display:none">
   <label class="col-md-3 col-6 control-label" for="inputDefault">Order Number</label>
   <div class="col-md-6 col-6">
    <!-- <select class="form-control" id="invoice_option" name="invoice_option" required=""> -->
@@ -169,6 +169,49 @@ if (!permission_check('new_order')) {
     }
     ?>
     <input type="text" class="form-control" id="order_no" name="order_no" readonly="" value="<?php echo $order_new_id; ?>">
+  </div>
+</div>
+
+
+<div class="form-group row">
+  <label class="col-md-3 col-6 control-label" for="inputDefault">Vehicle Reg. No<span class="required" style="color: red">*</span></label>
+  <div class="col-md-6 col-6">
+    <input type="text"  name="vehicle_reg_no" id="vehicle_reg_no"  required="" class="form-control vehicle_reg_no " readonly="">
+  </div>
+</div>
+
+<div class="form-group row">
+  <label class="col-md-3 col-6 control-label" for="inputDefault">Vehicle Name<span class="required" style="color: red">*</span></label>
+  <div class="col-md-6 col-6">
+    <input type="text"  name="vehicle_name" id="vehicle_name"  required="" class="form-control vehicle_name " readonly="">
+  </div>
+</div>
+
+
+<div class="form-group row">
+  <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+  <div class="col-md-6 col-6">
+       <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
+        <option value="">Please Select One</option>
+        <?php
+
+        $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+        $get_ware_house = $dbOb->select($query);
+        if ($get_ware_house) {
+          while ($row = $get_ware_house->fetch_assoc()) {
+
+           ?>
+           <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+            echo "selected";
+          } ?>
+          ><?php echo $row['ware_house_name']; ?></option>
+          <?php
+        }
+      }
+
+      ?>
+
+  </select>
   </div>
 </div>
 
@@ -462,20 +505,11 @@ if ($get_invoice) {
       var tr=$(this).parent().parent();
       var products_id_no_get_info =tr.find("#products_id_no").val();
 
-
-
-
       var qty = tr.find("#qty").val();
       if (isNaN(qty) || qty == '') {
         qty = 0;
       }
 
-      var discount_on_mrp = $("#discount_on_mrp").val();
-      var vat = $("#vat").val();
-
-      // console.log(tr);
-      // tr.find(".main_category").val(products_id_no);
-      // console.log(qty);
       $.ajax({
         url:"ajax_new_order.php",
         data:{products_id_no_get_info:products_id_no_get_info},
@@ -484,30 +518,17 @@ if ($get_invoice) {
         success:function(data){
           tr.find(".products_name").val(data.products.products_name);
           tr.find(".pack_size").val(data.products.pack_size);
-          var mrp_price = data.products.mrp_price;
-          var unit_tp = mrp_price - mrp_price*(discount_on_mrp/100);
-          tr.find(".unit_tp").val(unit_tp);
-
-          var unit_vat = (unit_tp*vat/100);
-          tr.find(".unit_vat").val(unit_vat);
-
+          tr.find(".sell_price").val(data.products.sell_price);
           
+     
+          var total_price = (data.products.sell_price * qty) ;
 
-          var tp_plus_vat = (unit_vat + unit_tp);
-          tr.find(".tp_plus_vat").val(tp_plus_vat);
-          // console.log(qty);
-          var total_tp = (tr.find(".unit_tp").val() * qty) ;
-          var total_vat = (tr.find(".unit_vat").val() * qty) ;
-          var total_price = (tr.find(".tp_plus_vat").val() * qty) ;
-
-          tr.find(".total_tp").val(total_tp);
-          tr.find(".total_vat").val(total_vat);
           tr.find(".total_price").val(total_price );
 
-          tr.find(".qty").attr("readonly", false);
-          tr.find(".qty").attr("placeholder", data.products.quantity);
-          tr.find(".qty").attr("data-available", data.products.quantity);
-          tr.find(".qty").focus();
+          tr.find("#qty").attr("readonly", false);
+          tr.find("#qty").attr("placeholder", data.products.quantity);
+          tr.find("#qty").attr("data-available", data.products.quantity);
+          tr.find("#qty").focus();
 
           if (data.products.quantity <= $("#product_warning_qty").val()) {
             swal({
@@ -558,12 +579,10 @@ if ($get_invoice) {
 
       }else{
 
-
         var qty = tr.find("#qty").val();
         if (isNaN(qty) || qty == '') {
           qty = 0;
         }
-
         var discount_on_mrp = $("#discount_on_mrp").val();
         var vat = $("#vat").val();
 
@@ -578,30 +597,14 @@ if ($get_invoice) {
         success:function(data){
           tr.find(".products_name").val(data.products.products_name);
           tr.find(".pack_size").val(data.products.pack_size);
-          var mrp_price = data.products.mrp_price;
-          var unit_tp = mrp_price - mrp_price*(discount_on_mrp/100);
-          tr.find(".unit_tp").val(unit_tp);
-
-          var unit_vat = (unit_tp*vat/100);
-          tr.find(".unit_vat").val(unit_vat);
-
-          
-
-          var tp_plus_vat = (unit_vat + unit_tp);
-          tr.find(".tp_plus_vat").val(tp_plus_vat);
-          // console.log(qty);
-          var total_tp = (tr.find(".unit_tp").val() * qty) ;
-          var total_vat = (tr.find(".unit_vat").val() * qty) ;
-          var total_price = (tr.find(".tp_plus_vat").val() * qty) ;
-
-          tr.find(".total_tp").val(total_tp);
-          tr.find(".total_vat").val(total_vat);
+          tr.find(".sell_price").val(data.products.sell_price);
+          var total_price = (data.products.sell_price * qty) ;
           tr.find(".total_price").val(total_price );
-
-          tr.find(".qty").attr("readonly", false);
-          tr.find(".qty").attr("placeholder", data.products.quantity);
-          tr.find(".qty").attr("data-available", data.products.quantity);
-          tr.find(".qty").focus();
+          
+          tr.find("#qty").attr("readonly", false);
+          tr.find("#qty").attr("placeholder", data.products.quantity);
+          tr.find("#qty").attr("data-available", data.products.quantity);
+          tr.find("#qty").focus();
 
           if (data.products.quantity <= $("#product_warning_qty").val()) {
             swal({
@@ -680,18 +683,14 @@ if ($get_invoice) {
      if (isNaN(quantity) || quantity == '') {
         quantity = 0;
       }
+      var sell_price = tr.find(".sell_price").val();
 
-      var total_tp = (tr.find(".unit_tp").val() * quantity) ;
-      var total_vat =  (tr.find(".unit_vat").val() * quantity) ;
-      var total_price =  (tr.find(".tp_plus_vat").val() * quantity) ;
-
-
-      tr.find(".total_tp").val(total_tp);
-      tr.find(".total_vat").val(total_vat);
+      if (isNaN(sell_price) || sell_price == '') {
+        sell_price = 0;
+      }
+      var total_price =  ( sell_price * quantity) ;
       tr.find(".total_price").val(total_price);
-      var total_price = tr.find(".total_price").val();
-
-
+     
       cal();
   });
 
@@ -706,65 +705,16 @@ if ($get_invoice) {
           net_total=(net_total+($(this).val()*1));
 
         });
-        $("#net_total").val(net_total);
-
-        var net_total_tp = 0 ;
-        $(".total_tp").each(function(){
-          net_total_tp=net_total_tp+($(this).val()*1);
-        });
-        net_total_tp = (net_total_tp);
-
-        $("#net_total_tp").val(net_total_tp);
-
-        var net_total_vat = 0 ;
-        $(".total_vat").each(function(){
-          net_total_vat=(net_total_vat+($(this).val()*1));
-        });
-        $("#net_total_vat").val(net_total_vat);
-
-          // var vat = $("#vat").val();
-          var discount = $("#discount").val();
-
-
-        if(discount>0 && discount <= 100){
-          // var net_total_tp = $("#net_total_tp").val();
-          // var net_total = $("#net_total").val();
-
-          var discount_amount =  (net_total_tp*$("#discount").val()/100);
-
-          $("#discount_amount").val(discount_amount);
-
-          var payable_amt =((parseFloat(net_total)  - parseFloat(discount_amount)));
-
-
-
-          $("#payable_amt").val(payable_amt);
-
-          var extra_discount = $('#extra_discount').val();
-          if (isNaN(extra_discount) || extra_discount == '') {
-            extra_discount = 0;
-          }
-
-          var net_payable_amt = Math.round(payable_amt - payable_amt*extra_discount/100) ;
-          $('#net_payable_amt').val(net_payable_amt);
-
-        }else{ // if  discount  is not found then net total will be the grand total
-          $("#payable_amt").val(net_total);
-          var extra_discount = $('#extra_discount').val();
-          if (isNaN(extra_discount) || extra_discount == '') {
-            extra_discount = 0;
-          }
-          // $.round = Math.round;
-
-          var net_payable_amt = Math.round(payable_amt - (payable_amt*extra_discount/100)) ;
-          $('#net_payable_amt').val(net_payable_amt);
-
-        }
+        $("#net_payable_amt").val(net_total);
 
       }
 
 
 
+  
+  
+  
+  
   // discount calculation
   $(document).on('keyup blur','#discount',function(){
     var discount = $(this).val();
@@ -791,8 +741,6 @@ if ($get_invoice) {
 
       var net_payable_amt = Math.round(payable_amt - payable_amt*extra_discount/100) ;
       $('#net_payable_amt').val(net_payable_amt);
-
-
     }
 
   });
@@ -879,7 +827,19 @@ if ($get_invoice) {
         type:'POST',
         dataType:'json',
         success:function(data){
-          $("#delivery_employee_name").val(data);
+          if (data.message) {
+              swal({
+                title: data.type,
+                text: data.message,
+                icon: data.type,
+                button: "Done",
+              });
+            $("#vehicle_reg_no").val('');
+            $("#vehicle_name").val('');
+          }
+          $("#delivery_employee_name").val(data.delivery_emp_name);
+          $("#vehicle_reg_no").val(data.vehicle.vehicle_reg_no);
+          $("#vehicle_name").val(data.vehicle.vehicle_name);
           // $(".employee_id").val(emp_id);
         }
       });
@@ -929,8 +889,6 @@ if ($get_invoice) {
   });
 
 
- 
-
      $.ajax({
         url:'ajax_new_order.php',
         data:{send_area_and_customer:'send_area_and_customer'},
@@ -938,6 +896,9 @@ if ($get_invoice) {
         dataType:'json',
         success:function(data){
           $("#area_employee").val(data.area);
+          $("#vehicle_reg_no").val(data.vehicle.vehicle_reg_no);
+          //  alert(data.vehicle);
+          $("#vehicle_name").val(data.vehicle.vehicle_name);
         }
       });
   

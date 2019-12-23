@@ -21,88 +21,125 @@ if (isset($_POST['id'])) {
 
 	echo json_encode($get_emp_info);
 }
+if (isset($_POST['reg_no'])) {
+	$vehicle_reg_no = $_POST['reg_no'];
+	$get_vehicle='';
 
+	$query = "SELECT * FROM truck_load WHERE vehicle_reg_no = '$vehicle_reg_no' AND unload_status = '0'";
+	$get_unload_status = $dbOb->select($query);
+	$message = '';
+	$type = '';
+	if ($get_unload_status) {
+		$message = "Please Unload The Truck First..";
+		$type = "warning";
+		// die();
+	}else{
+		$query = "SELECT * FROM transport WHERE reg_no = '$vehicle_reg_no'";
+		$get_vehicle = $dbOb->find($query);
+	}
 
-// changing area and getting the product quantity to be loaded
-
+	echo json_encode(['message'=>$message,'type'=>$type,'get_vehicle'=>$get_vehicle]);
+}
 
 
 // inserting data into data base 
 
 if (isset($_POST['submit'])) {
-	$deliv_emp_id = $_POST['deliv_emp_id'];
-	$deliv_emp_name = $_POST['deliv_emp_name'];
-	$deliv_emp_phone = $_POST['deliv_emp_phone'];
-	$area = $_POST['area'];
-	$summery_id = $_POST['summery_id'];
 
-	// die($summery_id);
-	
-	$printing_date = $_POST['printing_date'];
-	$time = $_POST['time'];
+	$zone_serial_no= $_POST['zone_serial_no'];
+	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+	$get_zone = $dbOb->select($query);
+	$zone_name = '';
+	if ($get_zone) {
+		$zone_name = $get_zone->fetch_assoc()['zone_name'];
+	}
 
+	$area_name= $_POST['area_employee'];
+
+	$ware_house_serial_no= $_POST['ware_house_serial_no'];
+	$ware_house_name= '';
+	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
+	$get_ware_house  = $dbOb->select($query);
+	if ($get_ware_house) {
+		$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
+	}
+
+	$employee_id = $_POST['delivery_employee_id'];
+	$emplyee_name =  $_POST['delivery_employee_name'];
+	$query = "SELECT * FROM truck_load WHERE employee_id = '$employee_id' AND unload_status = 0 ";
+	$get_duplicate = $dbOb->select($query);
+	if ($get_duplicate) {
+		$message = $emplyee_name.", Is Already Assigned With Vehicle: ".$get_duplicate->fetch_assoc()['vehicle_name'].' . Please Unload It First';
+		$type = 'warning';
+		die(json_encode(['message'=>$message,'type'=>$type]));
+	}
 	$vehicle_reg_no = $_POST['vehicle_reg_no'];
-	$vehicle_name = $_POST['vehicle_name'];
-	$driver_name = $_POST['driver_name'];
+	$vehicle_name= $_POST['vehicle_name'];
+	$vehicle_type= $_POST['vehicle_type'];
+	$loading_date= $_POST['loading_date'];
 
-	$total_payable_amt = $_POST['total_payable_amt'];
-	
-	$product_id = $_POST['product_id'];
-	$product_name = $_POST['product_name'];
+
+	$product_id= $_POST['product_id'];
+	$products_name = $_POST['products_name'];
 	$category = $_POST['category'];
 	$quantity = $_POST['quantity'];
+	$quantity_offer = $_POST['quantity_offer'];
 
-	$order_no = $_POST['order_no'];
-	$shop_name = $_POST['shop_name'];
-	$customer_name = $_POST['customer_name'];
-	$mobile_no = $_POST['mobile_no'];
-	$payable_amt = $_POST['payable_amt'];
-	$insert_shop = "";
-	if ($total_payable_amt != '') {
-		$query = "INSERT INTO order_summery 
-				  (summery_id,deliv_emp_id,deliv_emp_name,deliv_emp_phone,area,printing_date,printing_time,total_payable_amt,vehicle_reg_no,vehicle_name,driver_name)
-				  VALUES
-				  ('$summery_id','$deliv_emp_id','$deliv_emp_name','$deliv_emp_phone','$area','$printing_date','$time','$total_payable_amt','$vehicle_reg_no','$vehicle_name','$driver_name')";
+	
+	$query = "INSERT INTO truck_load 
+			  (zone_serial_no, zone_name, area_name, ware_house_serial_no, ware_house_name, employee_id, emplyee_name, vehicle_reg_no, vehicle_name, vehicle_type, loading_date) 
+			  VALUES 
+			  ('$zone_serial_no', '$zone_name', '$area_name', '$ware_house_serial_no', '$ware_house_name', '$employee_id', '$emplyee_name', '$vehicle_reg_no', '$vehicle_name', '$vehicle_type', '$loading_date') ";
+    $main_tbl_last_insert_id = $dbOb->custom_insert($query);
 
-		$summery_serial_no = $dbOb->custom_insert($query);
+    if ($main_tbl_last_insert_id) {
 
-		if ($summery_serial_no) {
-			for ($i=0; $i < count($product_id); $i++) { 
-				$pr_id = $product_id[$i];
-				$pr_name = $product_name[$i];
-				$cat = $category[$i];
-				$qty = $quantity[$i];
-				
-				$query = "INSERT INTO order_summery_product_info 
-						 (summery_serial_no,summery_id,product_id,product_name,category,quantity)
-						 VALUES
-						 ('$summery_serial_no','$summery_id','$pr_id','$pr_name','$cat','$qty')";
-				$insert_product = $dbOb->insert($query);
+    	for ($i=0; $i <count($product_id) ; $i++) { 
+    		$id = $product_id[$i];
+    		$name = $products_name[$i];
+    		$cat = $category[$i];
+    		$qty = $quantity[$i];
+    		$qty_offer = $quantity_offer[$i];
+			if ($qty != '') {
+				$query ="INSERT INTO truck_loaded_products 
+				  (truck_load_tbl_id, product_id, products_name, category, quantity,quantity_offer) 
+				  VALUES 
+				  ('$main_tbl_last_insert_id', '$id', '$name', '$cat', '$qty','$qty_offer') ";
+	
+				$insert_lad_product = $dbOb->insert($query);
 			}
 
-			if ($insert_product) {
-				for ($i=0; $i < count($order_no); $i++) { 
-					$ord_no = $order_no[$i];
-					$shp_name = $shop_name[$i];
-					$cust_name = $customer_name[$i];
-					$mob_no = $mobile_no[$i];
-					$pbl_amt = $payable_amt[$i];
-					
-					$query = "INSERT INTO  order_summery_shop_info 
-							 (summery_serial_no,summery_id,order_no,shop_name,customer_name,mobile_no,payable_amt,vehicle_reg_no,vehicle_name,driver_name)
-							 VALUES
-							 ('$summery_serial_no','$summery_id','$ord_no','$shp_name','$cust_name','$mob_no','$pbl_amt','$vehicle_reg_no','$vehicle_name','$driver_name')";
-					$insert_shop = $dbOb->insert($query);
-				}
-			}
-		}
-	}
+    	}
 
-	if ($insert_shop) {
-		die(json_encode("inserted"));
-	}
+    	if ($insert_lad_product) {
+    		$message = "Truck Loaded Successfully";
+    		$type = 'success';
+    		echo json_encode(['message'=>$message,'type'=>$type]);
+    	}else{
+    		$message = "Truck Loaded Failed";
+    		$type = 'warning';
+    		echo json_encode(['message'=>$message,'type'=>$type]);
 
-
+    	}
+    }
 }
+	if (isset($_POST['product_id_check'])) {
+		$products_id = $_POST['product_id_check'];
+		
+		$query = "SELECT * FROM `offers` WHERE products_id = '$products_id' ORDER BY serial_no DESC LIMIT 1";
+		$get_offer = $dbOb->select($query);
+		$offer_qty = 0;
+		
+		if ($get_offer) {
+			$offer = $get_offer->fetch_assoc();
+			if (strtotime(date('d-m-Y')) <= strtotime($offer['to_date']) && $offer['status'] == 1) {
+				die(json_encode($offer));
+			}else{
+				die(json_encode("N/A"));
+			}
+		}else{
+			die(json_encode("N/A"));
+		}
 
+	}
  ?>

@@ -16,20 +16,40 @@ $dbOb = new Database();
 
 if (isset($_POST['products_id_no_get_info'])) {
 	$products_id_no = $_POST['products_id_no_get_info'];
-	$order_employee_id = $_POST['order_employee_id'];
+	$vehicle_reg_no = $_POST['vehicle_reg_no_get_info'];
 
-	$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
-	$get_products = $dbOb->find($query);
-	$today = date("d-m-Y");
-	$offer = "";
-
-	if (strtotime($get_products['offer_start_date']) <= strtotime($today) && strtotime($get_products['offer_end_date']) >= strtotime($today)) {
-		$offer = $get_products['promo_offer'];
-	} else {
-		$offer = "----";
+	if ($vehicle_reg_no == "") {
+		$message = "Please Select A Delivery Man Who Is Assigned With A Truck That Is Not Unloaded.";
+		$type = 'warning';
+		die(json_encode(['message'=>$message, 'type'=>$type]));
 	}
 
-	echo json_encode(['products' => $get_products, 'offer' => $offer]);
+	$query = "SELECT * FROM truck_load WHERE vehicle_reg_no = '$vehicle_reg_no' AND unload_status = 0";
+	$get_load_info = $dbOb->select($query);
+
+	if ($get_load_info) {
+		$load = $get_load_info->fetch_assoc();
+		$load_serial_no = $load['serial_no'];
+		$query = "SELECT * FROM truck_loaded_products WHERE truck_load_tbl_id = '$load_serial_no' AND product_id = '$products_id_no'";
+		$get_product_existance = $dbOb->select($query);
+		if ($get_product_existance) {
+			$load_qty = $get_product_existance->fetch_assoc()['quantity'];
+			$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
+			$get_products = $dbOb->find($query);
+			die(json_encode(['products' => $get_products, 'load_qty' => $load_qty]));
+		}else {
+			$message = "Sorry This Product Is Not Loaded In The Truck.";
+			$type = 'warning';
+			die(json_encode(['message'=>$message, 'type'=>$type]));
+		}
+		
+	}
+
+	
+	// $offer = "";
+
+
+	// echo json_encode(['products' => $get_products, 'offer' => $offer]);
 }
 
 // now we are going to add information
@@ -38,56 +58,55 @@ if (isset($_POST['products_id_no_get_info'])) {
 
 if (isset($_POST['submit'])) {
 
-	$employee_id = $_POST['employee_id'];
-	$employee_name = $_POST['employee_name'];
-	$area_employee = $_POST['area_employee'];
-	$employee_company = $_POST['employee_company'];
-
+	$order_employee_id = $_POST['order_employee_id'];
+	$order_employee_name = $_POST['order_employee_name'];
+	$delivery_employee_id = $_POST['delivery_employee_id'];
+	$delivery_employee_name = $_POST['delivery_employee_name'];
 	$order_no = $_POST['order_no'];
 
+	$vehicle_reg_no = $_POST['vehicle_reg_no'];
+	$vehicle_name = $_POST['vehicle_name'];
+	$truck_load_serial_no = $_POST['truck_load_serial_no'];
+	$ware_house_serial_no = $_POST['ware_house_serial_no'];
+	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'"; 
+	$get_ware_house = $dbOb->select($query);
+	$ware_house_name = "";
+	if ($get_ware_house) {
+		$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
+	}
+
+	$zone_serial_no = $_POST['zone_serial_no'];
+	$zone_name =  "";
+	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'"; 
+	$get_zone = $dbOb->select($query);
+	if ($get_zone) {
+		$zone_name = $get_zone->fetch_assoc()['zone_name'];
+	}
+	$area = $_POST['area_employee'];
 	$cust_id = $_POST['cust_id'];
 	$customer_name = $_POST['customer_name'];
 	$shop_name = $_POST['shop_name'];
 	$address = $_POST['address'];
 	$mobile_no = $_POST['mobile_no'];
+	$delivery_date = $_POST['date'];
+	$payable_amt = $_POST['net_payable_amt'];
+
+	$pay = $_POST['pay'];
+	$due = $_POST['due'];
 
 	$products_id_no = $_POST['products_id_no'];
 	$products_name = $_POST['products_name'];
-	$pack_size = $_POST['pack_size'];
-	$unit_tp = $_POST['unit_tp'];
-	$unit_vat = $_POST['unit_vat'];
-	$tp_plus_vat = $_POST['tp_plus_vat'];
 	$qty = $_POST['qty'];
-	$total_tp = $_POST['total_tp'];
-	$total_vat = $_POST['total_vat'];
+	$offer_qty = $_POST['offer_qty'];
 	$total_price = $_POST['total_price'];
-
-	$net_total = $_POST['net_total'];
-	$net_total_tp = $_POST['net_total_tp'];
-	$net_total_vat = $_POST['net_total_vat'];
-	$discount_on_tp = $_POST['discount'];
-	$discount_amount = $_POST['discount_amount'];
-	$payable_without_extra_discount = $_POST['payable_amt'];
-	$extra_discount = $_POST['extra_discount'];
-	$payable_amt = $_POST['net_payable_amt'];
-	// $pay              = $_POST['pay'];
-	$order_date = $_POST['date'];
-
-	//          $message = $products_id_no;
-	// $type = 'warning';
-
-	// echo json_encode(['message'=>$message,'type'=>$type]);
-	// die();
-
 	
+	$query = "INSERT INTO  order_delivery
 
-	$query = "INSERT INTO  new_order_details
-
-			(employee_id,employee_name,area_employee,company,order_no,cust_id,customer_name,shop_name,address,mobile_no,discount_on_tp,discount_amount,payable_without_extra_discount,extra_discount,payable_amt,pay,due,order_date,delivery_report,delivery_cancel_report,net_total,net_total_tp,net_total_vat)
+			(order_employee_id,order_employee_name,delivery_employee_id,delivery_employee_name,order_no,vehicle_reg_no,vehicle_name,truck_load_serial_no,ware_house_serial_no,ware_house_name,zone_serial_no,zone_name,area,cust_id,customer_name,shop_name,address,mobile_no,payable_amt,pay,due,delivery_date)
 
 			VALUES
 
-			('$employee_id','$employee_name','$area_employee','$employee_company','$order_no','$cust_id','$customer_name','$shop_name','$address','$mobile_no','$discount_on_tp','$discount_amount','$payable_without_extra_discount','$extra_discount','$payable_amt','0','$payable_amt','$order_date','0','0','$net_total','$net_total_tp','$net_total_vat')";
+			('$order_employee_id','$order_employee_name','$delivery_employee_id','$delivery_employee_name','$order_no','$vehicle_reg_no','$vehicle_name','$truck_load_serial_no','$ware_house_serial_no','$ware_house_name','$zone_serial_no','$zone_name','$area','$cust_id','$customer_name','$shop_name','$address','$mobile_no','$payable_amt','$pay','$due','$delivery_date')";
 
 	$last_id = $dbOb->custom_insert($query);
 	$insert_order_expense = '';
@@ -97,27 +116,26 @@ if (isset($_POST['submit'])) {
 
 			$prod_id = $products_id_no[$i];
 			$query = "SELECT * FROM products where products_id_no = '$prod_id'";
-			$purchase_price = $dbOb->find($query)['company_price'] * $qty[$i];
+			$product = $dbOb->find($query);
+			$purchase_price = $product['company_price'] * $qty[$i];
+			$available_qty = $product['quantity'] ;
 
-			$discount_tp = ($total_tp[$i] * $discount_on_tp / 100);
-			$sell_price = $total_price[$i] - $discount_tp;
-			$sell_price = round(($sell_price - ($sell_price * $extra_discount / 100)), 2);
+	
 
-			$query = "INSERT INTO  new_order_expense
-					(new_order_serial_no,products_id_no,products_name,pack_size,unit_tp,unit_vat,tp_plus_vat,quantity,total_tp,total_vat,total_price,purchase_price,sell_price)
+			$query = "INSERT INTO  order_delivery_expense
+					(delivery_tbl_serial_no,products_id_no,products_name,qty,offer_qty,total_price,purchase_price,ware_house_serial_no,truck_load_serial_no,zone_serial_no,vehicle_reg_no,order_employee_id,delivery_employee_id,delivery_date)
 					VALUES
-					('$last_id','$products_id_no[$i]','$products_name[$i]','$pack_size[$i]','$unit_tp[$i]','$unit_vat[$i]','$tp_plus_vat[$i]','$qty[$i]','$total_tp[$i]','$total_vat[$i]','$total_price[$i]','$purchase_price','$sell_price')";
+					('$last_id','$products_id_no[$i]','$products_name[$i]','$qty[$i]','$offer_qty[$i]','$total_price[$i]','$purchase_price','$ware_house_serial_no','$truck_load_serial_no','$zone_serial_no','$vehicle_reg_no','$order_employee_id','$delivery_employee_id','$delivery_date')";
 			$insert_order_expense = $dbOb->insert($query);
-
-			// 		          $message = $products_id_no[$i];
-			// $type = 'warning';
-
-			// echo json_encode(['message'=>$message,'type'=>$type]);
-			// die();
-
+			if ($insert_order_expense) {
+				$update_qty = $available_qty - $qty[$i];
+				$query = "UPDATE products SET quantity = '$update_qty' WHERE products_id_no = '$prod_id'";
+				$update_product_tbl = $dbOb->update($query);
+			}
 		}
 
 		if ($insert_order_expense) {
+
 			$message = "Congratulaiton! Order Is Successfully Saved.";
 			$type = "success";
 			echo json_encode(['message' => $message, 'type' => $type]);
@@ -133,7 +151,7 @@ if (isset($_POST['submit'])) {
 		echo json_encode(['message' => $message, 'type' => $type]);
 
 	}
-
+die();
 } // end of  if (isset($_POST['submit']))
 
 if (isset($_POST['customer_id'])) {
@@ -143,9 +161,8 @@ if (isset($_POST['customer_id'])) {
 	if ($get_cust) {
 		$data = $get_cust->fetch_assoc();
 	}
-
-	
 	echo json_encode($data);
+	die();
 }
 
 
@@ -238,8 +255,6 @@ if (isset($_POST['ware_house_serial_no'])) {
 	Session::set("ware_house_serial_no",$_POST['ware_house_serial_no']);
 	die();
 }
-
-
 
 
 if (isset($_POST['send_area_and_customer'])) {

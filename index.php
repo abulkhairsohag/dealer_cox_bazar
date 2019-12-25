@@ -59,11 +59,11 @@ if ($get_expense) {
 
 // counting today sales order 
 $sales_order = 0;
-$query = "SELECT * FROM new_order_details WHERE order_date = '$today'";
-$sales_order = $dbOb->count_row_number($query);
-if ($sales_order<1) {
-  $sales_order  = 0 ;
-}
+// $query = "SELECT * FROM new_order_details WHERE order_date = '$today'";
+// $sales_order = $dbOb->count_row_number($query);
+// if ($sales_order<1) {
+//   $sales_order  = 0 ;
+// }
 
 $total_sales_amount = 0 ;
 $get_new_order = $dbOb->select($query);
@@ -77,12 +77,12 @@ if ($get_new_order) {
 
 // counting today delivery pending 
 $delivery_pending  = 0 ;
-$query = "SELECT * FROM new_order_details WHERE order_date = '$today' AND delivery_report = '0'";
-$delivery_pending = $dbOb->count_row_number($query);
-if ($delivery_pending<1) {
-  $delivery_pending  = 0 ;
+// $query = "SELECT * FROM new_order_details WHERE order_date = '$today' AND delivery_report = '0'";
+// $delivery_pending = $dbOb->count_row_number($query);
+// if ($delivery_pending<1) {
+//   $delivery_pending  = 0 ;
 
-}
+// }
 
 // counting today delivery complete 
 $delivery_complete = 0 ;

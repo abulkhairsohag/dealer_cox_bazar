@@ -257,13 +257,6 @@ if(!permission_check('truck_load_for_delivery')){
                  
                 </tbody>
               </table>
-
-
-
-
-
-
-
                              
                 </div>
 
@@ -308,14 +301,13 @@ if(!permission_check('truck_load_for_delivery')){
       var reg_no = $(this).val();
       $("#vehicle_name").val('');
       $("#vehicle_type").val('');
-     
+
       $.ajax({
         url:"ajax_truck_load.php",
         data:{reg_no:reg_no},
         type:"post",
         dataType:'json',
         success:function(data){
-          
           if (data.message) {
             console.log(data.message)
              swal({
@@ -324,19 +316,13 @@ if(!permission_check('truck_load_for_delivery')){
                 icon: data.type,
                 button: "Done",
               });
-              
           }else{
             $("#vehicle_name").val(data.get_vehicle.vehicle_name);
             $("#vehicle_type").val(data.get_vehicle.type);
           }
         }
       });
-
-    });
-
-
-
-
+});
 
 
     // now we are going to  insert data 
@@ -435,8 +421,7 @@ if(!permission_check('truck_load_for_delivery')){
     var quantity = $(this).val();
      var tr = $(this).parent().parent();
      var product_id = tr.find(".product_id").val();
-    //  console.log(product_id);
-     
+  
      $.ajax({
         url:'ajax_truck_load.php',
         data:{product_id_check:product_id},
@@ -446,10 +431,8 @@ if(!permission_check('truck_load_for_delivery')){
          if (data == 'N/A') {
            tr.find(".quantity_offer").val(data);
          }else{
-
            var offer_integer = parseInt(quantity / data.packet_qty);
            tr.find(".quantity_offer").val(offer_integer * data.product_qty);
-
          }
          
         }

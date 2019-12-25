@@ -78,7 +78,6 @@ if (isset($_POST['submit'])) {
 	$vehicle_type= $_POST['vehicle_type'];
 	$loading_date= $_POST['loading_date'];
 
-
 	$product_id= $_POST['product_id'];
 	$products_name = $_POST['products_name'];
 	$category = $_POST['category'];

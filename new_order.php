@@ -141,7 +141,7 @@ if (!permission_check('new_order')) {
   <div class="col-md-6 col-6">
    <!-- <select class="form-control" id="invoice_option" name="invoice_option" required=""> -->
      <?php
-     $query = "SELECT * FROM new_order_details ORDER BY serial_no DESC LIMIT 1";
+     $query = "SELECT * FROM order_delivery ORDER BY serial_no DESC LIMIT 1";
      $get_order = $dbOb->select($query);
      $today = date("Ymd");
      if ($get_order) {
@@ -173,17 +173,24 @@ if (!permission_check('new_order')) {
 </div>
 
 
-<div class="form-group row">
+<div class="form-group row" style="display:none">
   <label class="col-md-3 col-6 control-label" for="inputDefault">Vehicle Reg. No<span class="required" style="color: red">*</span></label>
   <div class="col-md-6 col-6">
     <input type="text"  name="vehicle_reg_no" id="vehicle_reg_no"  required="" class="form-control vehicle_reg_no " readonly="">
   </div>
 </div>
 
-<div class="form-group row">
+<div class="form-group row" style="display:none">
   <label class="col-md-3 col-6 control-label" for="inputDefault">Vehicle Name<span class="required" style="color: red">*</span></label>
   <div class="col-md-6 col-6">
     <input type="text"  name="vehicle_name" id="vehicle_name"  required="" class="form-control vehicle_name " readonly="">
+  </div>
+</div>
+
+<div class="form-group row" style="display:none">
+  <label class="col-md-3 col-6 control-label" for="inputDefault">Truck Load Serial No<span class="required" style="color: red">*</span></label>
+  <div class="col-md-6 col-6">
+    <input type="text"  name="truck_load_serial_no" id="truck_load_serial_no"  required="" class="form-control truck_load_serial_no " readonly="">
   </div>
 </div>
 
@@ -266,32 +273,7 @@ if (!permission_check('new_order')) {
 </div>
 
 
-<div class="form-group row">
-  <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
-  <div class="col-md-6 col-6">
-       <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
-        <option value="">Please Select One</option>
-        <?php
 
-        $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-        $get_ware_house = $dbOb->select($query);
-        if ($get_ware_house) {
-          while ($row = $get_ware_house->fetch_assoc()) {
-
-           ?>
-           <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
-            echo "selected";
-          } ?>
-          ><?php echo $row['ware_house_name']; ?></option>
-          <?php
-        }
-      }
-
-      ?>
-
-  </select>
-  </div>
-</div>
 
 
 
@@ -321,8 +303,8 @@ if (!permission_check('new_order')) {
   </div>
 </div>
 
-<div class="form-group row">
-  <label class="col-md-3 col-6 control-label" for="inputDefault">Shop Name <span class="required" style="color: red">*</span></label>
+<div class="form-group row" style="display:none">
+  <label class="col-md-3 col-6 control-label" for="inputDefault" >Shop Name <span class="required" style="color: red">*</span></label>
   <div class="col-md-6 col-6">
     <input type="text" class="form-control" id="shop_name" name="shop_name" readonly>
   </div>
@@ -423,16 +405,25 @@ if ($get_invoice) {
   </div>
 
 
-
-
-
-
-
   
   <div class="form-group">
     <label class="col-md-3 control-label" for="net_payable_amt">Net Payable Amount(৳)</label>
     <div class="col-md-6">
       <input type="text" class="form-control" id="net_payable_amt" name="net_payable_amt" readonly="" value="0">
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="pay">Paid Amount(৳)</label>
+    <div class="col-md-6">
+      <input type="number" min="0" step="1" class="form-control" id="pay" name="pay">
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="due">Due Amount(৳)</label>
+    <div class="col-md-6">
+      <input type="number" min="0" class="form-control" id="due" name="due" readonly="" value="0">
     </div>
   </div>
 
@@ -504,7 +495,7 @@ if ($get_invoice) {
 
       var tr=$(this).parent().parent();
       var products_id_no_get_info =tr.find("#products_id_no").val();
-
+      var vehicle_reg_no_get_info = $("#vehicle_reg_no").val();
       var qty = tr.find("#qty").val();
       if (isNaN(qty) || qty == '') {
         qty = 0;
@@ -512,32 +503,31 @@ if ($get_invoice) {
 
       $.ajax({
         url:"ajax_new_order.php",
-        data:{products_id_no_get_info:products_id_no_get_info},
+        data:{products_id_no_get_info:products_id_no_get_info,vehicle_reg_no_get_info:vehicle_reg_no_get_info},
         type:"post",
         dataType:'json',
         success:function(data){
-          tr.find(".products_name").val(data.products.products_name);
-          tr.find(".pack_size").val(data.products.pack_size);
-          tr.find(".sell_price").val(data.products.sell_price);
-          
-     
-          var total_price = (data.products.sell_price * qty) ;
 
+          if (data.type == 'warning') {
+               swal({
+                title: data.type,
+                text: data.message,
+                icon: data.type,
+                button: "Done",
+              });
+          tr.find(".products_name").val('');
+          }
+
+          tr.find(".sell_price").val(data.products.sell_price);
+          tr.find(".products_name").val(data.products.products_name);
+          var total_price = (data.products.sell_price * qty) ;
           tr.find(".total_price").val(total_price );
 
           tr.find("#qty").attr("readonly", false);
-          tr.find("#qty").attr("placeholder", data.products.quantity);
-          tr.find("#qty").attr("data-available", data.products.quantity);
+          tr.find("#qty").attr("placeholder", data.load_qty);
+          tr.find("#qty").attr("data-available", data.load_qty);
           tr.find("#qty").focus();
 
-          if (data.products.quantity <= $("#product_warning_qty").val()) {
-            swal({
-              title: 'warning',
-              text: 'REMEMBER: Available Product Quantity Is '+data.products.quantity,
-              icon: 'warning',
-              button: "Done",
-            });
-          }
           cal();
         }
       });
@@ -550,6 +540,7 @@ if ($get_invoice) {
 
       var tr=$(this).parent().parent();
       var products_id_no_get_info =tr.find("#products_id_no").val();
+      var vehicle_reg_no_get_info = $("#vehicle_reg_no").val();
       var confirm_availability = false;
       var product_all_id = []
       var i = 0;
@@ -586,34 +577,34 @@ if ($get_invoice) {
         var discount_on_mrp = $("#discount_on_mrp").val();
         var vat = $("#vat").val();
 
-      // console.log(tr);
-      // tr.find(".main_category").val(products_id_no);
-      // console.log(qty);
       $.ajax({
         url:"ajax_new_order.php",
-        data:{products_id_no_get_info:products_id_no_get_info},
+         data:{products_id_no_get_info:products_id_no_get_info,vehicle_reg_no_get_info:vehicle_reg_no_get_info},
         type:"post",
         dataType:'json',
         success:function(data){
-          tr.find(".products_name").val(data.products.products_name);
-          tr.find(".pack_size").val(data.products.pack_size);
+          
+         
+          if (data.type == 'warning') {
+               swal({
+                title: data.type,
+                text: data.message,
+                icon: data.type,
+                button: "Done",
+              });
+          tr.find(".products_name").val('');
+          }
+
           tr.find(".sell_price").val(data.products.sell_price);
+          tr.find(".products_name").val(data.products.products_name);
           var total_price = (data.products.sell_price * qty) ;
           tr.find(".total_price").val(total_price );
-          
+
           tr.find("#qty").attr("readonly", false);
-          tr.find("#qty").attr("placeholder", data.products.quantity);
-          tr.find("#qty").attr("data-available", data.products.quantity);
+          tr.find("#qty").attr("placeholder", data.load_qty);
+          tr.find("#qty").attr("data-available", data.load_qty);
           tr.find("#qty").focus();
 
-          if (data.products.quantity <= $("#product_warning_qty").val()) {
-            swal({
-              title: 'warning',
-              text: 'REMEMBER: Available Product Quantity Is '+data.products.quantity,
-              icon: 'warning',
-              button: "Done",
-            });
-          }
           cal();
         }
       });
@@ -672,7 +663,7 @@ if ($get_invoice) {
     if (quantity > available) {
        swal({
               title: 'warning',
-              text: 'Sell Quantity Is Out Of Stock',
+              text: 'The Quantity You Have Entered Is Not Available In The Truck',
               icon: 'warning',
               button: "Done",
             });
@@ -690,7 +681,42 @@ if ($get_invoice) {
       }
       var total_price =  ( sell_price * quantity) ;
       tr.find(".total_price").val(total_price);
+
+      var product_id = tr.find(".product_id").val();
+       $.ajax({
+        url:'ajax_truck_load.php',
+        data:{product_id_check:product_id},
+        type:'POST',
+        dataType:'json',
+        success:function(data){
+         if (data == 'N/A') {
+           tr.find(".offer_qty").val(data);
+         }else{
+           var offer_integer = parseInt(quantity / data.packet_qty);
+           tr.find(".offer_qty").val(offer_integer * data.product_qty);
+         }
+         
+        }
+      });
      
+      cal();
+  });
+
+  $(document).on('keyup blur change','#pay',function(){
+   console.log();
+   console.log($("#net_payable_amt").val());
+     var pay = parseFloat($(this).val());
+     var payable  = parseFloat($("#net_payable_amt").val());
+     if (pay > payable) {
+        swal({
+              title: 'warning',
+              text: 'Pay Amount Cannot Be Greater Than The Payable Amt',
+              icon: 'warning',
+              button: "Done",
+            });
+        $(this).val(0);
+        $("#due").val(payable);
+     }
       cal();
   });
 
@@ -700,21 +726,21 @@ if ($get_invoice) {
   function cal()
   {
         var net_total =0;
+        var paid = $("#pay").val();
+        if (isNaN(paid) || paid == '' ) {
+          paid = 0;
+        }
 
         $(".total_price").each(function(){
           net_total=(net_total+($(this).val()*1));
-
         });
         $("#net_payable_amt").val(net_total);
-
-      }
-
+        $("#due").val(net_total - paid);
 
 
-  
-  
-  
-  
+  }
+
+
   // discount calculation
   $(document).on('keyup blur','#discount',function(){
     var discount = $(this).val();
@@ -754,30 +780,12 @@ if ($get_invoice) {
       type:'POST',
       dataType:'json',
       success:function(data){
-        if (data.sales_man_id) {
           $("#customer_name").val(data.client_name);
           $("#shop_name").val(data.organization_name);
           $('#address').val(data.address);
           $("#mobile_no").val(data.mobile_no);
           $(".employee_id").val(data.sales_man_id);
           $(".employee_name").val(data.sales_man_name);
-        }else{
-          swal({
-            title: 'warning',
-            text: 'Sales Man Not Assigned In The Shop "'+data.organization_name+'". Please Assign A Sales Man.',
-            icon: 'warning',
-            button: "Done",
-          });
-          $("#customer_name").val('');
-          $("#cust_id").val('');
-          $("#shop_name").val('');
-          $('#address').val('');
-          $("#mobile_no").val('');
-          $(".employee_id").val('');
-          $(".employee_name").val('');
-
-        }
-        
       }
     });
   });
@@ -836,10 +844,12 @@ if ($get_invoice) {
               });
             $("#vehicle_reg_no").val('');
             $("#vehicle_name").val('');
+            $("#truck_load_serial_no").val('');
           }
           $("#delivery_employee_name").val(data.delivery_emp_name);
           $("#vehicle_reg_no").val(data.vehicle.vehicle_reg_no);
           $("#vehicle_name").val(data.vehicle.vehicle_name);
+          $("#truck_load_serial_no").val(data.vehicle.serial_no);
           // $(".employee_id").val(emp_id);
         }
       });
@@ -899,6 +909,7 @@ if ($get_invoice) {
           $("#vehicle_reg_no").val(data.vehicle.vehicle_reg_no);
           //  alert(data.vehicle);
           $("#vehicle_name").val(data.vehicle.vehicle_name);
+          $("#truck_load_serial_no").val(data.vehicle.serial_no);
         }
       });
   

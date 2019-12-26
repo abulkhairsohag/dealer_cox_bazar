@@ -183,7 +183,9 @@ if ($user_type == "employee") {
                 <li><a href="truck_load.php"><i class="fas fa-arrow-right"></i> Truck Load For Delivery</a></li>
                 <?php 
         
-         }
+         }?>
+           <li><a href="truck_unload.php"><i class="fas fa-arrow-left"></i> Unload Truck After Delivery</a></li>  
+         <?php
           if (permission_check('take_back_market_product_return')) {
             ?>
                 <li><a href="store_market_return_product.php"><i class="fas fa-arrow-left"></i> Take Back Market Return Product</a></li>
@@ -360,19 +362,19 @@ if ($user_type == "employee") {
                  <?php
               if (permission_check('account_report')) {
                 ?>
-                <li><a href="accounts_report.php"><i class="fas fa-dollar"></i> Accounts Report</a></li>
+                <!-- <li><a href="accounts_report.php"><i class="fas fa-dollar"></i> Accounts Report</a></li> -->
                 <?php } 
 
               if (permission_check('product_report')) {
                 ?>
-                <li><a href="product_report.php"><i class="fas fa-truck-loading"></i> Products Report</a></li>
+                <!-- <li><a href="product_report.php"><i class="fas fa-truck-loading"></i> Products Report</a></li> -->
                 <?php } 
 
               
 
               if (permission_check('market_report')) {
                 ?>
-                <li><a href="market_report.php"><i class="fas fa-map-marker-alt"></i> Market Report</a></li>
+                <!-- <li><a href="market_report.php"><i class="fas fa-map-marker-alt"></i> Market Report</a></li> -->
                 <?php } 
 
                 ?>
@@ -386,10 +388,11 @@ if ($user_type == "employee") {
 
               if (permission_check('employee_report')) {
                 ?>
-                <li><a href="employee_report.php"><i class="fas fa-user"></i> Employee Report</a></li>
+                <!-- <li><a href="employee_report.php"><i class="fas fa-user"></i> Employee Report</a></li> -->
                 <?php } 
                 ?>
-                 <li><a href="customer_report.php"><i class="fas fa-user"></i> Customer Report</a></li>
+                 <!-- <li><a href="customer_report.php"><i class="fas fa-user"></i> Customer Report</a></li> -->
+                  <li><a href="ware_house_wise_report.php"><i class="fas fa-user"></i> Zone Wise Report</a></li>
               </ul>
             </li>
 

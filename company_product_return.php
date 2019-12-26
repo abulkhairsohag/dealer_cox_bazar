@@ -68,7 +68,7 @@ if(!permission_check('company_product_return')){
                     <td><?php echo strtoupper($row['products_id_no']); ?></td>
                     <td><?php echo $row['products_name']; ?></td>
                     <td><?php echo $row['company']; ?></td>
-                    <td><?php echo $row['dealer_price']; ?></td>
+                    <td><?php echo $row['company_price']; ?></td>
                     <td><?php echo $row['return_quantity']; ?></td>
                     <td><?php echo $row['total_price']; ?></td>
                     <td><?php echo $row['return_reason']; ?></td>
@@ -204,7 +204,7 @@ if(!permission_check('company_product_return')){
                       <div class="form-group">
                         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Per Dealer Price </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text"  id="dealer_price" name="dealer_price" class="form-control col-md-7 col-xs-12" readonly="">
+                          <input type="text"  id="company_price" name="company_price" class="form-control col-md-7 col-xs-12" readonly="">
                         </div>
                       </div>
 
@@ -311,7 +311,7 @@ if(!permission_check('company_product_return')){
           $("#products_name").val(data.return_info.products_name);
           $("#company").val(data.return_info.company);
           $("#current_quantity").val(data.current_quantity);
-          $("#dealer_price").val(data.return_info.dealer_price);
+          $("#company_price").val(data.return_info.company_price);
           $("#return_quantity").val(data.return_info.return_quantity);
           $("#total_price").val(data.return_info.total_price);
           $("#return_reason").val(data.return_info.return_reason);
@@ -334,7 +334,7 @@ if(!permission_check('company_product_return')){
       $("#products_name").val('');
       $("#company").val('');
       $("#current_quantity").val('');
-      $("#dealer_price").val('');
+      $("#company_price").val('');
       $("#return_quantity").val('');
       $("#total_price").val('');
       $("#return_reason").val('');
@@ -358,7 +358,7 @@ if(!permission_check('company_product_return')){
           $("#products_name").val(data.products_name);
           $("#company").val(data.company);
           $("#current_quantity").val(data.quantity);
-          $("#dealer_price").val(data.company_price);
+          $("#company_price").val(data.company_price);
           return_quty_test(); 
           cal();
         }
@@ -471,10 +471,10 @@ function get_data_table(){
 
 // calculating the total price of the return quantity
 function cal(){
-  var dealer_price = $("#dealer_price").val();
+  var company_price = $("#company_price").val();
   var return_quantity = $("#return_quantity").val();
 
-  var total_price = dealer_price * return_quantity;
+  var total_price = company_price * return_quantity;
   $("#total_price").val(total_price);
 }
 

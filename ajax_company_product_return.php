@@ -65,7 +65,7 @@ if (isset($_POST['submit'])) {
 	$products_name = $_POST['products_name'];
 	$company = $_POST['company'];
 	$products_id_no = $_POST['products_id_no'];
-	$dealer_price = $_POST['dealer_price'];
+	$company_price = $_POST['company_price'];
 	$return_quantity = $_POST['return_quantity'];
 	$total_price = $_POST['total_price'];
 	$return_reason = $_POST['return_reason'];
@@ -97,12 +97,19 @@ if (isset($_POST['submit'])) {
 			$x_return_quantity = $get_company_products_return_info["return_quantity"];
 			$available_qty = (int)$get_products_qty['quantity'] + (int)$x_return_quantity - (int)$return_quantity;
 
-			$query_product_update = "UPDATE products set quantity = '$available_qty' WHERE products_id_no = '$products_id_no'";
+			$query_product_update = "UPDATE products set 
+			quantity = '$available_qty'
+			WHERE products_id_no = '$products_id_no'";
 			$update_products = $dbOb->update($query_product_update);
 			if ($update_products) {
 				
 				$return_quantity = -1 * (int)$return_quantity;
-				$query_stock_update  = "UPDATE product_stock SET quantity = $return_quantity WHERE company_product_return_id= '$edit_id'";
+				$query_stock_update  = "UPDATE product_stock SET 
+				quantity = $return_quantity,
+				company_price = $company_price,
+				ware_house_serial_no = '$ware_house_serial_no',
+				ware_house_name = '$ware_house_name'
+				 WHERE company_product_return_id= '$edit_id'";
 				$update_stock = $dbOb->update($query_stock_update);
 				if ($update_stock) {
 					$message = "Congratulations ! Information is  Updated.";
@@ -123,22 +130,24 @@ if (isset($_POST['submit'])) {
 		}
 	}else{ // now inserting data into database 
 		$query = "INSERT INTO `company_products_return` 
-		(products_id_no,products_name,company,dealer_price,return_quantity,total_price,return_reason,description,return_date,ware_house_serial_no,ware_house_name) 
+		(products_id_no,products_name,company,company_price,return_quantity,total_price,return_reason,description,return_date,ware_house_serial_no,ware_house_name) 
 		VALUES 
-		('$products_id_no','$products_name','$company','$dealer_price','$return_quantity','$total_price','$return_reason','$description','$return_date','$ware_house_serial_no','$ware_house_name')";
+		('$products_id_no','$products_name','$company','$company_price','$return_quantity','$total_price','$return_reason','$description','$return_date','$ware_house_serial_no','$ware_house_name')";
 		$last_insert_id = $dbOb->custom_insert($query);
 		if ($last_insert_id) {
 			$query_get_product = "SELECT quantity FROM products WHERE products_id_no = '$products_id_no'";
 			$get_products_qty = $dbOb->find($query_get_product);
 			$available_qty = $get_products_qty['quantity'] - $return_quantity;
 
-			$query_product_update = "UPDATE products set quantity = '$available_qty' WHERE products_id_no = '$products_id_no'";
+			$query_product_update = "UPDATE products set 
+			quantity = '$available_qty'
+			 WHERE products_id_no = '$products_id_no'";
 			$update_products = $dbOb->update($query_product_update);
 
 			$return_quantity = -1 * (int)$return_quantity;
-			$query_stock_insert  = "INSERT `product_stock` (company_product_return_id,products_id_no,quantity,stock_date)
+			$query_stock_insert  = "INSERT `product_stock` (company_product_return_id,products_id_no,quantity,stock_date,company_price,ware_house_serial_no,ware_house_name)
 			VALUES 
-			('$last_insert_id','$products_id_no','$return_quantity','$return_date') ";
+			('$last_insert_id','$products_id_no','$return_quantity','$return_date','$company_price','$ware_house_serial_no','$ware_house_name') ";
 			$insert_stock = $dbOb->insert($query_stock_insert);
 			if ($update_products && $insert_stock) {
 				$message = "Congratulations! Information is successfully saved.";
@@ -213,7 +222,7 @@ if (isset($_POST["sohag"])) {
 				<td><?php echo strtoupper($row['products_id_no']); ?></td>
 				<td><?php echo $row['products_name']; ?></td>
 				<td><?php echo $row['company']; ?></td>
-				<td><?php echo $row['dealer_price']; ?></td>
+				<td><?php echo $row['company_price']; ?></td>
 				<td><?php echo $row['return_quantity']; ?></td>
 				<td><?php echo $row['total_price']; ?></td>
 				<td><?php echo $row['return_reason']; ?></td>

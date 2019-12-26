@@ -43,10 +43,10 @@ if(!permission_check('paid_and_delivered')){
                 <th style="text-align: center;">Sl No.</th>
                 <th style="text-align: center;">Order Number</th>
                 <th style="text-align: center;">Shop Name</th>
+                <th style="text-align: center;">Zone Name</th>
                 <th style="text-align: center;">Area</th>
                 <th style="text-align: center;">Payable</th>
                 <th style="text-align: center;">Paid</th>
-                <th style="text-align: center;">Order</th>
                 <th style="text-align: center;">Delivery</th>
                 <th style="text-align: center;">Action</th>
               </tr>
@@ -71,10 +71,10 @@ if(!permission_check('paid_and_delivered')){
                     <td><?php echo $i; ?></td>
                     <td><?php echo $row['order_no']; ?></td>
                     <td><?php echo $row['shop_name']; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['area']; ?></td>
                     <td><?php echo $row['payable_amt']; ?></td>
                     <td><?php echo $row['pay']; ?></td>
-                    <td><?php echo $row['order_date']; ?></td>
                     <td><?php echo $row['delivery_date']; ?></td>
                     <td align="center">
                       
@@ -84,11 +84,7 @@ if(!permission_check('paid_and_delivered')){
                         <a class="badge  bg-blue view_data  " id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#view_modal">view </a>
                       <?php } ?> 
                       
-                      <?php
-                       if (permission_check('paid_and_delivered_invoice_button')) {
-                      ?>
-                      <a href='delivery-invoice.php?serial_no=<?php echo($row['serial_no']) ?>&aksohagsoftwareengineer="sattit2019"' class="badge  bg-orange " >Invoice </a>
-                       <?php } ?>
+                    
                     </td>
                   </tr>
 
@@ -235,29 +231,22 @@ if(!permission_check('paid_and_delivered')){
 
 
 
-
-
-
                                   <div class="row" style="margin-top:10px"><div class="col"> <h3 style="color:  #34495E">Order Information</h3><hr></div></div>
 
 
                                   <div class="table-responsive">
                                     <table class="table table-striped mb-none">
-                                      <thead style="background: green">
-                                        <tr style="color: white">
-                                          <th>#</th>
-                                          <th>ID</th>
-                                          <th>Name</th>
-                                          <th>Pack Size</th>
-                                          <th>Unit TP</th>
-                                          <th>Unit VAT</th>
-                                          <th>TP + VAT</th>
-                                          <th>QTY</th>
-                                          <th>Total TP</th>
-                                          <th>Total VAT</th>
-                                          <th class="text-right">Total Price (৳)</th>
-                                        </tr>
-                                      </thead>
+                                       <thead style="background: green">
+                                          <tr style="color: white">
+                                            <th>#</th>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Sell Price</th>
+                                            <th>Sell QTY(Packet)</th>
+                                            <th>Offer QTY(PCS)</th>
+                                            <th class="text-right">Total Price (৳)</th>
+                                          </tr>
+                                        </thead>
                                       <tbody id="order_table">
 
 
@@ -269,10 +258,6 @@ if(!permission_check('paid_and_delivered')){
 
 
                                 </div>   <!-- End of info table  -->
-
-
-
-
 
 
 

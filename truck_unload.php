@@ -33,7 +33,7 @@ if(!permission_check('unload_truck_after_delivery')){
         <div class="x_content">
 
           <!-- form starts form here -->
-          <form class="form-horizontal form-bordered" id="summery_form" action="" method="post">
+          <form class="form-horizontal form-bordered" id="add_data_form" action="" method="post">
 
 
             <div class="form-group bg-success" style="padding-bottom: 5px; margin-bottom: 30px">
@@ -45,27 +45,28 @@ if(!permission_check('unload_truck_after_delivery')){
 
 
             <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Area <span class="required" style="color: red">*</span></label>
+              <label class="col-md-3 control-label" for="inputDefault">Select A Vehicle <span class="required" style="color: red">*</span></label>
               <div class="col-md-6">
-                <select name="area_name" id="area_name" class="form-control" required="">
-                  <option value="">Select Area</option>
+                <select name="vehicle_reg_no" id="vehicle_reg_no" class="form-control" required="">
 
                   <?php 
-
-                
-
-                  $query = "SELECT * FROM area ";
-                  $get_area = $dbOb->select($query);
-                  if ($get_area) {
-                    while ($row = $get_area->fetch_assoc()) {
+                  $query = "SELECT * FROM truck_load WHERE unload_status = 0 ";
+                  $get_loaded_trucks = $dbOb->select($query);
+                  if ($get_loaded_trucks) {
+                    ?>
+                  <option value="">Please Select One</option>
+                    <?php
+                    while ($row = $get_loaded_trucks->fetch_assoc()) {
                       $area_name = $row["area_name"];
                       ?>
-                      
-                      <option value="<?php echo $area_name ?>"><?php echo $area_name ; ?></option>
-
+                      <option value="<?php echo $row['vehicle_reg_no'] ?>"><?php echo $row['vehicle_reg_no'].', '.$row['vehicle_name'] ; ?></option>
 
                       <?php
                     }
+                  }else{
+                    ?>
+                      <option value="">No Truck Is Loaded...</option>
+                    <?php
                   }
                   ?>
 
@@ -74,43 +75,7 @@ if(!permission_check('unload_truck_after_delivery')){
             </div>
 
 
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Employee ID </label>
-              <div class="col-md-6">
 
-                <input type="text" name="employee_id" id="employee_id" class="form-control"  readonly="">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Employee Name </label>
-              <div class="col-md-6">
-                <input type="text" class="form-control" id="employee_name" name="employee_name" readonly="">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Vehicle Registraton No </label>
-              <div class="col-md-6">
-                
-                <input type="text" name="vehicle_reg_no" id="vehicle_reg_no" class="form-control" readonly="">
-
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Vehicle Name </label>
-              <div class="col-md-6">
-                <input type="text" class="form-control" id="vehicle_name" name="vehicle_name" required="" readonly="">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Vehicle Type </label>
-              <div class="col-md-6">
-                <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" readonly="">
-              </div>
-            </div>
 
             <div class="form-group">
               <label class="col-md-3 control-label" for="inputDefault">Unloading Date </label>
@@ -137,7 +102,6 @@ if(!permission_check('unload_truck_after_delivery')){
 
           </form>
 
-
         </div>
       </div>
     </div>
@@ -156,67 +120,52 @@ if(!permission_check('unload_truck_after_delivery')){
   $(document).ready(function(){
 
 
-
- $(document).on('change','#employee_id', function() {
-      var id = $(this).val();
-     
-      $.ajax({
-        url:"ajax_truck_unload.php",
-        data:{id:id},
-        type:"post",
-        dataType:'json',
-        success:function(data){
-          $("#employee_name").val(data.name);
-        }
+    $(document).on('change','#vehicle_reg_no', function() {
+          var reg_no = $(this).val();
+          $.ajax({
+            url:"ajax_truck_unload.php",
+            data:{reg_no:reg_no},
+            type:"post",
+            dataType:'json',
+            success:function(data){
+           
+              $("#invoice_details").html(data.product_info);
+            }
+          });
       });
 
-    });
+  $(document).on('submit','#add_data_form',function(e){
+      e.preventDefault();
+      var formData = new FormData($("#add_data_form")[0]);
+      formData.append('submit','submit');
 
- $(document).on('change','#vehicle_reg_no', function() {
-      var reg_no = $(this).val();
-     
       $.ajax({
-        url:"ajax_truck_unload.php",
-        data:{reg_no:reg_no},
-        type:"post",
+        url:'ajax_truck_unload.php',
+        data:formData,
+        type:'POST',
         dataType:'json',
+        cache: false,
+        processData: false,
+        contentType: false,
+
         success:function(data){
-          $("#vehicle_name").val(data.vehicle_name);
-          $("#vehicle_type").val(data.type);
+           // alert('ppppp');
+           swal({
+            title: data.type,
+            text: data.message,
+            icon: data.type,
+            button: "Done",
+          });
+           if (data.type == 'success') {
+            setTimeout(function(){
+              location. reload(true)
+            },2000);
+
+
+          }
         }
       });
-
-    });
-
- $(document).on('change','#area_name', function() {
-      var area = $(this).val();
-     
-      $.ajax({
-        url:"ajax_truck_unload.php",
-        data:{area:area},
-        type:"post",
-        dataType:'json',
-        success:function(data){
-          $("#employee_id").html(data.option);
-          $("#invoice_details").html(data.product_info);
-          console.log(data)
-          $("#employee_id").val(data.load_info.employee_id);
-          $("#employee_name").val(data.load_info.emplyee_name);
-          $("#vehicle_reg_no").val(data.load_info.vehicle_reg_no);
-          $("#vehicle_name").val(data.load_info.vehicle_name);
-          $("#vehicle_type").val(data.load_info.vehicle_type);
-         
-        }
-      });
-
-    });
-
-
-
-
-    // now we are going to  insert data 
-
-
+    }); // end of insert 
 
   }); // end of document ready function 
 

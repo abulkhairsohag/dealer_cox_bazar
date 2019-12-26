@@ -96,6 +96,8 @@ if (isset($_POST['submit'])) {
 
 	$products_id_no = $_POST['products_id_no'];
 	$products_name = $_POST['products_name'];
+	$sell_price = $_POST['sell_price'];
+
 	$qty = $_POST['qty'];
 	$offer_qty = $_POST['offer_qty'];
 	$total_price = $_POST['total_price'];
@@ -123,9 +125,9 @@ if (isset($_POST['submit'])) {
 	
 
 			$query = "INSERT INTO  order_delivery_expense
-					(delivery_tbl_serial_no,products_id_no,products_name,qty,offer_qty,total_price,purchase_price,ware_house_serial_no,truck_load_serial_no,zone_serial_no,vehicle_reg_no,order_employee_id,delivery_employee_id,delivery_date)
+					(delivery_tbl_serial_no,products_id_no,products_name,sell_price,qty,offer_qty,total_price,purchase_price,ware_house_serial_no,truck_load_serial_no,zone_serial_no,vehicle_reg_no,order_employee_id,delivery_employee_id,delivery_date)
 					VALUES
-					('$last_id','$products_id_no[$i]','$products_name[$i]','$qty[$i]','$offer_qty[$i]','$total_price[$i]','$purchase_price','$ware_house_serial_no','$truck_load_serial_no','$zone_serial_no','$vehicle_reg_no','$order_employee_id','$delivery_employee_id','$delivery_date')";
+					('$last_id','$products_id_no[$i]','$products_name[$i]','$sell_price[$i]','$qty[$i]','$offer_qty[$i]','$total_price[$i]','$purchase_price','$ware_house_serial_no','$truck_load_serial_no','$zone_serial_no','$vehicle_reg_no','$order_employee_id','$delivery_employee_id','$delivery_date')";
 			$insert_order_expense = $dbOb->insert($query);
 			if ($insert_order_expense) {
 				$update_qty = $available_qty - $qty[$i];

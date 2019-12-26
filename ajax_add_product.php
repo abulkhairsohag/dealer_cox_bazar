@@ -283,14 +283,21 @@ if (isset($_POST['submit_stock'])) {
 	$total_quantity 	  = $_POST['total_quantity'];
 	$stock_date 	  	  = $_POST['stock_date'];
 	$company_price_stock  = $_POST['company_price_stock'];
+	$ware_house_serial_no  = $_POST['ware_house_serial_no'];
+	$ware_house_name = '';
+	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
+	$get_ware_house = $dbOb->select($query);
+	if ($get_ware_house) {
+		$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
+	}
 
 	$query = "UPDATE `products` SET quantity = '$total_quantity', company_price = '$company_price_stock' WHERE products_id_no = '$products_id_no_stock'";
 	$update = $dbOb->update($query);
 	if ($update) {
 		// $stock_date = date('d-m-Y');
-		$query = "INSERT INTO `product_stock` (products_id_no,quantity,stock_date,company_price)
+		$query = "INSERT INTO `product_stock` (products_id_no,quantity,stock_date,company_price,ware_house_serial_no,ware_house_name)
 		VALUES 
-		('$products_id_no_stock','$new_quantity','$stock_date','$company_price_stock')";
+		('$products_id_no_stock','$new_quantity','$stock_date','$company_price_stock','$ware_house_serial_no','$ware_house_name')";
 		$insert = $dbOb->insert($query);
 		if ($insert) {
 			$message = "Congratulations! Information Is Successfully Saved";

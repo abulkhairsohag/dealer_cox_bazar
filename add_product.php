@@ -206,6 +206,33 @@ if (!permission_check('add_product')) {
                     </div>
                   </div>
 
+                  <div class="form-group row">
+    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+    <div class="col-md-6 col-6">
+        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
+          <option value="">Please Select One</option>
+          <?php
+
+          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+          $get_ware_house = $dbOb->select($query);
+          if ($get_ware_house) {
+            while ($row = $get_ware_house->fetch_assoc()) {
+
+            ?>
+            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+              echo "selected";
+            } ?>
+            ><?php echo $row['ware_house_name']; ?></option>
+            <?php
+          }
+        }
+
+        ?>
+
+    </select>
+    </div>
+  </div>
+
                   <div class="ln_solid"></div>
                   <div class="form-group">
                     <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
@@ -419,64 +446,7 @@ if (!permission_check('add_product')) {
 
 
 <!-- the following modal is for updating original price of product -->
-<div class="modal fade" id="update_original_price_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg " role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="background: #006666">
-        <h3 class="modal-title" id="ModalLabelAdd" style="color: white">Update Original Price</h3>
-        <div style="float:right;">
 
-        </div>
-      </div>
-      <div class="modal-body">
-
-        <div class="row">
-          <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel" style="background: #f2ffe6">
-
-              <div class="x_content" style="background: #f2ffe6">
-                <br />
-                <!-- Form starts From here  -->
-                <form id="update_original_price_form" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
-
-
-
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Original Price<span class="required" style="color: red">*</span>
-                    </label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="number"  required=""id="original_price" name="original_price"  class="form-control col-md-7 col-xs-12">
-                    </div>
-                  </div>
-
-
-
-
-                  <div style="display: none;">
-                    <input type="number" id="product_id_orig_price" name="product_id_orig_price">
-                  </div>
-
-                  <div class="ln_solid"></div>
-                  <div class="form-group">
-                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                      <button type="reset" class="btn btn-primary" >Reset</button>
-                      <button type="submit" class="btn btn-success" id="submit_button">Update</button>
-                    </div>
-                  </div>
-
-
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 <!-- End of update original price of a product -->
 
 <!-- Modal For Showing data  -->
@@ -928,6 +898,20 @@ if (!permission_check('add_product')) {
       }
     });
 
+  });
+
+
+    $(document).on('change','#ware_house_serial_no',function(){
+     var ware_house_serial_no = $(this).val();
+     $.ajax({
+        url:'ajax_new_order.php',
+        data:{ware_house_serial_no:ware_house_serial_no},
+        type:'POST',
+        dataType:'json',
+        success:function(data){
+          // $("#cust_id").html(data);
+        }
+      });
   });
 
   }); // end of document ready function

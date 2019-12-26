@@ -65,7 +65,12 @@ if (isset($_POST['submit'])) {
 	}
 
 	$employee_id = $_POST['delivery_employee_id'];
-	$emplyee_name =  $_POST['delivery_employee_name'];
+	$emplyee_name =  "";
+	$query = "SELECT * FROM employee_main_info WHERE id_no = '$employee_id'";
+	$get_emp = $dbOb->select($query);
+	if ($get_emp) {
+		$emplyee_name = $get_emp->fetch_assoc()['name'];
+	}
 	$query = "SELECT * FROM truck_load WHERE employee_id = '$employee_id' AND unload_status = 0 ";
 	$get_duplicate = $dbOb->select($query);
 	if ($get_duplicate) {

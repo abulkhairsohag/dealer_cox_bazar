@@ -8,7 +8,7 @@ if(!permission_check('unpaid_but_delivered')){
   </script>
   <?php 
 }
- ?>
+?>
 
 <div class="right_col" role="main">
   <div class="row">
@@ -51,11 +51,11 @@ if(!permission_check('unpaid_but_delivered')){
                 <th style="text-align: center;">Sl No.</th>
                 <th style="text-align: center;">Order Number</th>
                 <th style="text-align: center;">Shop Name</th>
+                <th style="text-align: center;">Zone Name</th>
                 <th style="text-align: center;">Area</th>
                 <th style="text-align: center;">Payable</th>
                 <th style="text-align: center;">Paid</th>
                 <th style="text-align: center;">Due</th>
-                <th style="text-align: center;">Order</th>
                 <th style="text-align: center;">Delivery</th>
                 <th style="text-align: center;">Action</th>
               </tr>
@@ -80,32 +80,31 @@ if(!permission_check('unpaid_but_delivered')){
                     <td><?php echo $i; ?></td>
                     <td><?php echo $row['order_no']; ?></td>
                     <td><?php echo $row['shop_name']; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['area']; ?></td>
                     <td><?php echo $row['payable_amt']; ?></td>
                     <td><?php echo $row['pay']; ?></td>
                     <td><?php echo $row['due']; ?></td>
-                    <td><?php echo $row['order_date']; ?></td>
                     <td><?php echo $row['delivery_date']; ?></td>
                     <td align="center">
-                      
-                  
-                        <a class="badge  bg-blue view_data  " id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#view_modal">view </a>
-                      
-                      <?php  if (permission_check('unpaid_but_delivered_invoice_button')) { ?>
-                      <a href='delivery-invoice.php?serial_no=<?php echo($row['serial_no']) ?>&aksohagsoftwareengineer="sattit2019"' class="badge  bg-orange " >Invoice </a>
-                      <?php }
-                      if (permission_check('unpaid_but_delivered_pay_button')) {
-                      ?>
 
-                     <a class="badge  bg-green pay " id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#pay_modal">Pay </a>
-                     <?php 
+
+                      <a class="badge  bg-blue view_data  " id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#view_modal">view </a>
+                      
+                          
+                      <?php 
+                      if (permission_check('unpaid_but_delivered_pay_button')) {
+                        ?>
+
+                        <a class="badge  bg-green pay " id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#pay_modal">Pay </a>
+                        <?php 
                       }
                       if (permission_check('unpaid_but_delivered_cancel_order_button')) {
-                        
+
                         if ($row['pay'] > 0) {
                          $sohag = 'cannot cancel';
-                        }else{
-                      
+                       }else{
+
 
                         ?>
                         <a  class="badge bg-red cancel_order " style="margin-top:5px" data-delivery_tbl_serial_no="<?php echo($row['serial_no']) ?>" data-order_tbl_serial_no="<?php echo($row['order_tbl_serial_no']) ?>">  Cancel Order</a>
@@ -227,191 +226,179 @@ if(!permission_check('unpaid_but_delivered')){
                           <div class="col-md-3"><h5 style="color:black" id="cust_id"></h4></div>
                             <div class="col-md-3"></div>
                           </div>
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Customer Name</h4></div>
-                          <div class="col-md-3"><h5 style="color:black" id="customer_name"></h4></div>
-                            <div class="col-md-3"></div>
-                          </div>
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Shop Name</h4></div>
-                          <div class="col-md-3"><h5 style="color:black" id="shop_name"></h4></div>
-                            <div class="col-md-3"></div>
-                          </div>
-
                           <div class="row" style="margin-top:10px" >
                             <div class="col-md-3"></div>
-                            <div class="col-md-3"><h5 style="color:black">Address</h4></div>
-                              <div class="col-md-3"><h5 style="color:black" id="address"></h4></div>
+                            <div class="col-md-3"><h5 style="color:black">Customer Name</h4></div>
+                              <div class="col-md-3"><h5 style="color:black" id="customer_name"></h4></div>
                                 <div class="col-md-3"></div>
                               </div>
-
                               <div class="row" style="margin-top:10px" >
                                 <div class="col-md-3"></div>
-                                <div class="col-md-3"><h5 style="color:black">Mobile Number</h4></div>
-                                  <div class="col-md-3"><h5 style="color:black" id="mobile_no"> </h4></div>
+                                <div class="col-md-3"><h5 style="color:black">Shop Name</h4></div>
+                                  <div class="col-md-3"><h5 style="color:black" id="shop_name"></h4></div>
                                     <div class="col-md-3"></div>
                                   </div>
 
+                                  <div class="row" style="margin-top:10px" >
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-3"><h5 style="color:black">Address</h4></div>
+                                      <div class="col-md-3"><h5 style="color:black" id="address"></h4></div>
+                                        <div class="col-md-3"></div>
+                                      </div>
+
+                                      <div class="row" style="margin-top:10px" >
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-3"><h5 style="color:black">Mobile Number</h4></div>
+                                          <div class="col-md-3"><h5 style="color:black" id="mobile_no"> </h4></div>
+                                            <div class="col-md-3"></div>
+                                          </div>
 
 
 
 
 
-                                  <div class="row" style="margin-top:10px"><div class="col"> <h3 style="color:  #34495E">Order Information</h3><hr></div></div>
+
+                                          <div class="row" style="margin-top:10px"><div class="col"> <h3 style="color:  #34495E">Order Information</h3><hr></div></div>
 
 
-                                  <div class="table-responsive">
-                                    <table class="table table-striped mb-none">
-                                      <thead style="background: green">
-                                        <tr style="color: white">
-                                          <th>#</th>
-                                          <th>ID</th>
-                                          <th>Name</th>
-                                          <th>Pack Size</th>
-                                          <th>Unit TP</th>
-                                          <th>Unit VAT</th>
-                                          <th>TP + VAT</th>
-                                          <th>QTY</th>
-                                          <th>Total TP</th>
-                                          <th>Total VAT</th>
-                                          <th class="text-right">Total Price (৳)</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody id="order_table">
+                                          <div class="table-responsive">
+                                            <table class="table table-striped mb-none">
+                                              <thead style="background: green">
+                                                <tr style="color: white">
+                                                  <th>#</th>
+                                                  <th>ID</th>
+                                                  <th>Name</th>
+                                                  <th>Sell Price</th>
+                                                  <th>Sell QTY(Packet)</th>
+                                                  <th>Offer QTY(PCS)</th>
+                                                  <th class="text-right">Total Price (৳)</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody id="order_table">
 
 
 
-                                      </tbody>
-                                    </table>
+                                              </tbody>
+                                            </table>
+                                          </div>
+
+                                        </div>   <!-- End of info table  -->
+
+                                      </div>
+                                    </div>
                                   </div>
-
-                                </div>   <!-- End of info table  -->
-
+                                </div>  
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                               </div>
                             </div>
                           </div>
-                        </div>  
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                      </div>
-                    </div>
-                  </div>
-                </div> <!-- End of modal for  Showing data-->
+                        </div> <!-- End of modal for  Showing data-->
 
 
 
-    
-    
-  <!-- Modal For Paying due  -->
-    <div class="modal fade" id="pay_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog " style="width: 700px" role="document">
-        <div class="modal-content">
-          <div class="modal-header" style="background: #006666">
-            <h3 class="modal-title" id="ModalLabel" style="color: white">Pay The Due</h3>
-            <div style="float:right;">
-
-            </div>
-          </div>
-          <div class="modal-body">
-
-            <div class="row">
-              <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel" style="background: #f2ffe6">
-
-                  <div class="x_content" style="background: #f2ffe6">
-                    <br />
 
 
-                <div class="row">
+                        <!-- Modal For Paying due  -->
+                        <div class="modal fade" id="pay_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog " style="width: 700px" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header" style="background: #006666">
+                                <h3 class="modal-title" id="ModalLabel" style="color: white">Pay The Due</h3>
+                                <div style="float:right;">
 
-                  <div class="col-md-2"></div>
-                  <div class="col-md-8">
-                    
-                  <form action="" action="POST" id="pay_due_form">
-                    <div class="form-group">
-                      <label for="total_due">Deliver Order Serial No</label>
-                      <input type="text" class="form-control" name="deliver_order_serial_no" id="deliver_order_serial_no" readonly>
-                    </div>
-                    <div class="form-group">
-                      <label for="total_due">Total Due</label>
-                      <input type="text" class="form-control" name="total_due" id="total_due" readonly>
-                    </div>
-                    <div class="form-group">
-                      <label for="pay_amt">Pay Amount</label>
-                      <input type="number" min="0" class="form-control" name="pay_amt" id="pay_amt" required="">
-                    </div>
-                    <div class="form-group">
-                      <label for="current_due">Current Due</label>
-                      <input type="text" class="form-control" name="current_due" id="current_due" readonly>
-                    </div>
-                    
-                    <div class="form-group">
-                      <label for="employee_id">Due Collected By <span style="color:red">*</span></label>
-                      <!-- <input type="text" class="form-control" name="current_due" id="total-due"> -->
-                      <select name="employee_id" id="employee_id" class="form-control" required>
-                        <option value="">Select Employee</option>
-                        <?php 
-                        
-                        $query = "SELECT * FROM employee_main_info WHERE active_status = 'Active'";
-                        $get_emp = $dbOb->select($query);
-                        if ($get_emp) {
-                          while ($row = $get_emp->fetch_assoc()) {
-                            ?>
-                              <option value="<?php echo $row['id_no']?>"><?php echo $row['id_no'].', '.$row['name']?></option>
-                            <?php
-                          }
-                        }
-                        ?>
-                      </select>
-                    </div>
+                                </div>
+                              </div>
+                              <div class="modal-body">
 
-                    <div class="form-group">
-                      <label for="current_due">Pay Date</label>
-                      <input type="text" class="form-control date-picker datepicker" value="<?php echo date('d-m-Y') ?>"   id="pay_date" name="pay_date" readonly="" required="">
-                    </div>
+                                <div class="row">
+                                  <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="x_panel" style="background: #f2ffe6">
 
-                    <div class="form-group" align="center">
-                      <input type="submit" class="btn btn-success" name="submit" value="Pay Now">
-                    </div>
-                    </form>
-
-                  </div>
-                  <div class="col-md-2"></div>
-                </div>
-                    
-          
-
-                  
+                                      <div class="x_content" style="background: #f2ffe6">
+                                        <br />
 
 
+                                        <div class="row">
+
+                                          <div class="col-md-2"></div>
+                                          <div class="col-md-8">
+
+                                            <form action="" action="POST" id="pay_due_form">
+                                              <div class="form-group" style="display:none">
+                                                <label for="total_due">Deliver Order Serial No</label>
+                                                <input type="text" class="form-control" name="deliver_order_serial_no" id="deliver_order_serial_no" readonly>
+                                              </div>
+                                              <div class="form-group">
+                                                <label for="total_due">Total Due</label>
+                                                <input type="text" class="form-control" name="total_due" id="total_due" readonly>
+                                              </div>
+                                              <div class="form-group">
+                                                <label for="pay_amt">Pay Amount</label>
+                                                <input type="number" min="0" class="form-control" name="pay_amt" id="pay_amt" required="">
+                                              </div>
+                                              <div class="form-group">
+                                                <label for="current_due">Current Due</label>
+                                                <input type="text" class="form-control" name="current_due" id="current_due" readonly>
+                                              </div>
+
+                                              <div class="form-group">
+                                                <label for="employee_id">Due Collected By <span style="color:red">*</span></label>
+                                                <!-- <input type="text" class="form-control" name="current_due" id="total-due"> -->
+                                                <select name="employee_id" id="employee_id" class="form-control" required>
+                                                  <option value="">Select Employee</option>
+                                                  <?php 
+
+                                                  $query = "SELECT * FROM employee_main_info WHERE active_status = 'Active'";
+                                                  $get_emp = $dbOb->select($query);
+                                                  if ($get_emp) {
+                                                    while ($row = $get_emp->fetch_assoc()) {
+                                                      ?>
+                                                      <option value="<?php echo $row['id_no']?>"><?php echo $row['id_no'].', '.$row['name']?></option>
+                                                      <?php
+                                                    }
+                                                  }
+                                                  ?>
+                                                </select>
+                                              </div>
+
+                                              <div class="form-group">
+                                                <label for="current_due">Pay Date</label>
+                                                <input type="text" class="form-control date-picker datepicker" value="<?php echo date('d-m-Y') ?>"   id="pay_date" name="pay_date" readonly="" required="">
+                                              </div>
+
+                                              <div class="form-group" align="center">
+                                                <input type="submit" class="btn btn-success" name="submit" value="Pay Now">
+                                              </div>
+                                            </form>
+
+                                          </div>
+                                          <div class="col-md-2"></div>
+                                        </div>
+
+
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>  
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                               </div>
                             </div>
                           </div>
-                        </div>  
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div> <!-- End of modal for  paying due-->
+
+
+                        <!-- /page content -->
+
                       </div>
                     </div>
-                  </div>
-                </div> <!-- End of modal for  paying due-->
+                    <?php include_once('include/footer.php'); ?>
 
-
-
-
-
-
-                <!-- /page content -->
-
-              </div>
-            </div>
-            <?php include_once('include/footer.php'); ?>
-
-            <script>
-              $(document).ready(function(){
+                    <script>
+                      $(document).ready(function(){
 
 
 
@@ -450,16 +437,16 @@ $(document).on('click','.view_data',function(){
 $(document).on('click','.pay',function(){
   var deliv_order_serial_no = $(this).attr('id');
   $.ajax({
-          url:'ajax_pay_delivered_order_due.php',
-          data:{deliv_order_serial_no:deliv_order_serial_no},
-          type:'POST',
-          dataType:'json',
-          success:function(data){
-            $("#total_due").val(data);
-            $("#current_due").val(data);
-            $("#deliver_order_serial_no").val(deliv_order_serial_no);
-          }
-        });
+    url:'ajax_pay_delivered_order_due.php',
+    data:{deliv_order_serial_no:deliv_order_serial_no},
+    type:'POST',
+    dataType:'json',
+    success:function(data){
+      $("#total_due").val(data);
+      $("#current_due").val(data);
+      $("#deliver_order_serial_no").val(deliv_order_serial_no);
+    }
+  });
 
 });
 
@@ -512,10 +499,10 @@ $(document).on('keyup blur','#pay_amt',function(){
 
     // cancelling order 
     $(document).on('click','.cancel_order',function(){
-  var cancel_order_tbl_serial_no = $(this).data('order_tbl_serial_no');
-  var cancel_delivery_tbl_serial_no = $(this).data('delivery_tbl_serial_no');
+      var cancel_order_tbl_serial_no = $(this).data('order_tbl_serial_no');
+      var cancel_delivery_tbl_serial_no = $(this).data('delivery_tbl_serial_no');
 
-  swal({
+      swal({
         title: "Are you sure to Cancel This Order?",
         text: "Once Cancelled, You Will Not Be Able To Recover It!",
         icon: "warning",
@@ -532,21 +519,21 @@ $(document).on('keyup blur','#pay_amt',function(){
             dataType:'json',
             success:function(data){
               swal({
-                  title: data.type,
-                  text: data.message,
-                  icon: data.type,
-                  button: "Done",
-                });
-                get_data_table();
+                title: data.type,
+                text: data.message,
+                icon: data.type,
+                button: "Done",
+              });
+              get_data_table();
             }
           });
         } 
       });
-});
+    });
 
   }); // end of document ready function 
 
-  function get_data_table(){
+function get_data_table(){
   $.ajax({
     url:"ajax_pay_delivered_order_due.php",
     data:{'sohag':'sohag'},

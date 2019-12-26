@@ -37,68 +37,25 @@ if (isset($_POST['serial_no_view'])) {
 			$tr .= '</td><td>';
 			$tr .= $row["products_name"] ;
 			$tr .= '</td><td>';
-			$tr .= $row["pack_size"];
+			$tr .= $row["sell_price"];
 			$tr .= '</td><td>';
-			$tr .= $row["unit_tp"];
+			$tr .= $row["qty"];
 			$tr .= '</td><td>';
-			$tr .= $row["unit_vat"] ;
-			$tr .= '</td><td>';
-			$tr .= $row["tp_plus_vat"];
-			$tr .= '</td><td>';
-			$tr .= $row["quantity"];
-			$tr .= '</td><td>';
-			$tr .= $row["total_tp"];
-			$tr .= '</td><td>';
-			$tr .= $row["total_vat"];
+			$tr .= $row["offer_qty"] ;
 			$tr .= '</td><td class="text-right">';
 			$tr .= $row["total_price"];
 			$tr .= '</td></tr>';
 		}
 
-		$tr .= '<tr style="color:blue"><td colspan="8" style="text-align: right;">Total  </td><td >';
-		$tr .= number_format($delivery_details['net_total_tp'],2);
-
-		$tr .= '</td><td>';
-		$tr .= number_format($delivery_details['net_total_vat'],2);
-		$tr .='</td><td class="text-right">';
-		$tr .= number_format($delivery_details['net_total'],2);
-		'</td></tr></tr>';
-
-		$tr .= '<tr style="color:blue"><td colspan="8" style="text-align: right;">Discount On TP';
-		$tr .= $delivery_details['discount'];
-		$tr .= '</td>';
-		$tr .= '<td  colspan="2" class="text-center" style="color:blue">';
-		$tr .= $delivery_details['discount_on_tp'];
-
-		$tr .= ' %</td><td class="text-right" style="color:blue"> - ';
-		$tr .= number_format($delivery_details['discount_amount'],2);
-		$tr .='</td></tr>';
-
-		
-		$tr .= '<tr style="color:black"><td colspan="8" style="text-align: right;">Payable Amount  </td><td colspan="3" class="text-right" style="color:blue">';
-		$tr .= number_format($delivery_details['payable_without_extra_discount'],2);
-		$tr .= '</td></tr>';
-
-		
-		$tr .= '<tr style="color:black"><td colspan="8" style="text-align: right;">Extra Discount';
-		// $tr .= $delivery_details['extra_discount'];
-		$tr .= '</td>';
-		$tr .= '<td  colspan="2" class="text-center">';
-		$tr .= $delivery_details['extra_discount'];
-
-		$tr .= ' %</td><td class="text-right"> - ';
-		$tr .= number_format(($delivery_details['payable_without_extra_discount']*$delivery_details['extra_discount'])/100,2);
-		$tr .='</td></tr>';
-
-		$tr .= '<tr style="color:black"><td colspan="8" style="text-align: right;">Net Payable Amount  </td><td colspan="3" class="text-right" style="color:blue">';
+		$tr .= '<tr style="color:blue"><td colspan="6" style="text-align: right;">Net Payable Amount  </td><td colspan="3" class="text-right" style="color:blue">';
 		$tr .= number_format($delivery_details['payable_amt'],2);
 		$tr .= '</td></tr>';
 
-		$tr .= '<tr style="color:blue"><td colspan="8" style="text-align: right;">Pay Amount  </td><td colspan="3" class="text-right" style="color:blue">';
+		$tr .= '<tr style="color:blue"><td colspan="6" style="text-align: right;">Pay Amount  </td><td colspan="3" class="text-right" style="color:blue">';
 		$tr .= number_format($delivery_details['pay'],2);
 		$tr .= '</td></tr>';
 
-		$tr .= '<tr style="color:blue"><td colspan="8" style="text-align: right;">Due Amount  </td><td colspan="3" class="text-right" style="color:red">';
+		$tr .= '<tr style="color:blue"><td colspan="6" style="text-align: right;">Due Amount  </td><td colspan="3" class="text-right" style="color:red">';
 		$tr .= number_format($delivery_details['due'],2);
 		$tr .= '</td></tr>';
 		

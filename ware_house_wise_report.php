@@ -98,6 +98,7 @@ if(!permission_check('product_report')){
           <!-- <option value="lowest_sell">Lowest Selling Product</option> -->
           <!-- <option value="top_profit">Top Profitable Product</option> -->
           <!-- <option value="lowest_profit">Lowest Profitable Product</option> -->
+          <option value="products in stock">Products In Stock</option>
        <!--  -->
         </select>
       </div>

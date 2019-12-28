@@ -115,20 +115,18 @@ if(!permission_check('sale_product_edit_button')){
           <div class="form-group">
             <label class="col-md-3 control-label" for="inputDefault">Customer<span class="required" style="color: red">*</span></label>
             <div class="col-md-6">
-              <select name="customer_id" id="customer_id" class="form-control" required="">
-                <option value="-1"<?php if ($details['customer_id'] == '-1') {
-                  echo 'selected';
-                } ?>>Walking Customer</option>
+              
+              <select name="customer_id" id="customer_id" class="form-control select2" required="">
+                <option value="-1">Walking Customer</option>
                 <?php 
-                $query = "SELECT * from client Order BY client_name ";
+                $query = "SELECT * from own_shop_client Order BY client_name ";
                 $get_client = $dbOb->select($query);
                 if ($get_client) {
                   while ($row = $get_client->fetch_assoc()) {
-                    $value = $row['serial_no'];
                     ?>
-                    <option value="<?php echo $value ?>" <?php if ($details['customer_id'] == $value) {
+                    <option value="<?php echo $row['serial_no'] ?>" <?php if ($details['customer_id'] == $value) {
                       echo 'selected';
-                    } ?>><?php echo ucwords($row['client_name']); ?></option>
+                    } ?>><?php echo ucwords($row['client_name']).', '.$row['mobile_no']; ?></option>
 
                     <?php
                   }
@@ -169,14 +167,9 @@ if(!permission_check('sale_product_edit_button')){
               <tr>
                 <th style="text-align: center;">Product ID</th>
                 <th style="text-align: center;">Name</th>
-
-                <th style="text-align: center;">Available QTY</th>
-                <!-- <th style="display: none;">vcgfvbjh</th> -->
-                <th style="text-align: center;">Quantity</th>
                 <th style="text-align: center;">Sell Price (৳)</th>
-                <th style="text-align: center;">MRP (৳)</th>
-                <th style="text-align: center;">Total Amount (৳)</th>
-                <th style="text-align: center;">Offer</th>
+                <th style="text-align: center;">Quantity</th>
+                <th style="text-align: center;">Total Price (৳)</th>
                 <th><button type="button" class="btn btn-success" id="add_more"><i class="fas fa-plus"></i></button></th>
               </tr>
             </thead>
@@ -186,30 +179,30 @@ if(!permission_check('sale_product_edit_button')){
               if ($expense) {
                 while ($row = $expense->fetch_assoc()) {
                   $pr_id = $row['products_id_no'];
-                  $query = "SELECT * FROM products where products_id_no = '$pr_id'";
+                  $query = "SELECT * FROM own_shop_products_stock where products_id = '$pr_id'";
                   $get_product = $dbOb->find($query);
                   $available_qty = $get_product['quantity'];
                   ?>
 
 
 
-
-
-
-
               <tr>
+              
                 <td >
-                  <input type="hidden" class="product_id">
-                   <input type="text" class="form-control main_product_id" id="products_id_no" name="products_id_no[]" value="<?php echo $row['products_id_no'] ?>" readonly>
+                  <!-- <input type="hidden" class="product_id"> -->
+                   <input type="text" class="form-control main_product_id product_id" data-available="<?php echo $available_qty; ?>"  id="products_id_no" name="products_id_no[]" value="<?php echo $row['products_id_no'] ?>" readonly="" placeholder="<?php echo $available_qty?>">
                 </td>
+
                 <td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly="" value="<?php echo $row['products_name'] ?>"></td>
-                <td><input type="text" class="form-control main_category available_qty" name="available_qty[]" readonly="" value="<?php echo $available_qty ?>"></td>
-                <td style="display: none;"><input type="text" class="form-control main_category available_qty_hidden" name="available_qty_hidden[]" readonly="" value="<?php echo ((int)$available_qty + (int)$row['quantity']) ?>"></td>
-                <td><input type="number" min="0" step="1" class="form-control main_quantity quantity" id="quantity" name="quantity[]"  value="<?php echo $row['quantity'] ?>"></td>
-                <td><input type="number" min="0" step="0.01" class="form-control main_sell_price sell_price" id="sell_price" name="sell_price[]" readonly="" value="<?php echo $row['sell_price'] ?>"></td>
-                <td><input type="number" min="0" step="0.01" class="form-control main_mrp_price mrp_price" id="mrp_price" name="mrp_price[]" readonly="" value="<?php echo $row['mrp_price'] ?>"></td>
+
+                <td><input type="text" class="form-control main_category sell_price" name="sell_price[]" readonly="" value="<?php echo $row['sell_price'] ?>"></td>
+              
+                <td><input type="number" min="0" step="1" class="form-control main_quantity qty" id="qty" name="qty[]"  value="<?php echo $row['qty'] ?>"></td>
+
+               
                 <td><input type="number" class="form-control main_total_price total_price" id="total_price" name="total_price[]" readonly="" value="<?php echo $row['total_price'] ?>" readonly=""></td>
-                <td><input type="text" class="form-control main_promo_offer promo_offer" id="promo_offer" name="promo_offer[]" readonly="" value="<?php echo $row['promo_offer'] ?>"></td>
+                
+                
                 <td><button type="button" class="btn btn-danger remove_button" id="<?php echo $row['products_id_no'] ?>"><i class="fas fa-times"></i></button></td>
 
               </tr>
@@ -234,65 +227,33 @@ if(!permission_check('sale_product_edit_button')){
               <label class="col-md-3 control-label" for="inputDefault"  style="text-align: left; color: #34495E"></label></h3>
             </div>
 
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Net Total (৳)</label>
-              <div class="col-md-6">
-                <input type="number" class="form-control" id="net_total" name="net_total" value="<?php echo $details['net_total'] ?>" readonly="">
-              </div>
+           
+           
+
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="net_payable_amt">Net Payable Amount(৳)</label>
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="net_payable_amt" name="net_payable_amt" readonly="" value="<?php echo $details['net_payable_amt'] ?>">
             </div>
-
-
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Vat (%)</label>
-              <div class="col-md-6">
-                <input type="number" min="0" step="0.01" class="form-control" id="vat" name="vat" value="<?php echo $details['vat'] ?>" placeholder="0">
-              </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="pay">Paid Amount(৳)</label>
+            <div class="col-md-6">
+              <input type="number" min="0" step="1" class="form-control" id="pay" name="pay" value="<?php echo $details['pay'] ?>">
             </div>
-
-
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Vat Amount (৳)</label>
-              <div class="col-md-6">
-                <input type="number" min="0" class="form-control" id="vat_amount" name="vat_amount" value="<?php echo $details['vat_amount'] ?>" readonly="">
-              </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="due">Due Amount(৳)</label>
+            <div class="col-md-6">
+              <input type="number" min="0" class="form-control" id="due" name="due" readonly="" value="<?php echo $details['due'] ?>">
             </div>
-
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Discount (%)</label>
-              <div class="col-md-6">
-                <input type="number" min="0" step="0.01" class="form-control" id="discount" name="discount" value="<?php echo $details['discount'] ?>"placeholder="0">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Discount Amount (৳)</label>
-              <div class="col-md-6">
-                <input type="number" min="0" class="form-control" id="discount_amount" name="discount_amount"value="<?php echo $details['discount_amount'] ?>" readonly="">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Grand Total(৳)</label>
-              <div class="col-md-6">
-                <input type="number" class="form-control" id="grand_total" name="grand_total" readonly="" value="<?php echo $details['grand_total'] ?>">
-              </div>
-            </div>
+          </div>
 
 
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Paid (৳)</label>
-              <div class="col-md-6">
-                <input type="number" min="0" step="0.01" class="form-control" id="pay" name="pay" value="<?php echo $details['pay'] ?>" placeholder="0">
-              </div>
-            </div>
 
 
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Due (৳)</label>
-              <div class="col-md-6">
-                <input type="number" min="0" step="0.01" class="form-control" id="due" name="due" readonly="" value="<?php echo $details['due'] ?>">
-              </div>
-            </div>
 
             <div class="form-group" align="center">
               <input type="submit" name="submit" value="Save" class="btn btn-success" style="">
@@ -321,217 +282,172 @@ if(!permission_check('sale_product_edit_button')){
 
     var selected_products = []; 
 
+    
     $("#add_more").click(function(){
 
 
-      $('#invoice_details').append('<tr><td><select name="products_id_no[]" class="form-control main_product_id secondary_product_id" id="products_id_no" name="products_id_no[]"><option value=""></option><?php 
+      $('#invoice_details').append('<tr><td><select name="products_id_no[]" class="form-control main_product_id secondary_product_id select2 product_id" id="products_id_no" name="products_id_no[]"><option value=""></option><?php 
         include_once('class/Database.php');
         $dbOb = new Database();
         $employee_name = Session::get("name");
         $user_name = Session::get("username");
         $password = Session::get("password");
 
-
-
-        $query = "SELECT * FROM employee_main_info where name = '$employee_name' and user_name = '$user_name' and password = '$password' ";
-        $get_employee_iformation = $dbOb->find($query);
-        $get_employee_id = $get_employee_iformation['id_no'];
-
-        $query = "SELECT * from employee_duty where id_no = '$get_employee_id'";
-        $get_duty_employee = $dbOb->find($query);
-        $duty_employee_area = $get_duty_employee['area'];
-        $company = $get_duty_employee['company'];
         
-        $query = "SELECT * FROM products";
+       $query = "SELECT * FROM own_shop_products_stock";
         $get_products = $dbOb->select($query);
         if ($get_products) {
-          while ($row = $get_products->fetch_assoc()) {
-            ?>
-            <option value="<?php echo($row['products_id_no']) ?>"> <?php echo($row['products_id_no'].', '.$row['products_name']) ?> </option><?php
-          }
+         while ($row = $get_products->fetch_assoc()) {
+          ?>
+          <option value="<?php echo ($row['products_id']) ?>"> <?php echo ($row['products_id'] . ', ' . $row['product_name']) ?> </option><?php
         }
-        ?></select></td><td><input type="text" class="form-control secondary_products_name products_name"  name="products_name[]" readonly=""></td><td><input type="text" class="form-control secondary_category available_qty" name="available_qty[]" readonly="" ></td><td  style="display: none;"><input type="text" class="form-control main_category available_qty_hidden" name="available_qty_hidden[]" readonly="" ></td><td><input type="number" min="0" step="1" class="form-control secondary_quantity quantity" id="quantity" name="quantity[]"  ></td><td><input type="number" min="0" step="0.01" class="form-control secondary_sell_price sell_price" id="sell_price" name="sell_price[]" readonly=""></td><td><input type="number" min="0" step="0.01" class="form-control secondary_mrp_price mrp_price" id="mrp_price" name="mrp_price[]" readonly="" value="0"></td><td><input type="number" class="form-control secondary_total_price total_price" id="total_price" name="total_price[]" readonly="" value="0" readonly=""></td><td><input type="text" class="form-control secondary_promo_offer promo_offer" id="promo_offer" name="promo_offer[]" readonly=""></td><td><button type="button" class="btn btn-danger remove_button secondary_remove_btn"><i class="fas fa-times"></i></button></td></tr>');
+      }
+      ?></select></td><td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly=""></td><td><input type="text"  class="form-control main_sell_price sell_price" id="sell_price" name="sell_price[]" readonly="" ></td><td><input type="text"  class="form-control main_qty" id="qty" name="qty[]" value="" readonly="" required=""></td><td><input type="text" class="form-control main_total_price total_price" id="total_price" name="total_price[]" readonly=""></td><td><button type="button" class="btn btn-danger remove_button"><i class="fas fa-times"></i></button></td></tr>');
     });
 
 
 
-    var id_and_qty = new Array();
-    var list_id = new Array();
-
-
     $(document).on('click','.remove_button', function(e) {
-      var got_id = 0;
-      var tr=$(this).parent().parent();
       var remove_row = $(this).closest("tr");
-      var product_id = $(this).attr('id');
-
-
-      var quantity =tr.find("#quantity").val();
-
-      if (isNaN(quantity) || quantity == '') {
-        quantity = 0;
-      }
-
-      for (i = 0; i < list_id.length; i++) { 
-        var id = list_id[i];
-
-      // console.log(id);
-      if (id == product_id) {
-        got_id = 1;
-        break;
-      }else{
-        got_id = 0;
-      }
-      }
-
-      if (got_id == 1) {
-        $.each(id_and_qty,function(key,val){
-          if (val.product_id == product_id) {
-            // tr.find(".available_qty").val(val.available_qty);
-            val.available_qty = parseInt(val.available_qty) + parseInt(quantity);
-            
-          }
-        })
-      }
-
-      // console.log(product_id);
       remove_row.remove();
       cal();
     });
 
 
 
-    // invoice calculation 
-    $("#invoice_details").delegate('#quantity','keyup',function(){
-      var got_id = 0;
-      var tr=$(this).parent().parent();
-
-      var quantity =tr.find("#quantity").val();
-
-      if (isNaN(quantity) || quantity == '') {
-        quantity = 0;
-      }
-
-      var sell_price=tr.find("#sell_price").val();
-
-
-      var product_id =tr.find(".main_product_id").val();
-
-
-
-      id_and_qty.forEach(function(e,val) {
-
-       list_id.push(e.product_id);
-     });
-
-          // console.log(list_id);
-          for (i = 0; i < list_id.length; i++) { 
-            var id = list_id[i];
-
-              // console.log(id);
-              if (id == product_id) {
-                got_id = 1;
-                break;
-              }else{
-                got_id = 0;
-              }
-            }
-
-            if (got_id == 1) {
-              $.each(id_and_qty,function(key,val){
-                if (val.product_id == product_id) {
-                  val.available_qty = parseInt(tr.find(".available_qty_hidden").val()) - parseInt(quantity);
-                  tr.find(".available_qty").val(val.available_qty);
-                  // break;
-                }
-              })
-            }else{
-              var available_qty_hidden =tr.find(".available_qty_hidden").val();
-              var new_available = parseInt(available_qty_hidden) - parseInt(quantity);
-              tr.find(".available_qty").val(new_available);
-
-              id_and_qty.push({product_id: product_id, available_qty: new_available});
-            }
-
-            // checking if quantity is greater than the available quantity 
-            if (quantity>parseInt(tr.find(".available_qty_hidden").val())) {
-               swal({
-                  title: "You don't have this much product.",
-                  icon: "warning",
-                  button: "Done",
-                });
-               tr.find("#quantity").val(0);
-               tr.find(".available_qty").val(tr.find(".available_qty_hidden").val());
-               tr.find("#total_price").val(0);
-                quantity = 0;
-
-            }
-
-
-            sell_price = parseInt(sell_price);
-            quantity = parseInt(quantity);
-            
-            var amt =quantity*sell_price;
-            tr.find("#total_price").val(amt);
-            cal();
-    });
 
     
-    $(document).on('change','.main_product_id', function() {
-      var got_id = 0;
+    $(document).on('change','.product_id', function() {
+
       var tr=$(this).parent().parent();
       var products_id_no_get_info =tr.find("#products_id_no").val();
-      
+      var confirm_availability = false;
+      var product_all_id = []
+      var i = 0;
+      $(".product_id").each(function(){
+        // console.log($(this).val());
+
+        product_all_id[i] = $(this).val();
+        i++;
+      });
+
+      product_all_id.pop();
+      var j;
+      for (j = 0; j < product_all_id.length; ++j) {
+        if (products_id_no_get_info == product_all_id[j] && product_all_id[j] != '') {
+          confirm_availability = 'sohag';
+        }
+      }
+
+      if (confirm_availability == 'sohag') {
+        swal({
+          title: 'warning',
+          text: 'This Product Has Already Been Selected. You Can Change The Quantity',
+          icon: 'warning',
+          button: "Done",
+        });
+        tr.find("#products_id_no").val('');
+        tr.find("#products_id_no").val('');
+
+      }else{
+
+        var qty = tr.find("#qty").val();
+        if (isNaN(qty) || qty == '') {
+          qty = 0;
+        }
+        var discount_on_mrp = $("#discount_on_mrp").val();
+        var vat = $("#vat").val();
+
       $.ajax({
-        url:"ajax_new_order.php",
-        data:{products_id_no_get_info:products_id_no_get_info},
+        url:"ajax_sell_product.php",
+         data:{products_id_no_get_info:products_id_no_get_info},
         type:"post",
         dataType:'json',
         success:function(data){
-          tr.find(".products_name").val(data.products.products_name);
+          
+         
+          if (data.type == 'warning') {
+               swal({
+                title: data.type,
+                text: data.message,
+                icon: data.type,
+                button: "Done",
+              });
+          tr.find(".products_name").val('');
+          }
 
-          id_and_qty.forEach(function(e,val) {
+          tr.find(".sell_price").val(data.products.sell_price);
+          tr.find(".products_name").val(data.products.product_name);
+          var total_price = (data.products.sell_price * qty) ;
+          tr.find(".total_price").val(total_price );
 
-           list_id.push(e.product_id);
-         });
+          tr.find("#qty").attr("readonly", false);
+          tr.find("#qty").attr("placeholder", data.available_qty);
+          tr.find("#qty").attr("data-available", data.available_qty);
+          tr.find("#qty").focus();
 
-            // console.log(list_id);
-            for (i = 0; i < list_id.length; i++) { 
-              var id = list_id[i];
-
-                // console.log(id);
-                if (id == products_id_no_get_info) {
-                  got_id = 1;
-                  break;
-                }else{
-                  got_id = 0;
-                }
-              }
-
-              if (got_id == 1) {
-                $.each(id_and_qty,function(key,val){
-                  if (val.product_id == products_id_no_get_info) {
-                   tr.find(".available_qty").val(val.available_qty);
-                   tr.find(".available_qty_hidden").val(val.available_qty);
-                 }
-               })
-              }else{
-                tr.find(".available_qty").val(data.products.quantity);
-                tr.find(".available_qty_hidden").val(data.products.quantity);
-              }
-
-
-              tr.find(".remove_button").attr('id',products_id_no_get_info);
-
-
-              tr.find(".mrp_price").val(data.products.mrp_price);
-              tr.find(".sell_price").val(data.products.marketing_sell_price);
-              tr.find(".promo_offer").val(data.offer);
-            }
-          });
-
-      cal();
+          cal();
+        }
+      });
+    }
+      // cal();
     });
+
+
+
+
+// invoice calculation
+  $("#invoice_details").delegate('#qty','keyup blur change',function(){
+    var tr=$(this).parent().parent();
+
+    var quantity =tr.find("#qty").val();
+    var available =tr.find("#qty").data('available');
+    // alert(available);
+
+    if (quantity > available) {
+       swal({
+              title: 'warning',
+              text: 'The Quantity You Have Entered Is Not Available In The Shop',
+              icon: 'warning',
+              button: "Done",
+            });
+         tr.find("#qty").val('');
+         return 0;
+      }
+
+     if (isNaN(quantity) || quantity == '') {
+        quantity = 0;
+      }
+      var sell_price = tr.find(".sell_price").val();
+
+      if (isNaN(sell_price) || sell_price == '') {
+        sell_price = 0;
+      }
+      var total_price =  ( sell_price * quantity) ;
+      tr.find(".total_price").val(total_price);
+
+      var product_id = tr.find(".product_id").val();
+       $.ajax({
+        url:'ajax_truck_load.php',
+        data:{product_id_check:product_id},
+        type:'POST',
+        dataType:'json',
+        success:function(data){
+         if (data == 'N/A') {
+           tr.find(".offer_qty").val(data);
+         }else{
+           var offer_integer = parseInt(quantity / data.packet_qty);
+           tr.find(".offer_qty").val(offer_integer * data.product_qty);
+         }
+         
+        }
+      });
+     
+      cal();
+  });
+
+    
+
 
 
 
@@ -572,141 +488,26 @@ if(!permission_check('sale_product_edit_button')){
 
 
 
-// the following function is for invoice claculation
-function cal()
-{
-  var net_total =0;
 
-  $(".total_price").each(function(){
-    net_total=net_total+($(this).val()*1);
-
+ $(document).on('keyup blur change','#pay',function(){
+  //  console.log();
+   console.log($("#net_payable_amt").val());
+     var pay = parseFloat($(this).val());
+     var payable  = parseFloat($("#net_payable_amt").val());
+     if (pay > payable) {
+        swal({
+              title: 'warning',
+              text: 'Pay Amount Cannot Be Greater Than The Payable Amt',
+              icon: 'warning',
+              button: "Done",
+            });
+        $(this).val(0);
+        $("#due").val(payable);
+     }
+      cal();
   });
-  $("#net_total").val(net_total);
-  
-  var vat = $("#vat").val();
-  var discount = $("#discount").val();
-
-  if (vat>=0 && vat <= 100) {
-    var vat_amount = net_total*$("#vat").val()/100;
-    $("#vat_amount").val(vat_amount);
-    var discount_amount = $("#discount_amount").val();
-
-    if (discount_amount>0) {
-      grand_total = roundToTwo (parseFloat(net_total)  + parseFloat(vat_amount) - parseFloat(discount_amount));
-    }else{
-     grand_total = roundToTwo (parseFloat(net_total)  + parseFloat(vat_amount)) ;
-   }
-
-   $("#grand_total").val(grand_total);
-
-   var pay_amount = $("#pay").val();
-   if (pay_amount>0) {
-     due_amount = roundToTwo (parseFloat(grand_total) - parseFloat(pay_amount));
-     
-   }else{
-    due_amount = roundToTwo (parseFloat(grand_total));
-  }
-
-  $("#due").val(due_amount);
-
-      }else{ // if  vat   is not found then net total will be the grand total
-        $("#grand_total").val(net_total);
-      }
-
-      if(discount>0 && discount <= 100){
-
-        var net_total = $("#net_total").val();
-        var vat_amount = $("#vat_amount").val();
-
-        var discount_amount = roundToTwo (net_total*$("#discount").val()/100);
-        
-        $("#discount_amount").val(discount_amount);
-
-        var total = parseFloat(net_total) + parseFloat(vat_amount);
-        var grand_total = roundToTwo (parseFloat(total)  - parseFloat(discount_amount)) ;
-        
-        $("#grand_total").val(grand_total);
-
-        var pay_amount = $("#pay").val();
-
-        if (pay_amount=="" || isNaN(pay_amount)) {
-
-         pay_amount =0;
-       }
-
-       if (pay_amount >= 0) {
-         due_amount = roundToTwo (parseFloat(grand_total) - parseFloat(pay_amount));
-         
-       }
-       
-
-       $("#due").val(due_amount);
-
-      }else{ // if  discount  is not found then net total will be the grand total
-        $("#grand_total").val(net_total);
-      }
-
-      vat_cal(vat);
-      
-    }
-// vat claculation 
-$(document).on('keyup blur','#vat',function(){
-  var vat = $(this).val();
-  if (vat>100) {
-    alert("You Cannot Take Vat More Than 100%");
-    $(this).val(0)
-  }else{
-    vat_cal(vat);
-
-  }
-
-});
 
 
-$(document).on('keyup blur','#discount',function(){
-  var discount_amt = $(this).val();
-  if (discount_amt>100) {
-    alert("You Cannot Provide A Discount More Than 100%");
-    $(this).val(0)
-  }else{
-
-    var net_total = $("#net_total").val();
-    var vat_amount = $("#vat_amount").val();
-
-    var discount_amount = roundToTwo (net_total*$("#discount").val()/100);
-    
-    $("#discount_amount").val(discount_amount);
-
-    var total = parseFloat(net_total) + parseFloat(vat_amount);
-    var grand_total = roundToTwo (parseFloat(total)  - parseFloat(discount_amount)) ;
-    
-    $("#grand_total").val(grand_total);
-
-    var pay_amount = $("#pay").val();
-    if (pay_amount>0) {
-     due_amount = roundToTwo (parseFloat(grand_total) - parseFloat(pay_amount));
-     
-   }else{
-    due_amount =  roundToTwo (parseFloat(grand_total));
-
-  }
-
-  $("#due").val(due_amount);
-
-  }
-
-});
-
-$(document).on('keyup blur','#pay',function(){
-  var pay_amount = $(this).val();
-  var grand_total = $("#grand_total").val();
-  if (isNaN(pay_amount) || pay_amount == "") {
-    pay_amount =0;
-  }
-  var due_amount = parseFloat(grand_total) - parseFloat(pay_amount);
-  due_amount = roundToTwo (due_amount);
-  $("#due").val(due_amount);
-});
 
 $(document).on('change','#customer_id',function(){
   var customer = $(this).val();
@@ -732,44 +533,101 @@ $(document).on('change','#customer_id',function(){
   });
 });
 
+  $(document).on('change','.employee_id',function(){
+     var employee_id = $(this).val();
+    //  alert(employee_id);
+     $.ajax({
+        url:'ajax_sell_product.php',
+        data:{employee_id_get:employee_id},
+        type:'POST',
+        dataType:'json',
+        success:function(data){
+          $(".employee_name").val(data);
+          // $(".employee_id").val(emp_id);
+        }
+      });
+  });
 
   }); // end of document ready function 
 
-function vat_cal(vat){
 
-    var net_total = $("#net_total").val();
-    var vat_amount = net_total*$("#vat").val()/100;
-    var grand_total = 0;
-    var due_amount = 0 ;
-    $("#vat_amount").val(vat_amount);
-    var discount_amount = $("#discount_amount").val();
+</script>
 
-    if (discount_amount>0) {
-      grand_total = roundToTwo (parseFloat(net_total)  + parseFloat(vat_amount) - parseFloat(discount_amount));
-      
-    }else{
-     grand_total = roundToTwo (parseFloat(net_total)  + parseFloat(vat_amount)) ;
-     
-   }
 
-   $("#grand_total").val(grand_total);
 
-   var pay_amount = $("#pay").val();
-   if (pay_amount>0) {
-     due_amount = roundToTwo (parseFloat(grand_total) - parseFloat(pay_amount));
-     
-   }else{
-    due_amount = roundToTwo (parseFloat(grand_total));
+
+<script>
+
+ function cal()
+  {
+        var net_total =0;
+        var paid = $("#pay").val();
+        if (isNaN(paid) || paid == '' ) {
+          paid = 0;
+        }
+
+        $(".total_price").each(function(){
+          net_total=(net_total+($(this).val()*1));
+        });
+        $("#net_payable_amt").val(net_total);
+        $("#due").val(net_total - paid);
 
 
   }
 
-  $("#due").val(due_amount);
-}
 
-function roundToTwo (num){
-  return +(Math.round(num + "e+2")+"e-2");
-}
+
+  
+
+    $(document).on('click','#add_customer',function(){
+      $("#ModalLabel").html("Provide New Customer Information");
+      $("#submit_button").html("Save");
+      $("#add_customer_name").val("");
+      $("#add_customer_address").val("");
+      $("#add_customer_mobile_no").val("");
+      $("#add_customer_email").val("");
+    });
+
+
+     // now we are going to  insert data 
+    $(document).on('submit','#add_data_form',function(e){
+      e.preventDefault();
+      var formData = new FormData($("#add_data_form")[0]);
+      formData.append('submit','submit');
+
+      $.ajax({
+        url:'ajax_edit_sell_product.php',
+        data:formData,
+        type:'POST',
+        dataType:'json',
+        cache: false,
+        processData: false,
+        contentType: false,
+
+        success:function(data){
+           // alert('ppppp');
+           swal({
+            title: data.type,
+            text: data.message,
+            icon: data.type,
+            button: "Done",
+          });
+           if (data.type == 'success') {
+            setTimeout(function(){
+              location. reload(true)
+            },2000);
+
+
+
+          }
+        }
+      });
+    }); // end of insert 
+
+
+
+$("#customer_id").select2({ width: '100%' }); 
+$("#product_id").select2({ width: '100%' }); 
 </script>
 
 </body>

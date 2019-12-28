@@ -38,14 +38,15 @@ if(!permission_check('sales_list')){
 
               <tr>
                 <th style="text-align: center;">Sl No.</th>
-                <th style="text-align: center;">Employee Name</th>
+                <th style="text-align: center;">Employee ID</th>
+                <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Order Number</th>
                 <th style="text-align: center;">Cuatomer Name</th>
                 <th style="text-align: center;">Mobile</th>
-                <th style="text-align: center;">Grand Total</th>
-                <th style="text-align: center;">Paid Amount</th>
-                <th style="text-align: center;">Due Amount</th>
-                <th style="text-align: center;">Date</th>
+                <th style="text-align: center;">Total Payable</th>
+                <th style="text-align: center;">Paid</th>
+                <th style="text-align: center;">Due</th>
+                <th style="text-align: center;">Sell Date</th>
                 <th style="text-align: center;">Action</th>
               </tr>
             </thead>
@@ -61,15 +62,20 @@ if(!permission_check('sales_list')){
                 $i=0;
                 while ($row = $get_order_info->fetch_assoc()) {
                   $i++;
-
+                  if ($row['customer_id'] == '-1') {
+                    $customer_name = "Walking Customer";
+                  }else{
+                    $customer_name = $row['customer_name'];
+                  }
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
+                    <td><?php echo $row['employee_id']; ?></td>
                     <td><?php echo $row['employee_name']; ?></td>
                     <td><?php echo $row['order_no']; ?></td>
-                    <td><?php echo $row['customer_name']; ?></td>
+                    <td><?php echo $customer_name; ?></td>
                     <td><?php echo $row['mobile_no']; ?></td>
-                    <td><?php echo $row['grand_total']; ?></td>
+                    <td><?php echo $row['net_payable_amt']; ?></td>
                     <td><?php echo $row['pay']; ?></td>
                     <td><?php echo $row['due']; ?></td>
                     <td><?php echo $row['sell_date']; ?></td>

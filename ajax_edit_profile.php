@@ -18,15 +18,15 @@ $dbOb = new Database();
 
 if (isset($_GET['submit_edit'])) {
 
-	$organization_name = $_GET['organization_name'];
-	$address		   = $_GET['address'];
-	$mobile_no 		   = $_GET['mobile_no'];
-	$phone_no 		   = $_GET['phone_no'];
-	$email			   = $_GET['email'];
-	$website   		   = $_GET['website'];
-	$api_url           = $_GET['api_url'];
-	$license_code      = $_GET['license_code'];
-	$edit_id		   = $_GET['edit_id'];
+	$organization_name = $dbOb->link->real_escape_string($_GET["organization_name"]);
+	$address		   = $dbOb->link->real_escape_string($_GET["address"]);
+	$mobile_no 		   = $dbOb->link->real_escape_string($_GET["mobile_no"]);
+	$phone_no 		   = $dbOb->link->real_escape_string($_GET["phone_no"]);
+	$email			   = $dbOb->link->real_escape_string($_GET["email"]);
+	$website   		   = $dbOb->link->real_escape_string($_GET["website"]);
+	$api_url           = $dbOb->link->real_escape_string($_GET["api_url"]);
+	$license_code      = $dbOb->link->real_escape_string($_GET["license_code"]);
+	$edit_id		   = $dbOb->link->real_escape_string($_GET["edit_id"]);
 
 	$query = "UPDATE profile 
 	SET 

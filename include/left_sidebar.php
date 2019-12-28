@@ -133,6 +133,18 @@ if ($user_type == "employee") {
                 <li><a href="delivery_employee.php"><i class="fas fa-location-arrow"></i> Delivery Man </a></li>
               <?php } 
 
+
+
+
+                if (permission_check('own_shop_employee')) {
+                ?>
+                <li><a href="own_shop_employee.php"><i class="fas fa-location-arrow"></i> Own Shop Employee </a></li>
+                 <?php 
+                      }
+                      ?>
+
+              <?php
+
         if (permission_check('attendance_info')) {
           ?>
                 <li><a href="employee_attendance.php"><i class="fab fa-angellist"></i> Attendance</a></li>
@@ -237,7 +249,36 @@ if ($user_type == "employee") {
               </ul>
             </li>
           <?php } ?>
+            
 
+                <?php 
+          if (permission_check('own_shop')) {
+            ?>
+            <li><a><i class="fa fa-users"></i> Own Shop  <span class="fa fa-chevron-down"></span></a>
+              <ul class="nav child_menu">
+                  <li><a href="stock_product_to_shop.php"><i class="fas fa-list-ul"></i> stock product to shop</a></li>
+                  <li><a href="own_shop_products.php"><i class="fas fa-list-ul"></i> Shop Products</a></li>
+                <?php 
+          if (permission_check('sale_product')) {
+            ?>
+                <li><a href="sale_product.php"><i class="fas fa-list-ul"></i> Sale Product</a></li>
+                <?php 
+         }
+         ?>
+       
+         <?php
+          if (permission_check('sales_list')) {
+            ?>
+                <li><a href="sales.php"><i class="fas fa-list-ul"></i> Sales List</a></li>
+                <?php 
+         }
+          if (permission_check('own_shop_customer_list')) {
+            ?>
+                <li><a href="customer_list.php"><i class="fas fa-list-ul"></i> Customer List</a></li>
+                <?php } ?>
+              </ul>
+            </li>
+          <?php } ?>
 
           <!-- Market side bar oprions -->
           

@@ -174,44 +174,24 @@ if (isset($_POST['serial_no_view'])) {
 			$tr .= '</td><td>';
 			$tr .= $row["products_name"] ;
 			$tr .= '</td><td>';
-			$tr .= $row["promo_offer"];
-			$tr .= '</td><td>';
-			$tr .= $row["mrp_price"] ;
-			$tr .= '</td><td>';
-			$tr .= $row["quantity"];
-			$tr .= '</td><td>';
 			$tr .= $row["sell_price"];
+			$tr .= '</td><td>';
+			$tr .= $row["qty"] ;
 			$tr .= '</td><td class="text-right">';
 			$tr .= number_format($row["total_price"],2);
 			$tr .= '</td></tr>';
 		}
 
-		$tr .= '<tr style="color:black"><td colspan="7" style="text-align: right;">Net Total (৳)  </td><td colspan="1" class="text-right">';
-		$tr .= number_format($order_details['net_total'],2);
-
-		$tr .= '</td></tr><tr style="color:black"><td colspan="7" style="text-align: right;">vat  (';
-		$tr .= $order_details['vat'];
-		$tr .=' % )  </td>';
-
-
-		$tr .= '<td colspan="1" class="text-right">';
-		$tr .= number_format($order_details['vat_amount'],2);
-
-		$tr .='</td></tr>';
-
-		$tr .= '<tr style="color:black"><td colspan="7" style="text-align: right;">Discount (';
-		$tr .= $order_details['discount'];
-		$tr .= '%)  </td>';
-		$tr .= '<td colspan="1" class="text-right">';
-		$tr .= number_format($order_details['discount_amount'],2);
+		$tr .= '<tr style="color:black"><td colspan="5" style="text-align: right;">Net Payable (৳)  </td><td  class="text-right">';
+		$tr .= number_format($order_details['net_payable_amt'],2);
 
 		$tr .= '</td></tr>';
 
-		$tr .= '<tr style="color:black"><td colspan="7" style="text-align: right;">Grand Total (৳)  </td><td colspan="1" class="text-right" style="color:blue">';
-		$tr .= number_format($order_details['grand_total'],2);
-		$tr .= '</td></tr><tr style="color:black"><td colspan="7" style="text-align: right;">Total Paid (৳)  </td><td colspan="1" class="text-right" style="color:green">';
+		
+
+		$tr .= '<tr style="color:black"><td colspan="5" style="text-align: right;">Total Paid (৳)  </td><td  class="text-right" style="color:green">';
 		$tr .= number_format($order_details['pay'],2);
-		$tr .= '</td></tr><tr style="color:black"><td colspan="7" style="text-align: right;">due (৳)  </td><td colspan="1" class="text-right" style="color:red">';
+		$tr .= '</td></tr><tr style="color:black"><td colspan="5" style="text-align: right;">due (৳)  </td><td  class="text-right" style="color:red">';
 		$tr .= number_format($order_details['due'],2);
 		$tr .= '</td></tr>';
 	}
@@ -240,21 +220,26 @@ if (isset($_POST['products_id_no_get_info'])) {
 	 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
           
-            $query = "SELECT * FROM own_shop_sell ORDER BY serial_no DESC ";
+                   $query = "SELECT * FROM own_shop_sell ORDER BY serial_no DESC ";
               $get_order_info = $dbOb->select($query);
               if ($get_order_info) {
                 $i=0;
                 while ($row = $get_order_info->fetch_assoc()) {
                   $i++;
-
+                  if ($row['customer_id'] == '-1') {
+                    $customer_name = "Walking Customer";
+                  }else{
+                    $customer_name = $row['customer_name'];
+                  }
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
+                    <td><?php echo $row['employee_id']; ?></td>
                     <td><?php echo $row['employee_name']; ?></td>
                     <td><?php echo $row['order_no']; ?></td>
-                    <td><?php echo $row['customer_name']; ?></td>
+                    <td><?php echo $customer_name; ?></td>
                     <td><?php echo $row['mobile_no']; ?></td>
-                    <td><?php echo $row['grand_total']; ?></td>
+                    <td><?php echo $row['net_payable_amt']; ?></td>
                     <td><?php echo $row['pay']; ?></td>
                     <td><?php echo $row['due']; ?></td>
                     <td><?php echo $row['sell_date']; ?></td>
@@ -280,7 +265,6 @@ if (isset($_POST["sohag"])) {
                       <?php } ?>  
                     </td>
                   </tr>
-
 
                   <?php
                 }

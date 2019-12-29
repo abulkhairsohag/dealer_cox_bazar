@@ -187,12 +187,6 @@ if(!permission_check('sales_list')){
                                     <div class="col-md-3"></div>
                                   </div>
 
-
-
-
-
-
-
                                   <div class="row" style="margin-top:10px"><div class="col"> <h3 style="color:  #34495E">Order Information</h3><hr></div></div>
 
 
@@ -201,14 +195,11 @@ if(!permission_check('sales_list')){
                                       <thead style="background: green">
                                         <tr style="color: white">
                                           <th>#</th>
-                                          <th>ID</th>
+                                          <th>Product ID</th>
                                           <th>Name</th>
-                                          <!-- <th>Category</th> -->
-                                          <th>Promo Offer</th>
-                                          <th>MRP (৳)</th>
-                                          <th>Quantity</th>
                                           <th>Sell Price (৳)</th>
-                                          <th class="text-right">Total Price (৳)</th>
+                                          <th>Quantity</th>
+                                          <th>Total Price (৳)</th>
                                         </tr>
                                       </thead>
                                       <tbody id="order_table">

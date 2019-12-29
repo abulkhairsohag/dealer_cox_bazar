@@ -113,7 +113,7 @@ if(!permission_check('sale_product_edit_button')){
           </div>
 
           <div class="form-group">
-            <label class="col-md-3 control-label" for="inputDefault">Customer<span class="required" style="color: red">*</span></label>
+            <label class="col-md-3 control-label" for="inputDefault">Customer <span class="required" style="color: red">*</span></label>
             <div class="col-md-6">
               
               <select name="customer_id" id="customer_id" class="form-control select2" required="">
@@ -124,7 +124,7 @@ if(!permission_check('sale_product_edit_button')){
                 if ($get_client) {
                   while ($row = $get_client->fetch_assoc()) {
                     ?>
-                    <option value="<?php echo $row['serial_no'] ?>" <?php if ($details['customer_id'] == $value) {
+                    <option value="<?php echo $row['serial_no'] ?>" <?php if ($details['customer_id'] == $row['serial_no']) {
                       echo 'selected';
                     } ?>><?php echo ucwords($row['client_name']).', '.$row['mobile_no']; ?></option>
 
@@ -181,23 +181,22 @@ if(!permission_check('sale_product_edit_button')){
                   $pr_id = $row['products_id_no'];
                   $query = "SELECT * FROM own_shop_products_stock where products_id = '$pr_id'";
                   $get_product = $dbOb->find($query);
-                  $available_qty = $get_product['quantity'];
+                  $available_qty = $get_product['quantity_pcs'];
+                  // die($available_qty);
                   ?>
-
-
 
               <tr>
               
                 <td >
                   <!-- <input type="hidden" class="product_id"> -->
-                   <input type="text" class="form-control main_product_id product_id" data-available="<?php echo $available_qty; ?>"  id="products_id_no" name="products_id_no[]" value="<?php echo $row['products_id_no'] ?>" readonly="" placeholder="<?php echo $available_qty?>">
+                   <input type="text" class="form-control main_product_id product_id" id="products_id_no" name="products_id_no[]" value="<?php echo $row['products_id_no'] ?>" readonly="" >
                 </td>
 
                 <td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly="" value="<?php echo $row['products_name'] ?>"></td>
 
                 <td><input type="text" class="form-control main_category sell_price" name="sell_price[]" readonly="" value="<?php echo $row['sell_price'] ?>"></td>
               
-                <td><input type="number" min="0" step="1" class="form-control main_quantity qty" id="qty" name="qty[]"  value="<?php echo $row['qty'] ?>"></td>
+                <td><input type="number" min="0" step="1" data-available="<?php echo $available_qty; ?>"   class="form-control main_quantity qty" id="qty" name="qty[]"  value="<?php echo $row['qty'] ?>" placeholder="<?php echo $available_qty; ?>"></td>
 
                
                 <td><input type="number" class="form-control main_total_price total_price" id="total_price" name="total_price[]" readonly="" value="<?php echo $row['total_price'] ?>" readonly=""></td>
@@ -496,8 +495,8 @@ if(!permission_check('sale_product_edit_button')){
      var payable  = parseFloat($("#net_payable_amt").val());
      if (pay > payable) {
         swal({
-              title: 'warning',
-              text: 'Pay Amount Cannot Be Greater Than The Payable Amt',
+          title: 'warning',
+          text: 'Pay Amount Cannot Be Greater Than Payable Amount..',
               icon: 'warning',
               button: "Done",
             });

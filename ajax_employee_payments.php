@@ -32,21 +32,21 @@ if (isset($_POST['serial_no_edit'])) {
 if (isset($_POST['submit'])) {
 
 
-          $id_no = $_POST['id_no'];
-          $name = $_POST['name'];
-          $designation = $_POST['designation'];
-          $total_salary = $_POST['total_salary'];
-          $month = $_POST['month'];
-          $attendance = $_POST['attendance'];
-          $pay_type = $_POST['pay_type'];
-          $advance_amount = $_POST['advance_amount'];
+          $id_no = validation($_POST['id_no']);
+          $name = validation($_POST['name']);
+          $designation = validation($_POST['designation']);
+          $total_salary = validation($_POST['total_salary']);
+          $month = validation($_POST['month']);
+          $attendance = validation($_POST['attendance']);
+          $pay_type = validation($_POST['pay_type']);
+          $advance_amount = validation($_POST['advance_amount']);
           if ($advance_amount=="") {
             $advance_amount = 0;
           }
           $salary_paid =  (int)$total_salary + (int)$advance_amount;
-          $description = $_POST['description'];
+          $description = validation($_POST['description']);
           $date = date("d-m-Y");
-          $edit_id = $_POST['edit_id'];
+          $edit_id = validation($_POST['edit_id']);
 
 
 	if ($edit_id) {

@@ -136,8 +136,8 @@ if (isset($_POST['id'])) {
 
 if (isset($_POST['submit'])) {
 	
-	$employee_id = $_POST['employee_id'];
-	$product_id = $_POST['product_id'];
+	$employee_id = validation($_POST['employee_id']);
+	$product_id = validation($_POST['product_id']);
 
 	$unload_date = date("d-m-Y");
 

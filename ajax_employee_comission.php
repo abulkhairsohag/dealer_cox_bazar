@@ -25,16 +25,16 @@ if (isset($_POST['serial_no_edit'])) {
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-          $id_no = $_POST['id_no'];
-          $name = $_POST['name'];
-          $designation = $_POST['designation'];
-          $company = $_POST['company'];
-          $month = $_POST['month'];
-          $sell_target = $_POST['sell_target'];
-          $total_sell_amount = $_POST['total_sell_amount'];
-          $comission_persent = $_POST['comission_persent'];
+          $id_no = validation($_POST['id_no']);
+          $name = validation($_POST['name']);
+          $designation = validation($_POST['designation']);
+          $company = validation($_POST['company']);
+          $month = validation($_POST['month']);
+          $sell_target = validation($_POST['sell_target']);
+          $total_sell_amount = validation($_POST['total_sell_amount']);
+          $comission_persent = validation($_POST['comission_persent']);
           $date = date("d-m-Y");
-          $edit_id = $_POST['edit_id'];
+          $edit_id = validation($_POST['edit_id']);
 
 	if ($edit_id) {
 		$query = "UPDATE employee_commission 

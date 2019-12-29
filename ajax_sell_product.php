@@ -21,31 +21,31 @@ if (isset($_POST['customer'])) {
 // now we are going to add information 
 
 if (isset($_POST['submit'])) {
-	$order_no  		= $_POST['order_no'];
-	$employee_id    = $_POST['employee_id'];
-	$employee_name  = $_POST['employee_name'];
+	$order_no  		= validation($_POST['order_no']);
+	$employee_id    = validation($_POST['employee_id']);
+	$employee_name  = validation($_POST['employee_name']);
 
-	$customer_id  	= $_POST['customer_id'];
-	$customer_name  = $_POST['customer_name'];
-	$mobile_no   	= $_POST['mobile_no'];
+	$customer_id  	= validation($_POST['customer_id']);
+	$customer_name  = validation($_POST['customer_name']);
+	$mobile_no   	= validation($_POST['mobile_no']);
 
-	$products_id_no = $_POST['products_id_no'];
-	$products_name 	= $_POST['products_name'];
-	$sell_price 	= $_POST['sell_price'];
-	$qty      	= $_POST['qty'];
-	// $sell_price    	= $_POST['sell_price'];
-	// $mrp_price     	= $_POST['mrp_price'];
-	$total_price   	= $_POST['total_price'];
-	$sell_date   	= $_POST['date'];
+	$products_id_no = validation($_POST['products_id_no']);
+	$products_name 	= validation($_POST['products_name']);
+	$sell_price 	= validation($_POST['sell_price']);
+	$qty      	= validation($_POST['qty']);
+	// $sell_price    	= validation($_POST['sell_price']);
+	// $mrp_price     	= validation($_POST['mrp_price']);
+	$total_price   	= validation($_POST['total_price']);
+	$sell_date   	= validation($_POST['date']);
 
 	 
-	$net_payable_amt     	 = $_POST['net_payable_amt'];
-	$pay           	 = $_POST['pay'];
+	$net_payable_amt     	 = validation($_POST['net_payable_amt']);
+	$pay           	 = validation($_POST['pay']);
 
 	if ($pay=='null' || $pay == '') {
 		$pay = 0;
 	}
-	$due             = $_POST['due'];
+	$due             = validation($_POST['due']);
 
 	$query = "INSERT INTO  own_shop_sell
 

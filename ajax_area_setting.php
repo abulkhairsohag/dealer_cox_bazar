@@ -28,12 +28,12 @@ if (isset($_POST['serial_no_edit'])) {
 
 
 if (isset($_POST['submit'])) { 
-	$area_name = $_POST['area_name'];
-	// $zone_name = $_POST['zone_name'];
-	$district_name = $_POST['district_name'];
-	$thana_name = $_POST['thana_name'];
-	$line_route = $_POST['line_route'];
-	$edit_id = $_POST['edit_id'];
+	$area_name = validation($_POST['area_name']);
+	// $zone_name = validation($_POST['zone_name']);
+	$district_name = validation($_POST['district_name']);
+	$thana_name = validation($_POST['thana_name']);
+	$line_route = validation($_POST['line_route']);
+	$edit_id = validation($_POST['edit_id']);
 
 	if ($edit_id) { // UPDATING DATA INTO DATABASE
 

@@ -18,16 +18,16 @@ include_once ('helper/helper.php');
 
 	 if (isset($_POST['submit'])) {
 
-            $invoice_option     = $_POST['invoice_option'];
-            $name = $_POST['name'];
-            $designation   = $_POST['designation'];
-            $phone_no = $_POST['phone_no'];
-            $description    = $_POST['description'];
-            $purpose = $_POST['purpose'];
-            $amount        = $_POST['amount'];
-            $total_amount       = $_POST['net_total'];
-            $pay       = $_POST['net_total'];
-            $invoice_date       = $_POST['invoice_date'];
+            $invoice_option     = validation($_POST['invoice_option']);
+            $name = validation($_POST['name']);
+            $designation   = validation($_POST['designation']);
+            $phone_no = validation($_POST['phone_no']);
+            $description    = validation($_POST['description']);
+            $purpose = validation($_POST['purpose']);
+            $amount        = validation($_POST['amount']);
+            $total_amount       = validation($_POST['net_total']);
+            $pay       = validation($_POST['net_total']);
+            $invoice_date       = validation($_POST['invoice_date']);
 //echo $office_organization_name;
 			$query = "INSERT INTO  invoice_details
 			(invoice_option,name,designation,phone_no,total_amount,pay, invoice_date)
@@ -61,7 +61,7 @@ include_once ('helper/helper.php');
 
 
 
-	      } // end of  if (isset($_POST['submit']))
+	      } // end of  if (isset(validation($_POST['submit'])))
 
 	      
 

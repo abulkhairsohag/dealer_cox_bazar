@@ -20,11 +20,11 @@ if (isset($_POST['serial_no_edit'])) {
 
 // inserting role information of the user
 if (isset($_POST['submit'])) {
-	$add_customer_name = $_POST['add_customer_name']; 
-	$add_customer_address = $_POST['add_customer_address'];
-	$add_customer_mobile_no = $_POST['add_customer_mobile_no'];
-	$add_customer_email = $_POST['add_customer_email'];
-	$edit_id 	= $_POST['edit_id'];
+	$add_customer_name = validation($_POST['add_customer_name']);
+	$add_customer_address = validation($_POST['add_customer_address']);
+	$add_customer_mobile_no = validation($_POST['add_customer_mobile_no']);
+	$add_customer_email = validation($_POST['add_customer_email']);
+	$edit_id 	= validation($_POST['edit_id']);
 
 		if ($edit_id) {
 		$query = "UPDATE own_shop_client 

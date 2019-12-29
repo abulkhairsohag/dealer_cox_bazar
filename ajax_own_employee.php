@@ -23,15 +23,15 @@ if (isset($_POST['serial_no_edit'])) {
 
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
-	  $id_no = $_POST["id_no"];
-      $name = $_POST["name"];
-      $mobile_no = $_POST["mobile_no"];
-      $email = $_POST["email"];
-      $present_address = $_POST["present_address"];
+	  $id_no = validation($_POST["id_no"]);
+      $name = validation($_POST["name"]);
+      $mobile_no = validation($_POST["mobile_no"]);
+      $email = validation($_POST["email"]);
+      $present_address = validation($_POST["present_address"]);
       $active_date = date('d-m-Y');
       $inactive_date = date('d-m-Y');
-      $active_status = $_POST["active_status"];
-      $edit_id = $_POST["edit_id"];
+      $active_status = validation($_POST["active_status"]);
+      $edit_id = validation($_POST["edit_id"]);
 
 	if ($edit_id) { // now editing data
 
@@ -42,17 +42,11 @@ if (isset($_POST['submit'])) {
 		if ($get_delivery_emp) {
 			while ($row = $get_delivery_emp->fetch_assoc()) {
 
-				if ($row['active_status'] == 'Active') {
-					$message = 'Already Employee Is Active In This Shop.';
-					$type = 'warning';
-					echo  json_encode(['message'=>$message,'type'=>$type]);
-					exit();
-				}else{
+				
 					if ($row['id_no']==$id_no && $row['active_status'] == 'Active') {
 						$confirmation_edit = false;
 						break;
 					}
-				}
 			}
 			
 		}
@@ -99,19 +93,6 @@ if (isset($_POST['submit'])) {
 		$emp_existing_id = $get_emp_delivery['id_no'];
 		if ($emp_existing_id) {
 			$confirmation = false;
-		}else{
-			$query = "SELECT * FROM own_shop_employee WHERE  active_status = 'Active'";
-			$get_active_employee = $dbOb->select($query);
-			if ($get_active_employee) {
-				while ($row = $get_active_employee->fetch_assoc()) {
-					if ($row['area'] == $area && $row['active_status'] == 'Active') {
-						$message = 'Already One Employee Is Active In This Shop.';
-						$type = 'warning';
-						echo  json_encode(['message'=>$message,'type'=>$type]);
-						exit();
-					}
-				}
-			}
 		}
 
 

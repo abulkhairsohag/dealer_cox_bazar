@@ -58,16 +58,16 @@ if (isset($_POST['products_id_no_get_info'])) {
 
 if (isset($_POST['submit'])) {
 
-	$order_employee_id = $_POST['order_employee_id'];
-	$order_employee_name = $_POST['order_employee_name'];
-	$delivery_employee_id = $_POST['delivery_employee_id'];
-	$delivery_employee_name = $_POST['delivery_employee_name'];
-	$order_no = $_POST['order_no'];
+	$order_employee_id = validation($_POST['order_employee_id']);
+	$order_employee_name = validation($_POST['order_employee_name']);
+	$delivery_employee_id = validation($_POST['delivery_employee_id']);
+	$delivery_employee_name = validation($_POST['delivery_employee_name']);
+	$order_no = validation($_POST['order_no']);
 
-	$vehicle_reg_no = $_POST['vehicle_reg_no'];
-	$vehicle_name = $_POST['vehicle_name'];
-	$truck_load_serial_no = $_POST['truck_load_serial_no'];
-	$ware_house_serial_no = $_POST['ware_house_serial_no'];
+	$vehicle_reg_no = validation($_POST['vehicle_reg_no']);
+	$vehicle_name = validation($_POST['vehicle_name']);
+	$truck_load_serial_no = validation($_POST['truck_load_serial_no']);
+	$ware_house_serial_no = validation($_POST['ware_house_serial_no']);
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'"; 
 	$get_ware_house = $dbOb->select($query);
 	$ware_house_name = "";
@@ -75,32 +75,32 @@ if (isset($_POST['submit'])) {
 		$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
 	}
 
-	$zone_serial_no = $_POST['zone_serial_no'];
+	$zone_serial_no = validation($_POST['zone_serial_no']);
 	$zone_name =  "";
 	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'"; 
 	$get_zone = $dbOb->select($query);
 	if ($get_zone) {
 		$zone_name = $get_zone->fetch_assoc()['zone_name'];
 	}
-	$area = $_POST['area_employee'];
-	$cust_id = $_POST['cust_id'];
-	$customer_name = $_POST['customer_name'];
-	$shop_name = $_POST['shop_name'];
-	$address = $_POST['address'];
-	$mobile_no = $_POST['mobile_no'];
-	$delivery_date = $_POST['date'];
-	$payable_amt = $_POST['net_payable_amt'];
+	$area = validation($_POST['area_employee']);
+	$cust_id = validation($_POST['cust_id']);
+	$customer_name = validation($_POST['customer_name']);
+	$shop_name = validation($_POST['shop_name']);
+	$address = validation($_POST['address']);
+	$mobile_no = validation($_POST['mobile_no']);
+	$delivery_date = validation($_POST['date']);
+	$payable_amt = validation($_POST['net_payable_amt']);
 
-	$pay = $_POST['pay'];
-	$due = $_POST['due'];
+	$pay = validation($_POST['pay']);
+	$due = validation($_POST['due']);
 
-	$products_id_no = $_POST['products_id_no'];
-	$products_name = $_POST['products_name'];
-	$sell_price = $_POST['sell_price'];
+	$products_id_no = validation($_POST['products_id_no']);
+	$products_name = validation($_POST['products_name']);
+	$sell_price = validation($_POST['sell_price']);
 
-	$qty = $_POST['qty'];
-	$offer_qty = $_POST['offer_qty'];
-	$total_price = $_POST['total_price'];
+	$qty = validation($_POST['qty']);
+	$offer_qty = validation($_POST['offer_qty']);
+	$total_price = validation($_POST['total_price']);
 	
 	$query = "INSERT INTO  order_delivery
 

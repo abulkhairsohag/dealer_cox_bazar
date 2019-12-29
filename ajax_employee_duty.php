@@ -28,16 +28,16 @@ if (isset($_POST['serial_no_edit'])) {
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-	$id_no = $_POST["id_no"];
-	$name = $_POST["name"];
-	$area = $_POST["area"];
-	// $company = $_POST["company"];
-	$per_day = $_POST["per_day"];
-	$per_month = $_POST["per_month"];
-	$comission = $_POST["comission"];
-	$description = $_POST["description"];
-	$active_status = $_POST["active_status"];
-	$edit_id = $_POST["edit_id"];
+	$id_no = validation($_POST["id_no"]);
+	$name = validation($_POST["name"]);
+	// $area = validation($_POST["area"]);
+	// $company = validation($_POST["company"]);
+	$per_day = validation($_POST["per_day"]);
+	$per_month = validation($_POST["per_month"]);
+	$comission = validation($_POST["comission"]);
+	$description = validation($_POST["description"]);
+	$active_status = validation($_POST["active_status"]);
+	$edit_id = validation($_POST["edit_id"]);
 
 	if ($edit_id) { // updating daata into database
 
@@ -201,8 +201,6 @@ if (isset($_POST["sohag"])) {
 				<td><?php echo $i; ?></td>
 				<td><?php echo $row['id_no']; ?></td>
 				<td><?php echo $row['name']; ?></td>
-				<td><?php echo $row['area']; ?></td>
-				<!-- <td><?php //echo $row['per_day']; ?></td> -->
 				<td><?php echo $row['per_month']; ?></td>
 				<td><?php echo $row['comission']; ?></td>
 				<td><?php echo $row['description']; ?></td>

@@ -79,9 +79,9 @@ if (isset($_POST['serial_no_edit'])) {
 
 // now performing action after submission of the form 
 if (isset($_POST['submit'])) {
-	$employee_id_delivery = $_POST['employee_id_delivery'];
-	$employee_name_delivery = $_POST['employee_name_delivery'];
-	$zone_serial_no = $_POST['zone_serial_no'];
+	$employee_id_delivery = validation($_POST['employee_id_delivery']);
+	$employee_name_delivery = validation($_POST['employee_name_delivery']);
+	$zone_serial_no = validation($_POST['zone_serial_no']);
 	$query ="SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
 	$zone = $dbOb->select($query);
 	$zone_name = "";
@@ -89,31 +89,31 @@ if (isset($_POST['submit'])) {
 		$zone_name = $zone->fetch_assoc()['zone_name'];
 	}
 
-	$area_employee = $_POST['area_employee'];
-	$ware_house_serial_no = $_POST['ware_house_serial_no'];
+	$area_employee = validation($_POST['area_employee']);
+	$ware_house_serial_no = validation($_POST['ware_house_serial_no']);
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$get_ware_house = $dbOb->select($query);
 	$ware_house_name ="";
 	if ($get_ware_house) {
 		$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
 	}
-	$cust_id =  $_POST['cust_id'];
-	$shop_name = $_POST['shop_name'];
-	$shop_phn = $_POST['shop_phn'];
-	$products_id_no = $_POST['products_id_no'];
-	$products_name = $_POST['products_name'];
-	$company = $_POST['company'];
-	$marketing_sell_price = $_POST['marketing_sell_price'];
-	$return_quantity = $_POST['return_quantity'];
-	$total_price = $_POST['total_price'];
-	$return_reason = $_POST['return_reason'];
-	$description = $_POST['description'];
-	$return_date = $_POST['return_date'];
+	$cust_id =  validation($_POST['cust_id']);
+	$shop_name = validation($_POST['shop_name']);
+	$shop_phn = validation($_POST['shop_phn']);
+	$products_id_no = validation($_POST['products_id_no']);
+	$products_name = validation($_POST['products_name']);
+	$company = validation($_POST['company']);
+	$marketing_sell_price = validation($_POST['marketing_sell_price']);
+	$return_quantity = validation($_POST['return_quantity']);
+	$total_price = validation($_POST['total_price']);
+	$return_reason = validation($_POST['return_reason']);
+	$description = validation($_POST['description']);
+	$return_date = validation($_POST['return_date']);
 
 	$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
 	$current_quantity = $dbOb->find($query)['quantity'];
 
-	$edit_id = $_POST['edit_id'];
+	$edit_id = validation($_POST['edit_id']);
 	// $return_date = date("d-m-Y");
 
 	if ($edit_id) {

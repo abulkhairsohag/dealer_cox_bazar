@@ -24,14 +24,10 @@ if (isset($_POST['serial_no_edit'])) {
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-	  $id_no = $_POST["id_no"];
-      $name = $_POST["name"];
-      $area = $_POST["area"];
-      // $company = $_POST["company"];
-      $vehicle_reg_no = $_POST["vehicle_reg_no"];
-      $from_date = $_POST["from_date"];
-      $to_date = $_POST["to_date"];
-      $active_status = $_POST["active_status"];
+	  $id_no = validation($_POST["id_no"]);
+      $name = validation($_POST["name"]);
+     
+      $active_status = validation($_POST["active_status"]);
       $edit_id = $_POST["edit_id"];
 
 	if ($edit_id) { // now editing data 
@@ -43,17 +39,11 @@ if (isset($_POST['submit'])) {
 		if ($get_delivery_emp) {
 			while ($row = $get_delivery_emp->fetch_assoc()) {
 
-				if ($row['area'] == $area && $row['active_status'] == 'Active') {
-					$message = 'Already One Employee Is Active In This Area. Please Try Another Area';
-					$type = 'warning';
-					echo  json_encode(['message'=>$message,'type'=>$type]);
-					exit();
-				}else{
+				
 					if ($row['id_no']==$id_no && $row['active_status'] == 'Active') {
 						$confirmation_edit = false;
 						break;
 					}
-				}
 			}
 			
 		}
@@ -64,10 +54,6 @@ if (isset($_POST['submit'])) {
 					  SET 
 						id_no = '$id_no',
 						name = '$name', 
-						area 	='$area',
-						vehicle_reg_no = '$vehicle_reg_no',
-						from_date = '$from_date',
-						to_date 	= '$to_date',
 						active_status = '$active_status'
 						
 					  WHERE
@@ -99,27 +85,14 @@ if (isset($_POST['submit'])) {
 		$emp_existing_id = $get_emp_delivery['id_no'];
 		if ($emp_existing_id) {
 			$confirmation = false;
-		}else{
-			$query = "SELECT * FROM delivery_employee WHERE  active_status = 'Active'";
-			$get_active_employee = $dbOb->select($query);
-			if ($get_active_employee) {
-				while ($row = $get_active_employee->fetch_assoc()) {
-					if ($row['area'] == $area && $row['active_status'] == 'Active') {
-						$message = 'Already One Employee Is Active In This Area. Please Try Another Area';
-						$type = 'warning';
-						echo  json_encode(['message'=>$message,'type'=>$type]);
-						exit();
-					}
-				}
-			}
 		}
 
 
 		if ($confirmation) {
 			$query = "INSERT INTO delivery_employee 
-						(id_no,name,area,vehicle_reg_no,from_date,to_date,active_status)
+						(id_no,name,active_status)
 					  VALUES 
-					  	('$id_no','$name','$area','$vehicle_reg_no','$from_date','$to_date','$active_status')";
+					  	('$id_no','$name','$active_status')";
 			$insert = $dbOb->insert($query);
 			if ($insert) {
 				$message = "Congratulaitons! Information Is Successfully Saved.";
@@ -172,10 +145,7 @@ if (isset($_POST["sohag"])) {
                     <td><?php echo $i; ?></td>
                     <td><?php echo $row['id_no']; ?></td>
                     <td><?php echo $row['name']; ?></td> 
-                    <td><?php echo $row['area']; ?></td>
-                    <td><?php echo $row['vehicle_reg_no']; ?></td>
-                    <td><?php echo $row['from_date']; ?></td>
-                    <td><?php echo $row['to_date']; ?></td>
+                    
                     <?php 
                       if ($row['active_status'] == "Active") {
                         $color = "green";

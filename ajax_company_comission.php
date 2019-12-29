@@ -24,14 +24,14 @@ if (isset($_POST['serial_no_edit'])) {
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-          $company = $_POST['company'];
-          $month = $_POST['month'];
-          $target_product = $_POST['target_product'];
-          $target_sell_amount = $_POST['target_sell_amount'];
-          $comission_persent = $_POST['comission_persent'];
+          $company = validation($_POST['company']);
+          $month = validation($_POST['month']);
+          $target_product = validation($_POST['target_product']);
+          $target_sell_amount = validation($_POST['target_sell_amount']);
+          $comission_persent = validation($_POST['comission_persent']);
 
           $date = date("d-m-Y");
-          $edit_id = $_POST['edit_id'];
+          $edit_id = validation($_POST['edit_id']);
 
 	if ($edit_id) {
 		$query = "UPDATE company_commission 

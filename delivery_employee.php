@@ -41,11 +41,6 @@ if(!permission_check('delivery_man')){
                 <th style="text-align: center;">#</th>
                 <th style="text-align: center;">ID</th>
                 <th style="text-align: center;">Name</th>
-                <!-- <th style="text-align: center;">Company</th> -->
-                <th style="text-align: center;">Area</th>
-                <th style="text-align: center;">Vehicle Reg. No</th>
-                <th style="text-align: center;">Duty From </br>Date</th>
-                <th style="text-align: center;">Duty To </br>Date</th>
                 <th style="text-align: center;">Active Status</th>
                 <th style="text-align: center;">Action</th>
               </tr>
@@ -67,11 +62,7 @@ if(!permission_check('delivery_man')){
                     <td><?php echo $i; ?></td>
                     <td><?php echo $row['id_no']; ?></td>
                     <td><?php echo $row['name']; ?></td>
-                    <!-- <td><?php //echo $row['company']; ?></td> -->
-                    <td><?php echo $row['area']; ?></td>
-                    <td><?php echo $row['vehicle_reg_no']; ?></td>
-                    <td><?php echo $row['from_date']; ?></td>
-                    <td><?php echo $row['to_date']; ?></td>
+                   
                     <?php 
                       if ($row['active_status'] == "Active") {
                         $color = "green";
@@ -169,98 +160,15 @@ if(!permission_check('delivery_man')){
                       </div>
 
 
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Duty Area <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <select required=""id="area" name="area" required="" class="form-control col-md-7 col-xs-12">
-                            <option value=""></option>
-                            <?php 
-                            $query = "SELECT * FROM area";
-                            $get_area = $dbOb->select($query);
-                            if ($get_area) {
-                              while ($row = $get_area->fetch_assoc()) {
-                                ?>
-                                <option value="<?php echo $row['area_name'] ?>"> <?php echo $row['area_name'] ?> </option>
+          
 
-                                <?php
-                              }
-                            }
-                            ?>
-                          </select>
-                        </div>
-                      </div>
-
-
-                      <!-- <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
-                         <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <select  id="company" name="company" class="form-control col-md-7 col-xs-12" required="">
-                            <option value=""></option>
-                            <?php 
-                            // $query = "SELECT * FROM company";
-                            // $get_company = $dbOb->select($query);
-                            // if ($get_company) {
-                            //   while ($row = $get_company->fetch_assoc()) {
-                                ?>
-                                
-
-                                <?php
-                            //   }
-                            // }
-                            ?>
-                          </select>
-                        </div>
-                      </div> -->
-
-                      <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Vehicle Reg. Number <span class="required">*</span> </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <select type="text" id="vehicle_reg_no" name="vehicle_reg_no" class="form-control col-md-7 col-xs-12" required="">
-                            <option value="">Select A Vehicle Reg. No</option>
-                            <?php 
-
-                            $query = "SELECT * FROM transport";
-                            $get_transport = $dbOb->select($query);
-                            if ($get_transport) {
-                              while ($row = $get_transport->fetch_assoc()) {
-                                ?>
-                                <option value="<?php echo($row['reg_no']) ?>"><?php echo $row['reg_no'].', '.$row['vehicle_name'].', '.$row['driver_name'] ?></option>
-                                <?php
-                              }
-                            }
-                            ?>
-                          </select>
-                        </div>
-                      </div>
+                
 
 
 
-                      <div class="form-group" align="center">
-                        <label for="middle-name" class="control-label col-md-8 col-sm-3 col-xs-12" ><h4 style="color: red">Select Duty Time: From Date & To Date</h4> </label>
-                      </div>
 
+           
 
-
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Duty From Date <span class="required" style="color: red">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" id="from_date" name="from_date" class="date-picker form-control col-md-7 col-xs-12 datepicker" required="required"  autocomplete="off" readonly="">
-                        </div>
-                      </div>
-
-
-
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Duty To Date <span class="required" style="color: red">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" id="to_date" name="to_date" class="date-picker form-control col-md-7 col-xs-12 datepicker" required="required"  autocomplete="off" readonly="">
-                        </div>
-                      </div>
 
 
 

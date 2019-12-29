@@ -39,8 +39,8 @@ if (isset($_POST['serial_no_edit'])) {
 
 
 if (isset($_POST['submit'])) { 
-	$zone_name = $_POST['zone_name'];
-	$area_name = $_POST['area_name'];
+	$zone_name = validation($_POST['zone_name']);
+	$area_name =  validation($_POST['area_name']);
 	
 	$edit_id = $_POST['edit_id'];
 

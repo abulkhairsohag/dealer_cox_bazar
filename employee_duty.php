@@ -39,9 +39,6 @@ if(!permission_check('sales_man')){
                 <th style="text-align: center;">#</th>
                 <th style="text-align: center;">ID</th>
                 <th style="text-align: center;">Name</th>
-                <th style="text-align: center;">Area</th>
-                <!-- <th style="text-align: center;">Product Company</th> -->
-                <!-- <th style="text-align: center;">Sell Target </br>Per Day(tk)</th> -->
                 <th style="text-align: center;">Per Month Target(tk)</th>
                 <th style="text-align: center;">Extra Comission(tk)</th>
                 <th style="text-align: center;">Description</th>
@@ -66,8 +63,6 @@ if(!permission_check('sales_man')){
                     <td><?php echo $i; ?></td>
                     <td><?php echo $row['id_no']; ?></td>
                     <td><?php echo $row['name']; ?></td>
-                    <td><?php echo $row['area']; ?></td>
-                    <!-- <td><?php //echo $row['per_day']; ?></td> -->
                     <td><?php echo $row['per_month']; ?></td>
                     <td><?php echo $row['comission']; ?></td>
                     <td><?php echo $row['description']; ?></td>
@@ -168,50 +163,7 @@ if(!permission_check('sales_man')){
                       </div>
 
 
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Duty Area <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <select required=""id="area" name="area" required="" class="form-control col-md-7 col-xs-12">
-                            <option value=""></option>
-                            <?php 
-                            $query = "SELECT * FROM area";
-                            $get_area = $dbOb->select($query);
-                            if ($get_area) {
-                              while ($row = $get_area->fetch_assoc()) {
-                                ?>
-                                <option value="<?php echo $row['area_name'] ?>"> <?php echo $row['area_name'] ?> </option>
 
-                                <?php
-                              }
-                            }
-                            ?>
-                          </select>
-                        </div>
-                      </div>
-
-
-                      <!-- <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Sell Product Company <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <select  id="company" name="company" class="form-control col-md-7 col-xs-12" required="">
-                            <option value=""></option> -->
-                            <?php 
-                            // $query = "SELECT * FROM company";
-                            // $get_company = $dbOb->select($query);
-                            // if ($get_company) {
-                            //   while ($row = $get_company->fetch_assoc()) {
-                                ?>
-                               
-                               
-                                <?php
-                            //   }
-                            // }
-                            ?>
-                          <!-- </select>
-                        </div>
-                      </div> -->
 
                       <div class="form-group" style="display:none">
                         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Sell Target Per Day (Taka) </label>

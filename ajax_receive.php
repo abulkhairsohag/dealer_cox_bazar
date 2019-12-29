@@ -24,19 +24,19 @@ if (isset($_POST['serial_no_edit'])) {
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-          $receive_type = $_POST['receive_type'];
-          $client_name = $_POST['client_name'];
-          $organization_name = $_POST['organization_name'];
-          $address = $_POST['address'];
-          $mobile_no = $_POST['mobile_no'];
-          $invoice_docs_no = $_POST['invoice_docs_no'];
-          $total_amount = $_POST['total_amount'];
-          $paid_amount = $_POST['paid_amount'];
-          $due_amount = $_POST['due_amount'];
-          $description = $_POST['description'];
-          $next_paid_date = $_POST['next_paid_date'];
+          $receive_type = validation($_POST['receive_type']);
+          $client_name = validation($_POST['client_name']);
+          $organization_name = validation($_POST['organization_name']);
+          $address = validation($_POST['address']);
+          $mobile_no = validation($_POST['mobile_no']);
+          $invoice_docs_no = validation($_POST['invoice_docs_no']);
+          $total_amount = validation($_POST['total_amount']);
+          $paid_amount = validation($_POST['paid_amount']);
+          $due_amount = validation($_POST['due_amount']);
+          $description = validation($_POST['description']);
+          $next_paid_date = validation($_POST['next_paid_date']);
           $receive_date = date("d-m-Y");
-          $edit_id = $_POST['edit_id'];
+          $edit_id = validation($_POST['edit_id']);
 
 	if ($edit_id) {
 		$query = "UPDATE receive 

@@ -23,16 +23,19 @@ if (isset($_POST['serial_no_edit'])) {
 
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
-	$area_name 		= $_POST['area_name'];
-	$category_name 	= $_POST['category_name'];
-	$cust_id 	= $_POST['cust_id'];
-	$client_name 	= $_POST['client_name'];
-	$organization_name = $_POST['organization_name'];
-	$address 		= $_POST['address'];
-	$mobile_no 		= $_POST['mobile_no'];
-	$email 			= $_POST['email'];
-	$description 	= $_POST['description'];
-	$edit_id 	= $_POST['edit_id'];
+	$area_name 		= validation($_POST['area_name']);
+	$category_name 	= validation($_POST['category_name']);
+	$cust_id 	= validation($_POST['cust_id']);
+	$client_name 	= validation($_POST['client_name']);
+	$organization_name = validation($_POST['organization_name']);
+	$address 		= validation($_POST['address']);
+	$mobile_no 		= validation($_POST['mobile_no']);
+	$email 			= validation($_POST['email']);
+	$description 	= validation($_POST['description']);
+	$previous_dew 	= validation($_POST['previous_dew']);
+	$dew_date 	    = validation($_POST['dew_date']);
+
+	$edit_id 	= validation($_POST['edit_id']);
 
 	if ($edit_id) {
 		$query = "UPDATE client 
@@ -69,6 +72,44 @@ if (isset($_POST['submit'])) {
 		if ($insert) {
 			$query = "INSERT INTO id_no_generator (id,id_type) VALUES ('$cust_id','client')";
 			$insert_id = $dbOb->insert($query);
+
+			if ($previous_dew > 0) {
+
+
+                 $query = "SELECT * FROM order_delivery ORDER BY serial_no DESC LIMIT 1";
+			     $get_order = $dbOb->select($query);
+			     $today = date("Ymd");
+			     if ($get_order) {
+			      $last_id = $get_order->fetch_assoc()['order_no'];
+			      $exploded_id = explode('-', $last_id);
+			      $exploded_id = str_split($exploded_id[1],8);
+
+			      if ($exploded_id[0] == $today) {
+			        $last_id = $exploded_id[1] * 1 + 1;
+			        $id_length = strlen($last_id);
+			        $remaining_length = 4 - $id_length;
+			        $zeros = "";
+
+			        if ($remaining_length > 0) {
+			          for ($i = 0; $i < $remaining_length; $i++) {
+			            $zeros = $zeros . '0';
+			          }
+			          $order_new_id = 'INV-'.$exploded_id[0] . $zeros . $last_id;
+			        }
+			      }else {
+			        $order_new_id = 'INV-'.$today."0001";
+			      }
+			    } else {
+			      $order_new_id = 'INV-'.$today."0001";
+				}
+	
+
+				$query ="INSERT INTO order_delivery 
+				(order_no,cust_id,customer_name,shop_name,address,mobile_no,payable_amt,pay,due,delivery_date,delivery_status,cancel_status)
+				VALUES 
+				('$order_new_id','$cust_id','$client_name','$organization_name','$address','$mobile_no','$previous_dew','0','$previous_dew','$dew_date','1','0')";
+				$insert_dew = $dbOb->insert($query);
+			}
 			$message = "Congratulaitons! Information Is Successfully Saved.";
 			$type = 'success';
 			echo json_encode(['message'=>$message,'type'=>$type]);

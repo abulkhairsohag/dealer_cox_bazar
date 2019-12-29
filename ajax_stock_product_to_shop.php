@@ -23,7 +23,7 @@ if (isset($_POST['submit'])) {
 	
 
 
-	$ware_house_serial_no= $_POST['ware_house_serial_no'];
+	$ware_house_serial_no= validation($_POST['ware_house_serial_no']);
 	$ware_house_name= '';
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$get_ware_house  = $dbOb->select($query);
@@ -32,14 +32,14 @@ if (isset($_POST['submit'])) {
 	}
 
 
-	$stock_date= $_POST['stock_date'];
+	$stock_date= validation($_POST['stock_date']);
 
-	$product_id= $_POST['product_id'];
-	$products_name = $_POST['products_name'];
-	$category = $_POST['category'];
-	$quantity = $_POST['quantity'];
-	$quantity_offer = $_POST['quantity_offer'];
-	$sell_price = $_POST['sell_price'];
+	$product_id= validation($_POST['product_id']);
+	$products_name = validation($_POST['products_name']);
+	$category = validation($_POST['category']);
+	$quantity = validation($_POST['quantity']);
+	$quantity_offer = validation($_POST['quantity_offer']);
+	$sell_price = validation($_POST['sell_price']);
 
     $query = "SELECT * FROM own_shop_products_stock";
     $get_own_shop_stock = $dbOb->select($query);

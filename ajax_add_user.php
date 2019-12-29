@@ -25,15 +25,15 @@ if (isset($_POST['serial_no_edit'])) {
 
 // inserting user iformation
 if (isset($_POST['submit'])) {
-    $name = $_POST['name'];
-    $designation = $_POST['designation'];
-    $mobile_no = $_POST['mobile_no'];
-    $address = $_POST['address'];
-    $email = $_POST['email'];
-    $user_name = $_POST['user_name'];
-    $password = $_POST['password'];
-    $confirm_password = $_POST['confirm_password'];
-    $edit_id = $_POST['edit_id'];
+    $name = validation($_POST['name']);
+    $designation = validation($_POST['designation']);
+    $mobile_no = validation($_POST['mobile_no']);
+    $address = validation($_POST['address']);
+    $email = validation($_POST['email']);
+    $user_name = validation($_POST['user_name']);
+    $password = validation($_POST['password']);
+    $confirm_password = validation($_POST['confirm_password']);
+    $edit_id = validation($_POST['edit_id']);
 
     if ($edit_id) {
         $query = "SELECT * FROM user WHERE serial_no = '$edit_id'";

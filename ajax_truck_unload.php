@@ -151,17 +151,17 @@ if (isset($_POST['reg_no'])) {
 
 if (isset($_POST['submit'])) {
 	
-	$load_id = $_POST['load_id'];
-	$unload_date = $_POST['unloading_date'];
+	$load_id = validation($_POST['load_id']);
+	$unload_date = validation($_POST['unloading_date']);
 
-	$product_id = $_POST['product_id'];
-	$products_name = $_POST['products_name'];
-	$loaded_packet = $_POST['loaded_packet'];
-	$loaded_offer_qty = $_POST['loaded_offer_qty'];
-	$sold_packet = $_POST['sold_packet'];
-	$sold_offer_qty = $_POST['sold_offer_qty'];
-	$back_packet = $_POST['back_packet'];
-	$back_offer_qty = $_POST['back_offer_qty'];
+	$product_id = validation($_POST['product_id']);
+	$products_name = validation($_POST['products_name']);
+	$loaded_packet = validation($_POST['loaded_packet']);
+	$loaded_offer_qty = validation($_POST['loaded_offer_qty']);
+	$sold_packet = validation($_POST['sold_packet']);
+	$sold_offer_qty = validation($_POST['sold_offer_qty']);
+	$back_packet = validation($_POST['back_packet']);
+	$back_offer_qty = validation($_POST['back_offer_qty']);
 
 
 

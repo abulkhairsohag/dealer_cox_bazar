@@ -25,13 +25,13 @@ if (isset($_POST['serial_no_edit'])) {
 
 // inserting user iformation
 if (isset($_POST['submit'])) {
-    $products_id = $_POST['products_id'];
-    $packet_qty = $_POST['packet_qty'];
-    $product_qty = $_POST['product_qty'];
-    $from_date = $_POST['from_date'];
-    $to_date = $_POST['to_date'];
-    $status = $_POST['status'];
-    $edit_id = $_POST['edit_id'];
+    $products_id = validation($_POST['products_id']);
+    $packet_qty = validation($_POST['packet_qty']);
+    $product_qty = validation($_POST['product_qty']);
+    $from_date = validation($_POST['from_date']);
+    $to_date = validation($_POST['to_date']);
+    $status = validation($_POST['status']);
+    $edit_id = validation($_POST['edit_id']);
    if (strtotime($from_date) > strtotime($to_date)) {
         $message = "Offer Start Date Cannot Be Greater Than The End Date.";
         $type = "warning";

@@ -18,10 +18,10 @@ if (isset($_POST['submit'])) {
 
 	//Office Information
 	$id_no = $_POST['id_no'];
-	$area_name = $dbOb->link->real_escape_string( $_POST['area_name']);
-	$designation = $dbOb->link->real_escape_string( $_POST['designation']);
-	$joining_date = $dbOb->link->real_escape_string( $_POST['joining_date']);
-	$basic_salary = $dbOb->link->real_escape_string( $_POST['basic_salary']);
+	$area_name = $_POST['area_name'];
+	$designation = $_POST['designation'];
+	$joining_date = $_POST['joining_date'];
+	$basic_salary = $_POST['basic_salary'];
 	$house_rent = $_POST['house_rent'];
 	if ($house_rent == '') {
 		$house_rent = 0;
@@ -63,16 +63,16 @@ if (isset($_POST['submit'])) {
 
 
 	//Basic Informaion
-	$name = $dbOb->link->real_escape_string($_POST['name']);
-	$fathers_name = $dbOb->link->real_escape_string($_POST['fathers_name']);
-	$mothers_name = $dbOb->link->real_escape_string($_POST['mothers_name']);
-	$spouses_name = $dbOb->link->real_escape_string($_POST['spouses_name']);
+	$name =$_POST['name'];
+	$fathers_name =$_POST['fathers_name'];
+	$mothers_name =$_POST['mothers_name'];
+	$spouses_name =$_POST['spouses_name'];
 	$birth_date = $_POST['birth_date'];
 	$gender = $_POST['gender'];
-	$nid_no = $dbOb->link->real_escape_string($_POST['nid_no']);
-	$birth_certificate_no = $dbOb->link->real_escape_string($_POST['birth_certificate_no']);
-	$nationality = $dbOb->link->real_escape_string($_POST['nationality']);
-	$religion = $dbOb->link->real_escape_string($_POST['religion']);
+	$nid_no =$_POST['nid_no'];
+	$birth_certificate_no =$_POST['birth_certificate_no'];
+	$nationality =$_POST['nationality'];
+	$religion =$_POST['religion'];
 
 	$photo = $_FILES['photo'];
 	$permitted = array('jpg', 'png', 'gif', 'jpeg');
@@ -87,19 +87,19 @@ if (isset($_POST['submit'])) {
 	$uploaded_image = 'images/' . $unique_image;
 
 	//Contact Information
-	$present_address = $dbOb->link->real_escape_string($_POST['present_address']);
-	$permanent_address = $dbOb->link->real_escape_string($_POST['permanent_address']);
-	$mobile_no = $dbOb->link->real_escape_string($_POST['mobile_no']);
-	$phone_no = $dbOb->link->real_escape_string($_POST['phone_no']);
-	$email = $dbOb->link->real_escape_string($_POST['email']);
+	$present_address =$_POST['present_address'];
+	$permanent_address =$_POST['permanent_address'];
+	$mobile_no =$_POST['mobile_no'];
+	$phone_no =$_POST['phone_no'];
+	$email =$_POST['email'];
 
 	// education details
-	$exam_name = $dbOb->link->real_escape_string($_POST['exam_name']);
-	$institute = $dbOb->link->real_escape_string($_POST['institute']);
-	$board_university = $dbOb->link->real_escape_string($_POST['board_university']);
-	$group_name = $dbOb->link->real_escape_string($_POST['group_name']);
-	$result = $dbOb->link->real_escape_string($_POST['result']);
-	$passing_year = $dbOb->link->real_escape_string($_POST['passing_year']);
+	$exam_name =$_POST['exam_name'];
+	$institute =$_POST['institute'];
+	$board_university =$_POST['board_university'];
+	$group_name =$_POST['group_name'];
+	$result =$_POST['result'];
+	$passing_year =$_POST['passing_year'];
 
 	//document Information
 	$document_name = $_POST['document_name'];
@@ -123,16 +123,16 @@ if (isset($_POST['submit'])) {
 	}
 
 	// Account Information 
-	$account_name = $dbOb->link->real_escape_string$_POST['account_name']);
-	$bank_name = $dbOb->link->real_escape_string$_POST['bank_name']);
-	$branch_name = $dbOb->link->real_escape_string$_POST['branch_name']);
-	$account_no = $dbOb->link->real_escape_string$_POST['account_no']);
+	$account_name =$_POST['account_name'];
+	$bank_name =$_POST['bank_name'];
+	$branch_name =$_POST['branch_name'];
+	$account_no =$_POST['account_no'];
 
 	// Helth Information
-	$height = $dbOb->link->real_escape_string$_POST['height']);
-	$wieght = $dbOb->link->real_escape_string$_POST['wieght']);
-	$blood_group = $dbOb->link->real_escape_string$_POST['blood_group']);
-	$body_identify_mark = $dbOb->link->real_escape_string$_POST['body_identify_mark']);
+	$height =$_POST['height'];
+	$wieght =$_POST['wieght'];
+	$blood_group =$_POST['blood_group'];
+	$body_identify_mark =$_POST['body_identify_mark'];
 
 	// active status 
 	$active_status = $_POST['active_status'];
@@ -191,7 +191,7 @@ if (isset($_POST['submit'])) {
 
 											$insert_acadmical_info = $dbOb->insert($query_academical_info);
 										}
-										if ($insert_acadmical_info) {
+										if (true) {
 											//here  user name and password will be inserted to the login table 
 											///////////////////////////////////////////////////////////////////////////////////////////////////
 											

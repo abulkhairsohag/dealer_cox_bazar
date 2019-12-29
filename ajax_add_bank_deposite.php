@@ -23,14 +23,14 @@ if (isset($_POST['serial_no_edit'])) {
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-	  $bank_name = $_POST['bank_name'];
-      $bank_account_no = $_POST['bank_account_no'];
-      $account_holder_name = $_POST['account_holder_name'];
-      $branch_name = $_POST['branch_name'];
-      $amount = $_POST['amount'];
-      $deposite_date = $_POST['deposite_date'];
-      $description = $_POST['description'];
-      $edit_id = $_POST['edit_id'];
+	  $bank_name = validation($_POST['bank_name']);
+      $bank_account_no = validation($_POST['bank_account_no']);
+      $account_holder_name = validation($_POST['account_holder_name']);
+      $branch_name = validation($_POST['branch_name']);
+      $amount = validation($_POST['amount']);
+      $deposite_date = validation($_POST['deposite_date']);
+      $description = validation($_POST['description']);
+      $edit_id = validation($_POST['edit_id']);
 
 	if ($edit_id) {
 		$query = "UPDATE bank_deposite 

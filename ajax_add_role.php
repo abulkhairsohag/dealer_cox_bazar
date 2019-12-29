@@ -36,11 +36,8 @@ if (isset($_POST['serial_no_edit'])) {
 }
 
 
-
-
-
 if (isset($_POST['submit'])) {
-	$permission = $_POST['permission'];
+	$permission = validation($_POST['permission']);
 	$role_name = $_POST['role_name'];
 	$edit_id = $_POST['edit_id'];
 

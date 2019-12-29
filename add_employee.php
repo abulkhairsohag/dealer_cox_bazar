@@ -320,23 +320,23 @@ if(!permission_check('add_employee')){
             <table class="table" class="">
               <thead>
                 <tr>
-                  <th style="text-align: center;">Exam Name<span class="required" style="color: red">*</span></th>
-                  <th style="text-align: center;">Institute<span class="required" style="color: red">*</span></th>
-                  <th style="text-align: center;">Board/University<span class="required" style="color: red">*</span></th>
-                  <th style="text-align: center;">Group/Dept.<span class="required" style="color: red">*</span></th>
-                  <th style="text-align: center;">Result<span class="required" style="color: red">*</span></th>
-                  <th style="text-align: center;">Passing Year<span class="required" style="color: red">*</span></th>
+                  <th style="text-align: center;">Exam Name </th>
+                  <th style="text-align: center;">Institute </th>
+                  <th style="text-align: center;">Board/University </th>
+                  <th style="text-align: center;">Group/Dept. </th>
+                  <th style="text-align: center;">Result </th>
+                  <th style="text-align: center;">Passing Year </th>
                   <th><button type="button" class="btn btn-success" id="add_more"><i class="fas fa-plus"></i></button></th>
                 </tr>
               </thead>
               <tbody id="edu_info_table">
                 <tr>
-                  <td><input type="text" class="form-control" id="exam_name" name="exam_name[]" required=""></td>
-                  <td><input type="text" class="form-control" id="institute" name="institute[]" required=""></td>
-                  <td><input type="text" class="form-control" id="board_university" name="board_university[]" required=""></td>
-                  <td><input type="text" class="form-control" id="group_name" name="group_name[]" required=""></td>
-                  <td><input type="number" min="0" step="0.01" class="form-control" id="result" name="result[]" required=""></td>
-                  <td><input type="number" min="0" step="1" class="form-control" id="passing_year" name="passing_year[]" required=""></td>
+                  <td><input type="text" class="form-control" id="exam_name" name="exam_name[]" ></td>
+                  <td><input type="text" class="form-control" id="institute" name="institute[]" ></td>
+                  <td><input type="text" class="form-control" id="board_university" name="board_university[]" ></td>
+                  <td><input type="text" class="form-control" id="group_name" name="group_name[]" ></td>
+                  <td><input type="number" min="0" step="0.01" class="form-control" id="result" name="result[]" ></td>
+                  <td><input type="number" min="0" step="1" class="form-control" id="passing_year" name="passing_year[]" ></td>
                   <td><button type="button" class="btn btn-danger remove_button"><i class="fas fa-times"></i></button></td>
                 </tr>
               </tbody>

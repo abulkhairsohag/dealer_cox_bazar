@@ -23,9 +23,9 @@ if (isset($_POST['serial_no_edit'])) {
 
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
-	$ware_house_name 		= $_POST['ware_house_name'];
-	$address 		= $_POST['address'];
-	$edit_id 	= $_POST['edit_id'];
+	$ware_house_name = validation($_POST['ware_house_name']);
+	$address 		 = validation($_POST['address']);
+	$edit_id 	     = $_POST['edit_id'];
 
 	if ($edit_id) {
 		$query = "UPDATE ware_house 

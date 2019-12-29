@@ -26,20 +26,20 @@ if (isset($_POST['serial_no_edit'])) {
 if (isset($_POST['submit'])) {
 
 	// $category_name = $_POST["category_name"];
-	$company_name = $_POST["company_name"];
-	$responder_name = $_POST["responder_name"];
-	$respoder_designation = $_POST["respoder_designation"];
-	$address = $_POST["address"];
-	$mobile_no = $_POST["mobile_no"];
-	$phone_no = $_POST["phone_no"];
-	// $user_name = $_POST["user_name"];
-	$fax = $_POST["fax"];
-	$email = $_POST["email"];
-	$website = $_POST["website"];
-	$product_type = $_POST["product_type"];
-	$product_quality = $_POST["product_quality"];
-	$description = $_POST["description"];
-	$edit_id = $_POST["edit_id"];
+	$company_name = validation($_POST["company_name"]);
+	$responder_name = validation($_POST["responder_name"]);
+	$respoder_designation = validation($_POST["respoder_designation"]);
+	$address = validation($_POST["address"]);
+	$mobile_no = validation($_POST["mobile_no"]);
+	$phone_no = validation($_POST["phone_no"]);
+	// $user_name = validation($_POST["user_name"]);
+	$fax = validation($_POST["fax"]);
+	$email = validation($_POST["email"]);
+	$website = validation($_POST["website"]);
+	$product_type = validation($_POST["product_type"]);
+	$product_quality = validation($_POST["product_quality"]);
+	$description = validation($_POST["description"]);
+	$edit_id = validation($_POST["edit_id"]);
 
 	if ($edit_id) {
 		$query = "UPDATE company

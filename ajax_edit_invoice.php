@@ -19,19 +19,19 @@ $dbOb = new Database();
 
   if (isset($_POST['submit'])) {
 
-    $invoice_option = $_POST['invoice_option'];
-    $name = $_POST['name'];
-    $designation = $_POST['designation'];
-    $phone_no = $_POST['phone_no'];
-    $description = $_POST['description'];
-    $purpose = $_POST['purpose'];
-    $amount = $_POST['amount'];
-    $total_amount = $_POST['net_total'];
-    $pay = $_POST['net_total'];
-    $invoice_date = $_POST['invoice_date'];
+    $invoice_option = validation($_POST['invoice_option']);
+    $name = validation($_POST['name']);
+    $designation = validation($_POST['designation']);
+    $phone_no = validation($_POST['phone_no']);
+    $description = validation($_POST['description']);
+    $purpose = validation($_POST['purpose']);
+    $amount = validation($_POST['amount']);
+    $total_amount = validation($_POST['net_total']);
+    $pay = validation($_POST['net_total']);
+    $invoice_date = validation($_POST['invoice_date']);
 
 
-    $edit_id = $_POST['edit_id'];
+    $edit_id = validation($_POST['edit_id']);
     
     // $payment_date = date("d-m-Y");
 

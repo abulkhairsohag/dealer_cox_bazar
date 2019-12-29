@@ -46,7 +46,7 @@ if (isset($_POST['reg_no'])) {
 
 if (isset($_POST['submit'])) {
 
-	$zone_serial_no= $_POST['zone_serial_no'];
+	$zone_serial_no= validation($_POST['zone_serial_no']);
 	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
 	$get_zone = $dbOb->select($query);
 	$zone_name = '';
@@ -54,9 +54,9 @@ if (isset($_POST['submit'])) {
 		$zone_name = $get_zone->fetch_assoc()['zone_name'];
 	}
 
-	$area_name= $_POST['area_employee'];
+	$area_name= validation($_POST['area_employee']);
 
-	$ware_house_serial_no= $_POST['ware_house_serial_no'];
+	$ware_house_serial_no= validation($_POST['ware_house_serial_no']);
 	$ware_house_name= '';
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$get_ware_house  = $dbOb->select($query);
@@ -64,7 +64,7 @@ if (isset($_POST['submit'])) {
 		$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
 	}
 
-	$employee_id = $_POST['delivery_employee_id'];
+	$employee_id = validation($_POST['delivery_employee_id']);
 	$emplyee_name =  "";
 	$query = "SELECT * FROM employee_main_info WHERE id_no = '$employee_id'";
 	$get_emp = $dbOb->select($query);
@@ -78,16 +78,16 @@ if (isset($_POST['submit'])) {
 		$type = 'warning';
 		die(json_encode(['message'=>$message,'type'=>$type]));
 	}
-	$vehicle_reg_no = $_POST['vehicle_reg_no'];
-	$vehicle_name= $_POST['vehicle_name'];
-	$vehicle_type= $_POST['vehicle_type'];
-	$loading_date= $_POST['loading_date'];
+	$vehicle_reg_no = validation($_POST['vehicle_reg_no']);
+	$vehicle_name= validation($_POST['vehicle_name']);
+	$vehicle_type= validation($_POST['vehicle_type']);
+	$loading_date= validation($_POST['loading_date']);
 
-	$product_id= $_POST['product_id'];
-	$products_name = $_POST['products_name'];
-	$category = $_POST['category'];
-	$quantity = $_POST['quantity'];
-	$quantity_offer = $_POST['quantity_offer'];
+	$product_id= validation($_POST['product_id']);
+	$products_name = validation($_POST['products_name']);
+	$category = validation($_POST['category']);
+	$quantity = validation($_POST['quantity']);
+	$quantity_offer = validation($_POST['quantity_offer']);
 
 	
 	$query = "INSERT INTO truck_load 

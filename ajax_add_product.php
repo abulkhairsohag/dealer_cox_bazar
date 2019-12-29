@@ -277,13 +277,13 @@ if (isset($_POST['get_products_id_no_stock'])) {
 // In the following section we are going to add new stock
 if (isset($_POST['submit_stock'])) {
 
-	$products_id_no_stock = $_POST['products_id_no_stock'];
-	$available_quantity   = $_POST['available_quantity'];
-	$new_quantity 		  = $_POST['new_quantity'];
-	$total_quantity 	  = $_POST['total_quantity'];
-	$stock_date 	  	  = $_POST['stock_date'];
-	$company_price_stock  = $_POST['company_price_stock'];
-	$ware_house_serial_no  = $_POST['ware_house_serial_no'];
+	$products_id_no_stock = validation($_POST['products_id_no_stock']);
+	$available_quantity   = validation($_POST['available_quantity']);
+	$new_quantity 		  = validation($_POST['new_quantity']);
+	$total_quantity 	  = validation($_POST['total_quantity']);
+	$stock_date 	  	  = validation($_POST['stock_date']);
+	$company_price_stock  = validation($_POST['company_price_stock']);
+	$ware_house_serial_no  = validation($_POST['ware_house_serial_no']);
 	$ware_house_name = '';
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$get_ware_house = $dbOb->select($query);

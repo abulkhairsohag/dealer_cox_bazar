@@ -25,7 +25,7 @@ if (isset($_POST['serial_no_edit'])) {
 
 // adding or Updating the table
 if (isset($_POST['submit'])) {
-	$head_name = $_POST['head_name'];
+	$head_name = validation($_POST['head_name']);
 	$edit_id = $_POST['edit_id'];
 
 	if ($edit_id) {

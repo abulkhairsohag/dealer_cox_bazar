@@ -65,11 +65,7 @@ if ($user_type == "employee") {
                 <?php 
                       }
          
-             if (permission_check('invoice_setting')) {
           ?>
-           <li><a href="invoice_setting.php"><i class="fas fa-map-marker-alt"></i> Invoice Setting</a></li>
-              
-             <?php } ?>
 
              </ul>
             </li>

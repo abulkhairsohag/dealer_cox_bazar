@@ -24,15 +24,15 @@ if (isset($_POST['serial_no_edit'])) {
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-	 $vehicle_name = $_POST['vehicle_name'];
-      $type = $_POST['type'];
-      $reg_no = $_POST['reg_no'];
-      $engine_no = $_POST['engine_no'];
-      $insurance_no = $_POST['insurance_no'];
-      $driver_name = $_POST['driver_name'];
-      $license_no = $_POST['license_no'];
-      $owner_type = $_POST['owner_type'];
-      $edit_id = $_POST['edit_id'];
+	 $vehicle_name = validation($_POST['vehicle_name']);
+      $type = validation($_POST['type']);
+      $reg_no = validation($_POST['reg_no']);
+      $engine_no = validation($_POST['engine_no']);
+      $insurance_no = validation($_POST['insurance_no']);
+      $driver_name = validation($_POST['driver_name']);
+      $license_no = validation($_POST['license_no']);
+      $owner_type = validation($_POST['owner_type']);
+      $edit_id = validation($_POST['edit_id']);
 
 	if ($edit_id) {
 

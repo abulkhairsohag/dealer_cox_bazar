@@ -2,14 +2,15 @@
 error_reporting(1);
 include_once('class/Session.php');
 include_once('class/Database.php');
+include_once('helper/helper.php');
 
 Session::init();
 Session::checkLogin();
 $dbOb = new Database();
 
 if (isset($_POST['submit'])) {
-	$username = $_POST['username'];
-	$password = $_POST['password'];
+	$username = validation($_POST['username']);
+	$password = validation($_POST['password']);
 
 	if (empty($username) || empty($password)) {
 		$error = 'Ops! Username Or Password Must Not Be Empty.';

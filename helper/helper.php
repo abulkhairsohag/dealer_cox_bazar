@@ -120,9 +120,9 @@
 					}
 				} // end of unloaded truck products
 
-
+				$truck_load_serial = implode(',',$truck_load_serial_no);
 				// now getting Product sell
-				$query = "SELECT * FROM order_delivery_expense WHERE ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id' 	AND delivery_status = 1";
+				$query = "SELECT * FROM order_delivery_expense WHERE ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id' 	AND delivery_status = 1 AND truck_load_serial_no NOT IN ($truck_load_serial)";
 				$get_product_sell = $dbOb->select($query);
 				$product_sell_qty = 0;
 				if ($get_product_sell) {

@@ -126,7 +126,134 @@ if (!permission_check('add_product')) {
   </div>
 </div>
 
+<!-- Modal For stocking products data  -->
+<div class="modal fade" id="stock_data_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background: #006666">
+        <h3 class="modal-title"  style="color: white">Provide Stock Information</h3>
+        <div style="float:right;">
 
+        </div>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel" style="background: #f2ffe6">
+
+              <div class="x_content" style="background: #f2ffe6">
+                <br />
+                <!-- Form starts From here  -->
+                <form id="form_stock_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
+
+
+                  <div class="form-group">
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Product ID </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="text" id="products_id_no_stock" name="products_id_no_stock" class="form-control col-md-7 col-xs-12" readonly="" >
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Product Name </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="text" id="products_name_stock" name="products_name_stock" class="form-control col-md-7 col-xs-12" readonly="" >
+                    </div>
+                  </div>
+
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Available Quantity
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="number" min="0" id="available_quantity" name="available_quantity"  class="form-control col-md-7 col-xs-12" readonly="">
+                    </div>
+                  </div>
+
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">New Quantity<span class="required" style="color: red">*</span>
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="number" min="0" step="1"  required=""id="new_quantity" name="new_quantity"  class="form-control col-md-7 col-xs-12">
+                    </div>
+                  </div>
+
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Total Quantity
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="number" min="0" id="total_quantity" name="total_quantity"  class="form-control col-md-7 col-xs-12" readonly="">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Company Price
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="number" min="0" id="company_price_stock" name="company_price_stock"  class="form-control col-md-7 col-xs-12" >
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="stock_date">Stock Date
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="text" id="stock_date" name="stock_date"  class="form-control col-md-7 col-xs-12 datepicker" value="" readonly="" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+    <div class="col-md-6 col-6">
+        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
+          <option value="">Please Select One</option>
+          <?php
+
+          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+          $get_ware_house = $dbOb->select($query);
+          if ($get_ware_house) {
+            while ($row = $get_ware_house->fetch_assoc()) {
+
+            ?>
+            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+              echo "selected";
+            } ?>
+            ><?php echo $row['ware_house_name']; ?></option>
+            <?php
+          }
+        }
+
+        ?>
+
+    </select>
+    </div>
+  </div>
+
+                  <div class="ln_solid"></div>
+                  <div class="form-group">
+                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                      <button type="reset" class="btn btn-primary" >Reset</button>
+                      <button type="submit" class="btn btn-success" id="submit_button_stock">Save New Quantity</button>
+                    </div>
+                  </div>
+
+
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div> <!-- End of modal for  stocking products data-->
 
 
 <!-- Modal For Adding and Updating data  -->
@@ -269,7 +396,7 @@ if (!permission_check('add_product')) {
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ware_house_serial_no">Ware House <span class="required" style="color: red">*</span>
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <select name="ware_house_serial_no" id="ware_house_serial_no" required="" class="form-control col-md-7 col-xs-12" required="">
+                      <select name="ware_house_serial_no" id="ware_house_serial_no" required="" class="form-control col-md-7 col-xs-12 ware_house_serial_no_main" required="">
                         <option value="">Please Select A Warehouse</option>
                         <?php
                         $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
@@ -551,7 +678,7 @@ if (!permission_check('add_product')) {
           $("#company_price").val("");
           $("#company_price").attr('required',false);
           $("#company_price_div").hide();
-          $("#ware_house_serial_no").attr('required',false);
+          $(".ware_house_serial_no_main").attr('required',false);
           $("#warehouse_div").hide();
 
 
@@ -594,8 +721,8 @@ if (!permission_check('add_product')) {
       $("#company_price").attr('required',true);
       $("#company_price_div").show();
       $("#warehouse_div").show();
-      $("#ware_house_serial_no").val('');
-      $("#ware_house_serial_no").attr('required',true);
+      $(".ware_house_serial_no_main").val('');
+      $(".ware_house_serial_no_main").attr('required',true);
 
     });
 

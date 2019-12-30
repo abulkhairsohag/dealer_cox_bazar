@@ -230,12 +230,7 @@ if ($user_type == "employee") {
                   ?>
                   <li><a href="company_product_return.php"><i class="fas fa-stream"></i> Company Products Return</a></li>
                 <?php } 
-                if (permission_check('total_stock_product')) {
-                  ?>
-                  <li><a href="total_stock_product.php"><i class="fas fa-stream"></i> Total Stock Product</a></li>
-              
-                <?php 
-              }
+             
                 if (permission_check('product_wise_stock_report')) {
                   ?>
 

@@ -99,16 +99,7 @@ if(!permission_check('unpaid_but_delivered')){
                         <a class="badge  bg-green pay " id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#pay_modal">Pay </a>
                         <?php 
                       }
-                      if (permission_check('unpaid_but_delivered_cancel_order_button')) {
-
-                        if ($row['pay'] > 0) {
-                         $sohag = 'cannot cancel';
-                       }else{
-
-
-                        ?>
-                        <a  class="badge bg-red cancel_order " style="margin-top:5px" data-delivery_tbl_serial_no="<?php echo($row['serial_no']) ?>" data-order_tbl_serial_no="<?php echo($row['order_tbl_serial_no']) ?>">  Cancel Order</a>
-                      <?php } } ?>
+                       ?>
                     </td>
                   </tr>
 

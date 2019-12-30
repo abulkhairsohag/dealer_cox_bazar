@@ -251,7 +251,7 @@ if(!permission_check('sales_man')){
 
     $(document).on('click','.edit_data',function(){
 
-      $("#ModalLabel").html("Update Employee Duty Information.");
+      $("#ModalLabel").html("Update Sales Man.");
       $("#submit_button").html("Update");
       var serial_no_edit = $(this).attr("id");
 
@@ -286,7 +286,7 @@ if(!permission_check('sales_man')){
     });
 
     $(document).on('click','#add_data',function(){
-      $("#ModalLabel").html("Add New Employee Duty Information.");
+      $("#ModalLabel").html("Add New Sales Man.");
       $("#submit_button").html("Save");
 
       $("#id_no").val("");

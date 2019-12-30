@@ -44,8 +44,6 @@ if (!permission_check('add_product')) {
               <th style="width: 35px">Sell Price</th>
               <th style="width: 35px">MRP</th>
               <th style="width: 35px">Pack Size</th>
-              <th style="width: 35px">Available QTY</th>
-              <!-- <th style="width: 80px">Barcode</th> -->
               <th style="width: 210px;text-align: center;">Action</th>
             </tr>
           </thead>
@@ -72,9 +70,6 @@ if (!permission_check('add_product')) {
                   <td><?php echo $row['sell_price']; ?></td>
                   <td><?php echo $row['mrp_price']; ?></td>
                   <td><?php echo $row['pack_size']; ?></td>
-                  <td><?php echo $row['quantity']; ?></td>
-                  <!-- <td><img src='https://barcode.tec-it.com/barcode.ashx?data=<?php //echo($row['products_id_no']) ?>' alt='Barcode Generator TEC-IT'/ width="100px" height=70px></td> -->
-
 
                   <td align="center">
 
@@ -493,7 +488,22 @@ if (!permission_check('add_product')) {
                     </div>
                     <hr>
 
+                    
+                     <div class="row" style="margin-top:10px">
+                      <div class="col-md-6"><h5>Description : </h5></div>
+                      <div class="col-md-6"><h5 id="description_show"> </h5></div>
+                    </div>
+                    <hr>
 
+
+
+                  </div> <!-- end of first row --->
+
+                  <!-- Start of second row --->
+                  <div class="col-md-6">
+
+
+                  
                     <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Company Price : </h5></div>
                       <div class="col-md-6"><h5 id="company_price_show"> </h5></div>
@@ -512,36 +522,27 @@ if (!permission_check('add_product')) {
                     </div>
                     <hr>
 
-
-                  </div> <!-- end of first row --->
-
-                  <!-- Start of second row --->
-                  <div class="col-md-6">
-
-
-
-
-                    <div class="row" style="margin-top:10px">
+                    <!-- <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Total Buy Item (QTY) : </h5></div>
                       <div class="col-md-6"><h5 id="total_buy_item"> </h5></div>
                     </div>
-                    <hr>
+                    <hr> -->
 
 
 
-                    <div class="row" style="margin-top:10px">
+                  <!--   <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Total Sell (QTY) : </h5></div>
                       <div class="col-md-6"><h5 id="total_sold_item"> </h5></div>
                     </div>
-                    <hr>
+                    <hr> -->
 
-                    <div class="row" style="margin-top:10px">
+                    <!-- <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Return From Market (QTY) : </h5></div>
                       <div class="col-md-6"><h5 id="return_from_market"> </h5></div>
                     </div>
-                    <hr>
+                    <hr> -->
 
-                    <div class="row" style="margin-top:10px">
+                  <!--   <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Return To Company (QTY) : </h5></div>
                       <div class="col-md-6"><h5 id="return_to_company"> </h5></div>
                     </div>
@@ -551,7 +552,7 @@ if (!permission_check('add_product')) {
                       <div class="col-md-6"><h5>In Stock (QTY): </h5></div>
                       <div class="col-md-6"><h5 id="in_stock"> </h5></div>
                     </div>
-                    <hr>
+                    <hr> -->
 
                     <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Product Photo : </h5></div>
@@ -559,11 +560,7 @@ if (!permission_check('add_product')) {
                     </div>
                     <hr>
 
-                    <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Description : </h5></div>
-                      <div class="col-md-6"><h5 id="description_show"> </h5></div>
-                    </div>
-                    <hr>
+                   
 
 
 

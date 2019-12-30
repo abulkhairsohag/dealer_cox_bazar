@@ -337,15 +337,15 @@ if (isset($_POST['submit_original_price'])) {
 
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
-	$query = "SELECT * FROM products ORDER BY serial_no DESC";
-	$get_products = $dbOb->select($query);
-	if ($get_products) {
-		$i=0;
-		while ($row = $get_products->fetch_assoc()) {
-			$i++;
-			?>
-			<tr>
-				<td><?php echo $i; ?></td>
+	   $query = "SELECT * FROM products ORDER BY serial_no DESC";
+            $get_products = $dbOb->select($query);
+            if ($get_products) {
+              $i = 0;
+              while ($row = $get_products->fetch_assoc()) {
+                $i++;
+                ?>
+                <tr>
+                  <td><?php echo $i; ?></td>
                   <td><?php echo strtoupper($row['company']); ?></td>
                   <td><?php echo $row['products_id_no']; ?></td>
                   <td><?php echo $row['products_name']; ?></td>
@@ -354,44 +354,44 @@ if (isset($_POST["sohag"])) {
                   <td><?php echo $row['sell_price']; ?></td>
                   <td><?php echo $row['mrp_price']; ?></td>
                   <td><?php echo $row['pack_size']; ?></td>
-                  <td><?php echo $row['quantity']; ?></td>
-				<!-- <td><img src='https://barcode.tec-it.com/barcode.ashx?data=<?php //echo($row['products_id_no']) ?>' alt='Barcode Generator TEC-IT'/ width="100px" height=70px></td> -->
-				<td align="center">
 
-          
-				<?php 
+                  <td align="center">
+
+                   <?php
                    if (permission_check('product_edit_button')) {
                     ?>
-                    <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a>
-                  <?php } ?>
+                    <a  class="badge bg-blue edit_data" id="<?php echo ($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a>
+                  <?php }?>
 
-                  <?php 
+                  <?php
                   if (permission_check('product_stock_button')) {
                     ?>
 
-                    <a class="badge bg-green stock_data" id="<?php echo($row['products_id_no']) ?>"   data-toggle="modal" data-target="#stock_data_modal">Stock This Product </a>
-                  <?php } ?>
-                  
+                    <a class="badge bg-green stock_data" id="<?php echo ($row['products_id_no']) ?>"   data-toggle="modal" data-target="#stock_data_modal">Stock This Product </a>
+                  <?php }?>
 
-                  <?php 
+
+                  <?php
                   if (permission_check('product_delete_button')) {
-                    ?> 
+                    ?>
 
-                    <a  class="badge  bg-red delete_data" id="<?php echo($row['products_id_no']) ?>"  style="margin:2px"> Delete</a> 
-                  <?php } ?>
-              
-                  
+                    <a  class="badge  bg-red delete_data" id="<?php echo ($row['products_id_no']) ?>"  style="margin:2px"> Delete</a>
+                  <?php }?>
 
-                  <?php 
+
+
+                  <?php
                   if (permission_check('product_view_button')) {
                     ?>
-                    
+
                     <a class="badge bg-orange view_details"  id="<?php echo $row['products_id_no'] ?>" data-toggle="modal" data-target="#view_modal" style="margin:2px">View</a>
-                  <?php } ?>
-				  
-                  
+                  <?php }?>
+
+
+
+
                 </td>
-                
+
               </tr>
 
               <?php

@@ -286,6 +286,83 @@ if(!permission_check('sale_product')){
 
 
   
+    <!-- Modal For Adding and Updating data  -->
+    <div class="modal fade" id="add_customer_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background: #006666">
+            <h3 class="modal-title" id="ModalLabel" style="color: white"></h3>
+            <div style="float:right;">
+
+            </div>
+          </div>
+          <div class="modal-body">
+
+            <div class="row">
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel" style="background: #f2ffe6">
+
+                  <div class="x_content" style="background: #f2ffe6">
+                    <br />
+                    <!-- Form starts From here  -->
+                    <form id="form_add_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
+
+                     <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Customer Name<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text"  required="" id="add_customer_name" name="add_customer_name" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Address  <span class="required">*</span></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <textarea type="text" required="" id="add_customer_address" name="add_customer_address" class="form-control col-md-7 col-xs-12" ></textarea>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Mobile  <span class="required">*</span></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" required="" id="add_customer_mobile_no" name="add_customer_mobile_no" class="form-control col-md-7 col-xs-12" >
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Email</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="email" id="add_customer_email" name="add_customer_email" class="form-control col-md-7 col-xs-12" >
+                      </div>
+                    </div>
+
+
+                    <div style="display: none;">
+                      <input type="number" id="edit_id" name="edit_id">
+                    </div>
+
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <button type="reset" class="btn btn-primary" >Reset</button>
+                        <button type="submit" class="btn btn-success" id="submit_button"></button>
+                      </div>
+                    </div>
+
+
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div> <!-- End of modal for  Adding and Updating data-->
+
 
 
     <!-- /page content -->
@@ -637,7 +714,11 @@ $(document).on('change','#customer_id',function(){
             $("#customer_id").html(data.client);
             $('#add_customer_modal').modal("hide");
 
+            setTimeout(function(){
+              window.location.reload(true);
 
+             }, 1500);
+              
 
           }
         }

@@ -226,7 +226,7 @@ if(!permission_check('truck_load_for_delivery')){
 	                  <th style="text-align: center;">Offer QTY(PCS)</th>
 	                </tr>
 	              </thead>
-	              <tbody id="">  
+	              <tbody id="invoice_details">  
                 <?php 
                   $query = "SELECT * FROM `products`";
                   $get_products = $dbOb->select($query);
@@ -439,7 +439,7 @@ if(!permission_check('truck_load_for_delivery')){
 
      }else{
   
-        if (available_qty < quantity) {
+        if ( parseInt(available_qty) < parseInt(quantity)) {
              swal({
                 title: 'warning',
                 text: "The Quantity You Have Provided Is Out Of Stock..",

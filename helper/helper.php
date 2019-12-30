@@ -62,8 +62,6 @@
 		return $data;
 	}
 
-
-
 // the following function will be used to get stock information of a product .
 	function get_ware_house_stock($ware_house_serial_no, $product_id){
 
@@ -119,17 +117,25 @@
 						}
 					}
 				} // end of unloaded truck products
-
-				$truck_load_serial = implode(',',$truck_load_serial_no);
-				// now getting Product sell
-				$query = "SELECT * FROM order_delivery_expense WHERE ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id' 	AND delivery_status = 1 AND truck_load_serial_no NOT IN ($truck_load_serial)";
-				$get_product_sell = $dbOb->select($query);
+				
+				$truck_load_serial = Null;
 				$product_sell_qty = 0;
+				if ($truck_load_serial_no) {
+					$truck_load_serial = implode(',',$truck_load_serial_no);
+				}
+				if ($truck_load_serial) {
+					// now getting Product sell
+				$query = "SELECT * FROM order_delivery_expense WHERE ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id' 	AND delivery_status = 1 AND truck_load_serial_no NOT IN ($truck_load_serial) " ;
+				$get_product_sell = $dbOb->select($query);
+			
+			
 				if ($get_product_sell) {
 					while ($product_sell = $get_product_sell->fetch_assoc()) {
 						$product_sell_qty += $product_sell['qty'];
 					}
 				} // end of Product sell
+				}
+				
 
 
 				// now getting own shop products that are taken from the ware house

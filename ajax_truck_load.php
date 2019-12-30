@@ -150,8 +150,8 @@ if (isset($_POST['product_id_check'])) {
 
 	// the following section is for taking products quantity in a ware house
 if (isset($_POST['ware_serial'])) {
-		$ware_house_serial_no = $_POST['ware_serial'];
-		$product_id = $_POST['prod_id'];
+		$ware_house_serial_no = validation($_POST['ware_serial']);
+		$product_id = validation($_POST['prod_id']);
 		$ware_house_stock = get_ware_house_stock($ware_house_serial_no, $product_id);
 		die(json_encode($ware_house_stock));
 	}

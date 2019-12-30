@@ -47,17 +47,11 @@ if (isset($_POST['submit'])) {
 		
 		if ($get_duty_emp) {
 			while ($row = $get_duty_emp->fetch_assoc()) {
-				if ($row['area'] == $area && $row['active_status'] == 'Active') {
-					$message = 'Already One Employee Is Active In This Area. Please Try Another Area';
-					$type = 'warning';
-					echo  json_encode(['message'=>$message,'type'=>$type]);
-					exit();
-				}else{
+					
 					if ($row['id_no']==$id_no && $row['active_status'] == 'Active') {
 						$confirmation_edit = false;
 						break;
 					}
-				}
 			}
 			
 		}
@@ -112,19 +106,6 @@ if (isset($_POST['submit'])) {
 		$emp_existing_id = $get_emp_duty['id_no'];
 		if ($emp_existing_id) {
 			$confirmation = false;
-		}else{
-			$query = "SELECT * FROM employee_duty WHERE  active_status = 'Active'";
-			$get_active_employee = $dbOb->select($query);
-			if ($get_active_employee) {
-				while ($row = $get_active_employee->fetch_assoc()) {
-					if ($row['area'] == $area && $row['active_status'] == 'Active') {
-						$message = 'Already One Employee Is Active In This Area. Please Try Another Area';
-						$type = 'warning';
-						echo  json_encode(['message'=>$message,'type'=>$type]);
-						exit();
-					}
-				}
-			}
 		}
 
 		if ($confirmation) {

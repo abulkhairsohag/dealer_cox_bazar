@@ -147,6 +147,20 @@
 				$in_stock_qty = ($stock_qty*1 + $market_return_qty*1) - ($company_return_qty*1 + $product_sell_qty*1 + $truck_loaded_product_qty*1 + $store_product_qty*1);
 
 				return $in_stock_qty;
-	};
+	}
+
+	// the following function is for getting product qty in a truck after delivering some products..
+	function get_truck_load_qty($products_id_no, $load_serial_no) {
+		 global $dbOb;
+		 $query = "SELECT * FROM order_delivery_expense WHERE products_id_no ='$products_id_no' AND truck_load_serial_no = '$load_serial_no' AND delivery_status = 1";
+		 $get_info = $dbOb->select($query);
+		 $delivered_qty = 0 ;
+		 if ($get_info) {
+			 while ($row = $get_info->fetch_assoc()) {
+				 $delivered_qty += $row['qty'];
+			 }
+		 }
+		return $delivered_qty;
+	}
 
  ?>

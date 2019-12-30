@@ -127,9 +127,10 @@ if (isset($_POST['submit'])) {
     	}
     }
 }
-	if (isset($_POST['product_id_check'])) {
+
+if (isset($_POST['product_id_check'])) {
 		$products_id = $_POST['product_id_check'];
-		
+
 		$query = "SELECT * FROM `offers` WHERE products_id = '$products_id' ORDER BY serial_no DESC LIMIT 1";
 		$get_offer = $dbOb->select($query);
 		$offer_qty = 0;
@@ -145,5 +146,13 @@ if (isset($_POST['submit'])) {
 			die(json_encode("N/A"));
 		}
 
+}
+
+	// the following section is for taking products quantity in a ware house
+if (isset($_POST['ware_serial'])) {
+		$ware_house_serial_no = $_POST['ware_serial'];
+		$product_id = $_POST['prod_id'];
+		$ware_house_stock = get_ware_house_stock($ware_house_serial_no, $product_id);
+		die(json_encode($ware_house_stock));
 	}
  ?>

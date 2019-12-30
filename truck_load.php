@@ -68,7 +68,7 @@ if(!permission_check('truck_load_for_delivery')){
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="display:none">
               <label class="col-md-3 control-label" for="inputDefault">Delivery Man's Name </label>
               <div class="col-md-6">
                 <input type="text" class="form-control delivery_employee_name" id="delivery_employee_name" name="delivery_employee_name" readonly="" value="<?php if (Session::get("delivery_employee_name")) {
@@ -221,6 +221,7 @@ if(!permission_check('truck_load_for_delivery')){
 	                  <th style="text-align: center;">Product ID</th>
 	                  <th style="text-align: center;">Product Name</th>
 	                  <th style="text-align: center;">Category</th>
+                    <th style="text-align: center;">Available</th>
 	                  <th style="text-align: center;">Quantity(Packet)</th>
 	                  <th style="text-align: center;">Offer QTY(PCS)</th>
 	                </tr>
@@ -241,6 +242,9 @@ if(!permission_check('truck_load_for_delivery')){
                           </td>
                           <td>
                             <input type="text" class="form-control main_category category" name="category[]" readonly="" value="<?php echo $row['category']?>">
+                          </td>
+                          <td>
+                            <input type="text" class="form-control main_available available" name="available[]" readonly="" value="">
                           </td>
                           <td>
                             <input type="number" min="0" step="1" class="form-control main_quantity quantity" name="quantity[]"  value="">
@@ -406,6 +410,9 @@ if(!permission_check('truck_load_for_delivery')){
 
   $(document).on('change','#ware_house_serial_no',function(){
      var ware_house_serial_no = $(this).val();
+       $(".available").val("");
+       $(".quantity").val("");
+       $(".quantity_offer").val("");
      $.ajax({
         url:'ajax_new_order.php',
         data:{ware_house_serial_no:ware_house_serial_no},
@@ -419,24 +426,78 @@ if(!permission_check('truck_load_for_delivery')){
 
   $(document).on('change keyup blur','.quantity',function(){
     var quantity = $(this).val();
+    var tr = $(this).parent().parent();
+    var product_id = tr.find(".product_id").val();
+    var ware_house_serial_no  = $("#ware_house_serial_no").val();
+    var available_qty  = tr.find(".available").val();
+
+     if (ware_house_serial_no == "") {
+        
+       $(".available").val("");
+       $(".quantity").val("");
+       $(".quantity_offer").val("");
+
+     }else{
+  
+        if (available_qty < quantity) {
+             swal({
+                title: 'warning',
+                text: "The Quantity You Have Provided Is Out Of Stock..",
+                icon: 'warning',
+                button: "Done",
+              });
+             tr.find(".quantity").val("");
+             tr.find(".quantity_offer").val("");
+        }else{
+           $.ajax({
+            url:'ajax_truck_load.php',
+            data:{product_id_check:product_id},
+            type:'POST',
+            dataType:'json',
+            success:function(data){
+             if (data == 'N/A') {
+               tr.find(".quantity_offer").val(data);
+             }else{
+               var offer_integer = parseInt(quantity / data.packet_qty);
+               tr.find(".quantity_offer").val(offer_integer * data.product_qty);
+             }
+             
+            }
+          });
+        }
+   }
+  });
+
+ // here we are going to get products available quantity  
+  $(document).on('click','.quantity',function(){
+    var quantity = $(this).val();
      var tr = $(this).parent().parent();
      var product_id = tr.find(".product_id").val();
+     var ware_house_serial_no  = $("#ware_house_serial_no").val();
+
+     if (ware_house_serial_no == "") {
+         swal({
+                title: 'warning',
+                text: "Please Select Ware House First..",
+                icon: 'warning',
+                button: "Done",
+              });
+         $(".available").val("");
+       $(".quantity").val("");
+       $(".quantity_offer").val("");
+
+     }else{
   
-     $.ajax({
-        url:'ajax_truck_load.php',
-        data:{product_id_check:product_id},
-        type:'POST',
-        dataType:'json',
-        success:function(data){
-         if (data == 'N/A') {
-           tr.find(".quantity_offer").val(data);
-         }else{
-           var offer_integer = parseInt(quantity / data.packet_qty);
-           tr.find(".quantity_offer").val(offer_integer * data.product_qty);
-         }
-         
-        }
-      });
+       $.ajax({
+          url:'ajax_truck_load.php',
+          data:{ware_serial:ware_house_serial_no,prod_id:product_id},
+          type:'POST',
+          dataType:'json',
+          success:function(data){
+           tr.find(".available").val(data);
+          }
+        });
+   } // end of else
   });
 
   }); // end of document ready function 

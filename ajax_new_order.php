@@ -34,9 +34,11 @@ if (isset($_POST['products_id_no_get_info'])) {
 		$get_product_existance = $dbOb->select($query);
 		if ($get_product_existance) {
 			$load_qty = $get_product_existance->fetch_assoc()['quantity'];
+			$delivered_qty = get_truck_load_qty($products_id_no, $load_serial_no);
+			$remaining_qty = $load_qty - $delivered_qty;
 			$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
 			$get_products = $dbOb->find($query);
-			die(json_encode(['products' => $get_products, 'load_qty' => $load_qty]));
+			die(json_encode(['products' => $get_products, 'load_qty' => $remaining_qty]));
 		}else {
 			$message = "Sorry This Product Is Not Loaded In The Truck.";
 			$type = 'warning';
@@ -204,13 +206,22 @@ if (isset($_POST['delivery_emp_id'])) {
 	$vehicle = "";
 	if ($get_vehicle) {
 		$vehicle = $get_vehicle->fetch_assoc();
+		$zone_serial_no = $vehicle['zone_serial_no'];
+		$query = "SELECT * FROM area_zone WHERE zone_serial_no = '$zone_serial_no'";
+		$get_area = $dbOb->select($query);
+		$area = '<option value="">Please Select One ...</option>';
+		if ($get_area) {
+			while ($row = $get_area->fetch_assoc()) {
+				$area .= '<option value="'.$row['area_name'].'">'.$row['area_name'].'</option>';
+			}
+		}
 	}else{
 		$message = "Please Assign ".$data.', With A Vehicle Then Take Order.. ';
 		$type = 'warning';
 		die(json_encode(['message'=>$message,'type'=>$type]));
 	}
 
-	echo json_encode(['delivery_emp_name'=>$data,'vehicle'=>$vehicle]);
+	echo json_encode(['delivery_emp_name'=>$data,'vehicle'=>$vehicle,'area'=>$area]);
 }
 
 if (isset($_POST['order_emp_id'])) {
@@ -260,14 +271,23 @@ if (isset($_POST['ware_house_serial_no'])) {
 
 
 if (isset($_POST['send_area_and_customer'])) {
-	$area = Session::get("area_employee");
+	
 	$customer_id = Session::get("customer_id");
 	$delivery_emp_id = Session::get("delivery_emp_id");
 	$query = "SELECT * FROM truck_load WHERE employee_id ='$delivery_emp_id' AND unload_status = 0";
 	$get_vehicle = $dbOb->select($query);
 	$vehicle = "";
+	$area = '<option value="">Please Select One ...</option>';
 	if ($get_vehicle) {
 		$vehicle = $get_vehicle->fetch_assoc();
+		$zone_serial_no = $vehicle['zone_serial_no'];
+		$query = "SELECT * FROM area_zone WHERE zone_serial_no = '$zone_serial_no'";
+		$get_area = $dbOb->select($query);
+		if ($get_area) {
+			while ($row = $get_area->fetch_assoc()) {
+				$area .= '<option value="'.$row['area_name'].'">'.$row['area_name'].'</option>';
+			}
+		}
 	}
 	echo json_encode(['area'=>$area,'customer_id'=>$customer_id,'vehicle'=>$vehicle]);
 }

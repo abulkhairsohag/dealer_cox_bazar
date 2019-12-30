@@ -34,12 +34,12 @@ if (!permission_check('new_order')) {
               <?php
               if (permission_check('truck_load_for_delivery')) {
                ?>
-               <a href="truck_load.php" class="btn btn-primary" > <span class="badge"></span> Print Summery</a>
+               <a href="truck_load.php" class="btn btn-primary" > <span class="badge"></span> Load Truck</a>
              <?php }?>
              <?php
              if (permission_check('new_order')) {
                ?>
-               <a href="order_list.php" class="btn btn-success" > <span class="badge"></span> Order List</a>
+               <a href="truck_unload.php" class="btn btn-success" > <span class="badge"></span> Unload Truck</a>
              <?php }?>
            </div>
 
@@ -187,7 +187,7 @@ if (!permission_check('new_order')) {
   </div>
 </div>
 
-<div class="form-group row" style="display:none">
+<div class="form-group row"  style="display:none">
   <label class="col-md-3 col-6 control-label" for="inputDefault">Truck Load Serial No<span class="required" style="color: red">*</span></label>
   <div class="col-md-6 col-6">
     <input type="text"  name="truck_load_serial_no" id="truck_load_serial_no"  required="" class="form-control truck_load_serial_no " readonly="">
@@ -195,60 +195,21 @@ if (!permission_check('new_order')) {
 </div>
 
 
-<div class="form-group row">
+<div class="form-group row"  style="display:none" style="display:none">
   <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
   <div class="col-md-6 col-6">
-       <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
-        <option value="">Please Select One</option>
-        <?php
-
-        $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-        $get_ware_house = $dbOb->select($query);
-        if ($get_ware_house) {
-          while ($row = $get_ware_house->fetch_assoc()) {
-
-           ?>
-           <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
-            echo "selected";
-          } ?>
-          ><?php echo $row['ware_house_name']; ?></option>
-          <?php
-        }
-      }
-
-      ?>
-
-  </select>
+  <input type="text"  name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no " readonly="">
+       
   </div>
 </div>
 
-<div class="form-group" >
+<div class="form-group" style="display:none">
   <label class="col-md-3 control-label" for="inputDefault">Zone <span class="required" style="color: red">*</span></label>
   <div class="col-md-6">
-   <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
-    <option value="">Please Select One</option>
-    <?php
+  <input type="text"  name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no " readonly="">
 
-    $query = "SELECT * FROM zone ORDER BY zone_name";
-    $get_zone = $dbOb->select($query);
-    if ($get_zone) {
-      while ($row = $get_zone->fetch_assoc()) {
+   
 
-       ?>
-       <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("zone_serial_no") == $row["serial_no"]) {
-        echo "selected";
-      } ?>
-      ><?php echo $row['zone_name']; ?></option>
-      <?php
-    }
-  }
-
-  ?>
-
-  </select>
-  <input type="hidden" name="zone_name" id="zone_name" class="zone_name" value="<?php if (Session::get("zone_name")) {
-    echo Session::get("zone_name");
-  } ?>">
   </div>
 </div>
 
@@ -257,16 +218,9 @@ if (!permission_check('new_order')) {
   <div class="col-md-6">
    <select name="area_employee" id="area_employee"  required="" class="form-control area_employee ">
 
-     <?php 
-
-     if (Session::get("area_options")) {
-       echo Session::get("area_options");
-     }else{
-      ?>
-      <option value="">Please Select Zone First</option>
-      <?php
-    }
-    ?>
+    
+      <option value="">Please Select Correct Delivery Man ...</option>
+   
 
     </select>
   </div>
@@ -282,16 +236,8 @@ if (!permission_check('new_order')) {
   <div class="col-md-6 col-6">
     <select class="form-control" id="cust_id" name="cust_id" required="">
 
-
-      <?php
-      if (Session::get("customer_options")) {
-       echo Session::get("customer_options");
-     }else{
-      ?>
       <option value="">Select Area First</option>
-      <?php
-    }
-    ?>
+    
     </select>
   </div>
 </div>
@@ -380,7 +326,7 @@ if (!permission_check('new_order')) {
     <td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly=""></td>
 
     <td><input type="text"  class="form-control main_sell_price sell_price" id="sell_price" name="sell_price[]" readonly="" ></td>
-    <td><input type="text"  class="form-control main_qty" id="qty" name="qty[]" value="" readonly=""></td>
+    <td><input type="text"  class="form-control main_qty qty" id="qty" name="qty[]" value="" readonly=""></td>
     <td><input type="text"   class="form-control main_offer_qty offer_qty" id="offer_qty" name="offer_qty[]" readonly=""></td>
 
     <td><input type="text" class="form-control main_total_price total_price" id="total_price" name="total_price[]" readonly=""></td>
@@ -479,7 +425,7 @@ if ($get_invoice) {
           <option value="<?php echo ($row['products_id_no']) ?>"> <?php echo ($row['products_id_no'] . ', ' . $row['products_name']) ?> </option><?php
         }
       }
-      ?></select></td><td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly=""></td><td><input type="text"  class="form-control main_sell_price sell_price" id="sell_price" name="sell_price[]" readonly="" ></td><td><input type="text"  class="form-control main_qty" id="qty" name="qty[]" value="" readonly=""></td><td><input type="text"   class="form-control main_offer_qty offer_qty" id="offer_qty" name="offer_qty[]" readonly=""></td><td><input type="text" class="form-control main_total_price total_price" id="total_price" name="total_price[]" readonly=""></td><td><button type="button" class="btn btn-danger remove_button"><i class="fas fa-times"></i></button></td></tr>');
+      ?></select></td><td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly=""></td><td><input type="text"  class="form-control main_sell_price sell_price" id="sell_price" name="sell_price[]" readonly="" ></td><td><input type="text"  class="form-control main_qty qty" id="qty" name="qty[]" value="" readonly=""></td><td><input type="text"   class="form-control main_offer_qty offer_qty" id="offer_qty" name="offer_qty[]" readonly=""></td><td><input type="text" class="form-control main_total_price total_price" id="total_price" name="total_price[]" readonly=""></td><td><button type="button" class="btn btn-danger remove_button"><i class="fas fa-times"></i></button></td></tr>');
     });
 
     $(document).on('click','.remove_button', function(e) {
@@ -490,53 +436,7 @@ if ($get_invoice) {
 
 
 
-
-    $(document).on('change','.main_product_id', function() {
-
-      var tr=$(this).parent().parent();
-      var products_id_no_get_info =tr.find("#products_id_no").val();
-      var vehicle_reg_no_get_info = $("#vehicle_reg_no").val();
-      var qty = tr.find("#qty").val();
-      if (isNaN(qty) || qty == '') {
-        qty = 0;
-      }
-
-      $.ajax({
-        url:"ajax_new_order.php",
-        data:{products_id_no_get_info:products_id_no_get_info,vehicle_reg_no_get_info:vehicle_reg_no_get_info},
-        type:"post",
-        dataType:'json',
-        success:function(data){
-
-          if (data.type == 'warning') {
-               swal({
-                title: data.type,
-                text: data.message,
-                icon: data.type,
-                button: "Done",
-              });
-          tr.find(".products_name").val('');
-          }
-
-          tr.find(".sell_price").val(data.products.sell_price);
-          tr.find(".products_name").val(data.products.products_name);
-          var total_price = (data.products.sell_price * qty) ;
-          tr.find(".total_price").val(total_price );
-
-          tr.find("#qty").attr("readonly", false);
-          tr.find("#qty").attr("placeholder", data.load_qty);
-          tr.find("#qty").attr("data-available", data.load_qty);
-          tr.find("#qty").focus();
-
-          cal();
-        }
-      });
-      // cal();
-    });
-
-
-    
-    $(document).on('change','.secondary_product_id', function() {
+    $(document).on('change','.product_id', function() {
 
       var tr=$(this).parent().parent();
       var products_id_no_get_info =tr.find("#products_id_no").val();
@@ -592,7 +492,8 @@ if ($get_invoice) {
                 icon: data.type,
                 button: "Done",
               });
-          tr.find(".products_name").val('');
+              tr.find(".products_name").val('');
+              //////////////////////////////////////
           }
 
           tr.find(".sell_price").val(data.products.sell_price);
@@ -741,35 +642,6 @@ if ($get_invoice) {
   }
 
 
-  // discount calculation
-  $(document).on('keyup blur','#discount',function(){
-    var discount = $(this).val();
-    if (discount>100) {
-      alert("You Cannot Provide A Discount More Than 100%");
-      $(this).val(0)
-    }else{
-
-      var net_total_tp = $("#net_total_tp").val();
-      var net_total = $("#net_total").val();
-
-      var discount_amount =  (net_total_tp*$("#discount").val()/100);
-
-      $("#discount_amount").val(discount_amount);
-
-      var payable_amt =  (parseFloat(net_total)  - parseFloat(discount_amount)) ;
-
-      $("#payable_amt").val(payable_amt);
-
-      var extra_discount = $('#extra_discount').val();
-      if (isNaN(extra_discount) || extra_discount == '') {
-        extra_discount = 0;
-      }
-
-      var net_payable_amt = Math.round(payable_amt - payable_amt*extra_discount/100) ;
-      $('#net_payable_amt').val(net_payable_amt);
-    }
-
-  });
 
   $(document).on('change','#cust_id',function(){
     var cust_id = $(this).val();
@@ -845,11 +717,30 @@ if ($get_invoice) {
             $("#vehicle_reg_no").val('');
             $("#vehicle_name").val('');
             $("#truck_load_serial_no").val('');
+            $("#ware_house_serial_no").val('');
+            $("#zone_serial_no").val('');
+            $("#area_employee").html('<option value=""> Please Select Correct Delivery Man</option>');
+            $("#cust_id").html('<option value=""> Please Select Area First...</option>');
+            $('.product_id').val('');
+            $('.products_name').val('');
+            $('.sell_price').val('');
+            $('.qty').val('');
+            $('.qty').attr('readonly', true);
+            $('.offer_qty').val('');
+            $('.total_price').val('0');
+            $('#net_payable_amt').val('0');
+            $('#pay').val('0');
+            $('#due').val('0');
           }
           $("#delivery_employee_name").val(data.delivery_emp_name);
           $("#vehicle_reg_no").val(data.vehicle.vehicle_reg_no);
           $("#vehicle_name").val(data.vehicle.vehicle_name);
           $("#truck_load_serial_no").val(data.vehicle.serial_no);
+          $("#ware_house_serial_no").val(data.vehicle.ware_house_serial_no);
+          $("#zone_serial_no").val(data.vehicle.zone_serial_no);
+          
+
+            $("#area_employee").html(data.area);
           // $(".employee_id").val(emp_id);
         }
       });
@@ -905,11 +796,13 @@ if ($get_invoice) {
         type:'POST',
         dataType:'json',
         success:function(data){
-          $("#area_employee").val(data.area);
+          $("#area_employee").html(data.area);
           $("#vehicle_reg_no").val(data.vehicle.vehicle_reg_no);
           //  alert(data.vehicle);
           $("#vehicle_name").val(data.vehicle.vehicle_name);
           $("#truck_load_serial_no").val(data.vehicle.serial_no);
+          $("#ware_house_serial_no").val(data.vehicle.ware_house_serial_no);
+          $("#zone_serial_no").val(data.vehicle.zone_serial_no);
         }
       });
   

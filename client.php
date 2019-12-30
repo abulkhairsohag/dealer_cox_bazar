@@ -252,14 +252,14 @@ if(!permission_check('customer_info')){
 
                     <div  id="previous_due_div">
                     <div class="form-group">
-                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Previous Dew Amt  </label>
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Previous Due Amt  </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="number" min="0"   id="previous_dew" name="previous_dew" class="form-control col-md-7 col-xs-12" >
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Dew Date  </label>
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Due Date  </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" id="dew_date" name="dew_date" class="form-control datepicker col-md-7 col-xs-12" readonly="">
                       </div>

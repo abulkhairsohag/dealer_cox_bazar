@@ -56,7 +56,7 @@ if (isset($_POST['submit'])) {
 	if ($insert_customer) {
 		$message = "Congratulations! Customer Is Successfully Insert.";
 		$type = "success";
-		
+		echo json_encode(['message'=>$message,'type'=>$type]);
 	}else{
 		$message = "Sorry! Customer Is Not Insert.";
 		$type = "warning";
@@ -64,17 +64,7 @@ if (isset($_POST['submit'])) {
 
 	}
 
-	$query = "SELECT * from own_shop_client Order BY client_name ";
-                $get_client = $dbOb->select($query);
-                if ($get_client) {
-                	$client = '<option value="-1">Walking Customer</option>';
-                  while ($row = $get_client->fetch_assoc()) {
-                    $client .= '<option value="'.$row['serial_no'].'">'.ucwords($row['client_name']).'</option>';
-                    
-                  }
-                }
-
-                echo json_encode(['message'=>$message,'type'=>$type,'client'=>$client]);
+	
 }
 }
 

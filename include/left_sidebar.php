@@ -429,7 +429,7 @@ if ($user_type == "employee") {
                 <?php } 
                 ?>
                  <!-- <li><a href="customer_report.php"><i class="fas fa-user"></i> Customer Report</a></li> -->
-                  <li><a href="ware_house_wise_report.php"><i class="fas fa-user"></i> Zone Wise Report</a></li>
+                  <li><a href="ware_house_wise_report.php"><i class="fas fa-user"></i> Ware House Wise Report</a></li>
               </ul>
             </li>
 

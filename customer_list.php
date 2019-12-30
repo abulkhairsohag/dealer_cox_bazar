@@ -341,39 +341,7 @@ function get_data_table(){
     });
 
 
-    // now we are going to  insert data 
-    $(document).on('submit','#form_add_data',function(e){
-      e.preventDefault();
-      var formData = new FormData($("#form_add_data")[0]);
-      formData.append('submit','submit');
-
-      $.ajax({
-        url:'ajax_customer_add.php',
-        data:formData,
-        type:'POST',
-        dataType:'json',
-        cache: false,
-        processData: false,
-        contentType: false,
-
-        success:function(data){
-           // alert('ppppp');
-           swal({
-            title: data.type,
-            text: data.message,
-            icon: data.type,
-            button: "Done",
-          });
-           if (data.type == 'success') {
-            $("#customer_id").html(data.client);
-            $('#add_customer_modal').modal("hide");
-
-
-
-          }
-        }
-      });
-    }); // end of insert 
+    
 
 
 </script>

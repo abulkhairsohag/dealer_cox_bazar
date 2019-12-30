@@ -994,13 +994,15 @@ if (isset($_POST['from_date'])) {
 									<th>Product<br>Name</th>
 									<th>Purchase<br>(Qty)</th>
 									<th>Purchase<br>(৳)</th>
-									<th>Company Return(Qty)</th>
-									<th>Company Return (৳)</th>
-									<th>Market Return (Qty)</th>
-									<th>Market Return (৳)</th>
+									<th>Company <br>Return(Qty)</th>
+									<th>Company <br>Return (৳)</th>
+									<th>Market <br>Return (Qty)</th>
+									<th>Market <br>Return (৳)</th>
 									<th>Product <br> Sell (Qty)</th>
 									<th>Product <br> Sell (৳)</th>
 									<th>Profit On<br>Sell (৳)</th>
+									<th>Own Shop<br>Stock (Qty)</th>
+									<th>Own Shop<br>Stock (৳)</th>
 									
 								</tr>
 							</thead>
@@ -1012,6 +1014,8 @@ if (isset($_POST['from_date'])) {
 		$total_product_sell_amt = 0;
 		$total_profit_on_sell_amt = 0 ;
 		$total_in_stock_amt = 0;
+		$total_own_shop_qty = 0;
+		$total_own_shop_tk = 0;
 		
 		if ($get_product) {
 			$i=0;
@@ -1085,6 +1089,23 @@ if (isset($_POST['from_date'])) {
 					}
 				}
 				
+				// Now its time for calculating own shop product stock history
+				$own_shop_qty = 0 ;
+				$own_shop_tk = 0 ;
+				$own_shop_query = "SELECT * FROM own_shop_stock_history WHERE products_id = '$products_id_no' AND ware_house_serial_no = '$ware_house_serial_no'";
+				$get_own_shop_history = $dbOb->select($own_shop_query);
+				if ($get_own_shop_history) {
+					
+					while ($own_shop_row = $get_own_shop_history->fetch_assoc()) {
+						if (strtotime($own_shop_row['stock_date']) >= $from_date && strtotime($own_shop_row['stock_date']) <= $to_date ) {
+							$stock_qty = $own_shop_row['quantity_packet'];
+							$own_shop_qty = $own_shop_qty + $stock_qty;
+							$own_shop_tk = $own_shop_tk + $own_shop_row['price'];
+						}
+						
+					}
+				}
+				
 				// company products return
 				$company_product_return = 0;
 				$company_product_return_tk = 0;
@@ -1132,6 +1153,8 @@ if (isset($_POST['from_date'])) {
 									<td> '. $product_sell.'</td>
 									<td> '. $product_sell_price.'</td>
 									<td> '. (round($product_sell_profit,3)).'</td>
+									<td> '. $own_shop_qty.'</td>
+									<td> '. $own_shop_tk.'</td>
 									
 								</tr>';
 
@@ -1140,6 +1163,8 @@ if (isset($_POST['from_date'])) {
 				$total_return_market_tk += $return_market_tk;
 				$total_product_sell_amt += $product_sell_price;
 				$total_profit_on_sell_amt +=  $product_sell_profit;
+				// $total_own_shop_qty += $own_shop_qty;
+				$total_own_shop_tk += $own_shop_tk;
 				// $total_in_stock_amt += $row['quantity']*$row['company_price'];
 
 			}
@@ -1155,6 +1180,8 @@ if (isset($_POST['from_date'])) {
 							<td> '.round($total_product_sell_amt).'</td>
 							
 							<td> '.round($total_profit_on_sell_amt).'</td>
+							<td colspan=""></td>
+							<td colspan=""> '.$total_own_shop_tk.'</td>
 							
 						</tr>';
 		$print_table = 'print_table';
@@ -1511,48 +1538,7 @@ if (isset($_POST['from_date'])) {
 
 				// now getting products stock
 				// $in_stock_qty = get_ware_house_in_stock($ware_house_serial_no, $product_id);
-				$query = "SELECT * FROM product_stock WHERE quantity > 0 AND ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id'";
-		$get_stock = $dbOb->select($query);
-				$stock_qty = 0;
-				if ($get_stock) {
-					while ($stock = $get_stock->fetch_assoc()) {
-						$stock_qty += $stock['quantity'];
-					}
-				} // end of products stock
-
-				// now getting Company return products 
-				$query = "SELECT * FROM company_products_return WHERE ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id'";
-				$get_comany_return = $dbOb->select($query);
-				$company_return_qty = 0;
-				if ($get_comany_return) {
-					while ($company_return = $get_comany_return->fetch_assoc()) {
-						$company_return_qty += $company_return['return_quantity'];
-					}
-				} // end of  Company return products 
-
-				// now getting Market return products 
-				$query = "SELECT * FROM market_products_return WHERE ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id'";
-				$get_market_return = $dbOb->select($query);
-				$market_return_qty = 0;
-				if ($get_market_return) {
-					while ($market_return = $get_market_return->fetch_assoc()) {
-						$market_return_qty += $market_return['return_quantity'];
-					}
-				} // end of Market return products 
-
-				// now getting Product sell
-				$query = "SELECT * FROM order_delivery_expense WHERE ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id' 	AND delivery_status =  1";
-				$get_product_sell = $dbOb->select($query);
-				$product_sell_qty = 0;
-				if ($get_product_sell) {
-					while ($product_sell = $get_product_sell->fetch_assoc()) {
-						$product_sell_qty += $product_sell['qty'];
-					}
-				} // end of Product sell
-
-				// now its time to calculate in stock quantity 
-
-				$in_stock_qty = ($stock_qty*1 + $market_return_qty*1) - ($company_return_qty*1 + $product_sell_qty);
+				$in_stock_qty = get_ware_house_stock($ware_house_serial_no, $product_id);
 
 				$sales_dues_tbl .= ' <tr align="left" style="color:black">
 											<td>'.$i.'</td>

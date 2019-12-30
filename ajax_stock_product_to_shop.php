@@ -60,6 +60,9 @@ if (isset($_POST['submit'])) {
                     if ($id == $pr_id) {
                         $query = "SELECT * FROM products WHERE products_id_no = '$pr_id'";
                         $product_info =  $dbOb->find($query);
+
+                        $price = $quantity[$i] * $product_info['company_price'];
+
                         $pack_size =$product_info['pack_size'];
                         $new_pcs = $quantity[$i] * $pack_size;
                         $available_pcs = $qty_pcs +  $new_pcs;
@@ -80,10 +83,11 @@ if (isset($_POST['submit'])) {
                             $nw_available = $available_product_qty_pack - $quantity[$i];
                             $query = "UPDATE products SET quantity = '$nw_available' WHERE products_id_no = '$id'";
                             $update_main_prod = $dbOb->update($query);
+
                             $query = "INSERT INTO own_shop_stock_history 
-                            (products_id,product_name,quantity_packet,quantity_offer,stock_date,ware_house_serial_no,ware_house_name)
+                            (products_id,product_name,quantity_packet,price,quantity_offer,stock_date,ware_house_serial_no,ware_house_name)
                             VALUES
-                            ('$product_id[$i]','$products_name[$i]','$quantity[$i]','$quantity_offer[$i]','$stock_date','$ware_house_serial_no','$ware_house_name')";
+                            ('$product_id[$i]','$products_name[$i]','$quantity[$i]','$price','$quantity_offer[$i]','$stock_date','$ware_house_serial_no','$ware_house_name')";
                             $insert_history = $dbOb->insert($query);
                         }
                         $availability = true;
@@ -97,6 +101,9 @@ if (isset($_POST['submit'])) {
                 if (!$availability) {
                     $query = "SELECT * FROM products WHERE products_id_no = '$pr_id'";
                     $product_info =  $dbOb->find($query);
+
+                    $price = $quantity[$i] * $product_info['company_price'];
+
                     $pack_size =$product_info['pack_size'];
                  
                     $new_pcs = $quantity[$i] * $pack_size;
@@ -119,9 +126,9 @@ if (isset($_POST['submit'])) {
                             $update_main_prod = $dbOb->update($query);
 
                           $query = "INSERT INTO own_shop_stock_history 
-                            (products_id,product_name,quantity_packet,quantity_offer,stock_date,ware_house_serial_no,ware_house_name)
+                            (products_id,product_name,quantity_packet,price,quantity_offer,stock_date,ware_house_serial_no,ware_house_name)
                             VALUES
-                            ('$product_id[$i]','$products_name[$i]','$quantity[$i]','$quantity_offer[$i]','$stock_date','$ware_house_serial_no','$ware_house_name')";
+                            ('$product_id[$i]','$products_name[$i]','$quantity[$i]','$price','$quantity_offer[$i]','$stock_date','$ware_house_serial_no','$ware_house_name')";
                             $insert_history = $dbOb->insert($query);
                     }
                 }

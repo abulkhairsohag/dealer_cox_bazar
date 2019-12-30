@@ -51,7 +51,7 @@ if (isset($_POST['submit'])) {
 	$get_zone = $dbOb->select($query);
 	$zone_name = '';
 	if ($get_zone) {
-		$zone_name = $get_zone->fetch_assoc()['zone_name'];
+		$zone_name = validation($get_zone->fetch_assoc()['zone_name']);
 	}
 
 	$area_name= validation($_POST['area_employee']);
@@ -61,7 +61,7 @@ if (isset($_POST['submit'])) {
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$get_ware_house  = $dbOb->select($query);
 	if ($get_ware_house) {
-		$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
+		$ware_house_name = validation($get_ware_house->fetch_assoc()['ware_house_name']);
 	}
 
 	$employee_id = validation($_POST['delivery_employee_id']);

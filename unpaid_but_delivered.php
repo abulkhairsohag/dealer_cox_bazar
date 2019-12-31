@@ -21,14 +21,6 @@ if(!permission_check('unpaid_but_delivered')){
     $user_name = Session::get("username");
     $password = Session::get("password");
 
-      // $query = "SELECT * FROM employee_main_info where name = '$employee_name' and user_name = '$user_name' and password = '$password' ";
-      // $get_employee_iformation = $dbOb->find($query);
-      // $get_employee_id = $get_employee_iformation['id_no'];
-
-      // $query = "SELECT * from delivery_employee where id_no = '$get_employee_id'";
-      // $get_delivery_employee = $dbOb->find($query);
-      // $delivery_employee_area = $get_delivery_employee['area'];
-      // $employee_company = $get_delivery_employee['company'];
 
     ?>
 
@@ -48,11 +40,12 @@ if(!permission_check('unpaid_but_delivered')){
             <thead>
 
               <tr>
-                <th style="text-align: center;">Sl No.</th>
+                <th style="text-align: center;">#.</th>
                 <th style="text-align: center;">Order Number</th>
                 <th style="text-align: center;">Shop Name</th>
                 <th style="text-align: center;">Zone Name</th>
                 <th style="text-align: center;">Area</th>
+                <th style="text-align: center;">Ware House</th>
                 <th style="text-align: center;">Payable</th>
                 <th style="text-align: center;">Paid</th>
                 <th style="text-align: center;">Due</th>
@@ -82,6 +75,7 @@ if(!permission_check('unpaid_but_delivered')){
                     <td><?php echo $row['shop_name']; ?></td>
                     <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['area']; ?></td>
+                    <td><?php echo $row['ware_house_name']; ?></td>
                     <td><?php echo $row['payable_amt']; ?></td>
                     <td><?php echo $row['pay']; ?></td>
                     <td><?php echo $row['due']; ?></td>

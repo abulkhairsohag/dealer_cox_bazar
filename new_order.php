@@ -275,7 +275,7 @@ if (!permission_check('new_order')) {
 <div class="form-group">
   <label class="col-md-3 control-label" for="inputDefault">Date<span class="required" style="color: red">*</span></label>
   <div class="col-md-6">
-    <input type="text" class="form-control datepicker" id="date" name="date" readonly="" value="" required="">  
+    <input type="text" class="form-control datepicker" id="date" name="date" readonly="" value='<?php echo date("d-m-Y")?>' required="" >  
   </div>
 </div>
 
@@ -561,7 +561,7 @@ if ($get_invoice) {
     var available =tr.find("#qty").data('available');
     // alert(available);
 
-    if (quantity > available) {
+    if (parseInt(quantity) > parseInt(available)) {
        swal({
               title: 'warning',
               text: 'The Quantity You Have Entered Is Not Available In The Truck',

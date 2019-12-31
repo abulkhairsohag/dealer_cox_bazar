@@ -158,7 +158,7 @@ if (!permission_check('add_product')) {
                   </div>
 
 
-                  <div class="form-group">
+                  <div class="form-group" style="display:none">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Available Quantity
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -168,7 +168,7 @@ if (!permission_check('add_product')) {
 
 
                   <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">New Quantity<span class="required" style="color: red">*</span>
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">New Quantity (Packet)<span class="required" style="color: red">*</span>
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="number" min="0" step="1"  required=""id="new_quantity" name="new_quantity"  class="form-control col-md-7 col-xs-12">
@@ -176,7 +176,7 @@ if (!permission_check('add_product')) {
                   </div>
 
 
-                  <div class="form-group">
+                  <div class="form-group" style="display:none">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Total Quantity
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -360,7 +360,7 @@ if (!permission_check('add_product')) {
                   </div>
 
                   <div class="form-group" id="quantity_div">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity<span class="required" style="color: red">*</span></label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity (Packet)<span class="required" style="color: red">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input  type="number" min="0" step="1" required="" id="quantity" name="quantity" class="form-control col-md-7 col-xs-12" >
                     </div>

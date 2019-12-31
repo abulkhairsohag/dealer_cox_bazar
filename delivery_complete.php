@@ -40,11 +40,12 @@ if(!permission_check('paid_and_delivered')){
             <thead>
 
               <tr>
-                <th style="text-align: center;">Sl No.</th>
+                <th style="text-align: center;">#</th>
                 <th style="text-align: center;">Order Number</th>
                 <th style="text-align: center;">Shop Name</th>
                 <th style="text-align: center;">Zone Name</th>
                 <th style="text-align: center;">Area</th>
+                <th style="text-align: center;">Ware House</th>
                 <th style="text-align: center;">Payable</th>
                 <th style="text-align: center;">Paid</th>
                 <th style="text-align: center;">Delivery</th>
@@ -73,6 +74,7 @@ if(!permission_check('paid_and_delivered')){
                     <td><?php echo $row['shop_name']; ?></td>
                     <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['area']; ?></td>
+                    <td><?php echo $row['ware_house_name']; ?></td>
                     <td><?php echo $row['payable_amt']; ?></td>
                     <td><?php echo $row['pay']; ?></td>
                     <td><?php echo $row['delivery_date']; ?></td>

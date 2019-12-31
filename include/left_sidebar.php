@@ -396,35 +396,9 @@ if ($user_type == "employee") {
                 ?>
                 <!-- <li><a href="accounts_report.php"><i class="fas fa-dollar"></i> Accounts Report</a></li> -->
                 <?php } 
-
-              if (permission_check('product_report')) {
                 ?>
-                <!-- <li><a href="product_report.php"><i class="fas fa-truck-loading"></i> Products Report</a></li> -->
-                <?php } 
-
-              
-
-              if (permission_check('market_report')) {
-                ?>
-                <!-- <li><a href="market_report.php"><i class="fas fa-map-marker-alt"></i> Market Report</a></li> -->
-                <?php } 
-
-                ?>
-                <!-- <li><a href="own_shop_report.php"><i class="fas fa-users-cog"></i> Own Retail Shop</a></li> -->
-                <?php 
-
-              if (permission_check('customer_report')) {
-                ?>
-                <!-- <li><a href="customer_report.php"><i class="fas fa-users-cog"></i> Customers Report</a></li> -->
-                <?php } 
-
-              if (permission_check('employee_report')) {
-                ?>
-                <!-- <li><a href="employee_report.php"><i class="fas fa-user"></i> Employee Report</a></li> -->
-                <?php } 
-                ?>
-                 <!-- <li><a href="customer_report.php"><i class="fas fa-user"></i> Customer Report</a></li> -->
                   <li><a href="ware_house_wise_report.php"><i class="fas fa-user"></i> Ware House Wise Report</a></li>
+                  <li><a href="area_wise_report.php"><i class="fas fa-user"></i> Area Wise Report</a></li>
               </ul>
             </li>
 

@@ -76,7 +76,7 @@ $dbOb = new Database();
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
           
-      $query = "SELECT * FROM order_delivery where due > 0  ORDER BY serial_no DESC ";
+    $query = "SELECT * FROM order_delivery where due > 0  ORDER BY serial_no DESC ";
 
               $get_order_info = $dbOb->select($query);
               if ($get_order_info) {
@@ -91,6 +91,7 @@ if (isset($_POST["sohag"])) {
                     <td><?php echo $row['shop_name']; ?></td>
                     <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['area']; ?></td>
+                    <td><?php echo $row['ware_house_name']; ?></td>
                     <td><?php echo $row['payable_amt']; ?></td>
                     <td><?php echo $row['pay']; ?></td>
                     <td><?php echo $row['due']; ?></td>

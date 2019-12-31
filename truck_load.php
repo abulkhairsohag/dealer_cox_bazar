@@ -107,10 +107,10 @@ if(!permission_check('truck_load_for_delivery')){
             </div>
 
 
-            <div class="form-group" >
-              <label class="col-md-3 control-label" for="inputDefault">Area <span class="required" style="color: red">*</span></label>
+            <div class="form-group" style="display:none">
+              <label class="col-md-3 control-label" for="inputDefault">Area </label>
               <div class="col-md-6">
-              <select name="area_employee" id="area_employee"  required="" class="form-control area_employee ">
+              <select name="area_employee" id="area_employee"   class="form-control area_employee ">
 
                 <?php 
 

@@ -27,31 +27,10 @@ if(!permission_check('product_report')){
 
 
 
-       <div class="form-group col-md-12">
-        <div class="col-md-1"></div>
-        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">From Date<span class="required" style="color: red">*</span></label>
-        <div class="col-md-4 col-sm-6 col-xs-12">
-         <?php $today = date("d-m-Y");  ?>
-         <input type="text" class="form-control datepicker " id='from_date' name="from_date" value="<?php echo $today  ?>" required="" readonly="">
-       </div>
-     </div>
-
-
 
      <div class="form-group col-md-12">
       <div class="col-md-1"></div>
-      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">To Date<span class="required" style="color: red">*</span></label>
-      <div class="col-md-4 col-sm-6 col-xs-12">
-        
-        <input type="text" class="form-control date" id='to_date' name="to_date" value="<?php echo $today  ?>" required="" readonly="">
-      </div>
-    </div>
-
-
-
-     <div class="form-group col-md-12">
-      <div class="col-md-1"></div>
-      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Zone<span class="required" style="color: red">*</span></label>
+      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Ware House<span class="required" style="color: red">*</span></label>
       <div class="col-md-4 col-sm-6 col-xs-12">
         
         <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
@@ -87,75 +66,41 @@ if(!permission_check('product_report')){
 
         <select name="report_type" id="report_type" class="form-control">
           <option value="">Please Select One</option>
-          <!-- <option value="sales_dues">Sales And Dues Statement</option> -->
-          <!-- <option value="area_wise_sales_dues">Area Wise Sales And Dues</option> -->
           <option value="all_product_stock_and_sell">All Product Stock & sell</option>
-          <!-- <option value="product_wise_stock_and_sell">Product Wise Stock & sell</option> -->
-          <!-- <option value="sell">Product Wise Sell</option> -->
-          <!-- <option value="market_return">Product Wise Returned From Market</option> -->
-          <!-- <option value="company_return">Product Wise Returned To Company</option> -->
-          <!-- <option value="top_sell">Top Selling Product</option> -->
-          <!-- <option value="lowest_sell">Lowest Selling Product</option> -->
-          <!-- <option value="top_profit">Top Profitable Product</option> -->
-          <!-- <option value="lowest_profit">Lowest Profitable Product</option> -->
           <option value="products in stock">Products In Stock</option>
+          <option value="dues">Summery Of Dues</option>
+          <option value="order wise dues">Order Wise Dues</option>
+          <option value="all sales">All Sales Summery</option>
        <!--  -->
         </select>
       </div>
     </div>
 
-    <div class="form-group col-md-12" id="product_info" style="display:none">
-      <div class="col-md-1"></div>
-      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select Product <span class="required" style="color: red">*</span></label>
-      <div class="col-md-4 col-sm-6 col-xs-12">
-        <select name="product_id" id="product_id" class="form-control select2">
-                <option value="">Please Select One</option>
-                <?php 
-              
-                $query = "SELECT distinct products_id_no FROM product_stock";
-                $get_product = $dbOb->select($query);
+   
+        <div id="date_div" style="display:none">
 
-                if ($get_product) {
-                 while ($row = $get_product->fetch_assoc()) {
-                  $id = $row['products_id_no'];
-                  $query_product_info = "SELECT * FROM products WHERE products_id_no = '$id'";
-                  $get_product_info  = $dbOb->find($query_product_info);
-                   ?>
+          <div class="form-group col-md-12">
+            <div class="col-md-1"></div>
+            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">From Date<span class="required" style="color: red">*</span></label>
+            <div class="col-md-4 col-sm-6 col-xs-12">
+            <?php $today = date("d-m-Y");  ?>
+            <input type="text" class="form-control datepicker " id='from_date' name="from_date" value="<?php echo $today  ?>" required="" readonly="">
+          </div>
+        </div>
 
-                   <option value="<?php echo $row['products_id_no'] ?>"> <?php echo $get_product_info['products_name'].', '.$get_product_info['company']; ?> </option>
 
-                   <?php
-                 }
-               }
-               ?>
-        </select>
-      </div>
-    </div>
 
-    <div class="form-group col-md-12" id="area_div" style="display:none">
-      <div class="col-md-1"></div>
-      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select Area <span class="required" style="color: red">*</span></label>
-      <div class="col-md-4 col-sm-6 col-xs-12">
-        <select name="area" id="area" class="form-control select2">
-                <option value="">Please Select One</option>
-                <?php 
-               
-                $query = "SELECT * FROM area ORDER BY area_name";
-                $get_area = $dbOb->select($query);
+        <div class="form-group col-md-12">
+          <div class="col-md-1"></div>
+          <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">To Date<span class="required" style="color: red">*</span></label>
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            
+            <input type="text" class="form-control date" id='to_date' name="to_date" value="<?php echo $today  ?>" required="" readonly="">
+          </div>
+        </div>
 
-                if ($get_area) {
-                 while ($row = $get_area->fetch_assoc()) {
-                   ?>
 
-                   <option value="<?php echo $row['area_name'] ?>"> <?php echo $row['area_name']; ?> </option>
-
-                   <?php
-                 }
-               }
-               ?>
-        </select>
-      </div>
-    </div>
+        </div>
 
 
     <div class="form-group" style="margin-bottom: 20px;" align="center">
@@ -214,22 +159,10 @@ if(!permission_check('product_report')){
 
     $(document).on('change','#report_type',function(){
       var report_type = $(this).val();
-
-      if (report_type == "top_sell" || report_type == "lowest_sell" || report_type == "top_profit" ||report_type == "lowest_profit" || report_type == "all_product_stock_and_sell" || report_type == "" || report_type == "sales_dues") {
-        $("#product_info").hide('1500');
-        $("#product_id").val('');
-        $("#area_div").hide('1500');
-      }else if(report_type == 'area_wise_sales_dues'){
-        $("#product_info").hide('1500');
-        $("#product_id").val('');
-        $("#area_div").show('1500');
-        $("#area").val('');
+      if (report_type == "all sales" || report_type == 'all_product_stock_and_sell') {
+        $("#date_div").show('1500');
       }else{
-        $("#area_div").hide('1500');
-        $("#area").val('');
-        $("#product_id").val('');
-        $("#product_info").show('1500');
-
+        $("#date_div").hide('1500');
       }
     });
 

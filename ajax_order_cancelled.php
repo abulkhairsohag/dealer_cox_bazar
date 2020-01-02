@@ -102,10 +102,4 @@ if (isset($_POST['serial_no_view'])) {
 	echo json_encode(['details'=>$delivery_details,'expense'=>$tr]);
 }
 
-
-
-
-
-
-
 ?>

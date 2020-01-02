@@ -22,6 +22,42 @@ if (isset($_POST['submit'])) {
 		$query = "SELECT * FROM login WHERE username = '$username' AND password = '$password'";
 		$get_user = $dbOb->find($query);
 		if ($get_user) {
+			if ($get_user['user_type']  == 'user') {
+				$user_serial_no = $get_user['user_id'];
+				$query = "SELECT * FROM user_zone_permission WHERE user_serial_no = '$user_serial_no' ORDER BY serial_no DESC LIMIT 1";
+				$get_user_zone_access = $dbOb->select($query);
+				if ($get_user_zone_access) {
+					$zone = $get_user_zone_access->fetch_assoc();
+					$zone_serial_no = $zone['zone_serial_no'];
+					$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+					$get_zone_inf = $dbOb->select($query);
+					$zone_name = '';
+					if ($get_zone_inf) {
+						$zone_inf = $get_zone_inf->fetch_assoc();
+						$zone_name = $zone_inf['zone_name'];
+						
+						$ware_house_serial = $zone_inf['ware_house_serial_no'];
+						$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial'";
+						$ware_house= $dbOb->select($query);
+						if ($ware_house) {
+							$ware_house_info = $ware_house->fetch_assoc();
+							Session::set("zone_serial_no",$zone_serial_no);
+							Session::set("zone_name",$zone_name);
+							Session::set("ware_house_serial_login",$ware_house_info['serial_no']);
+							Session::set("ware_house_name_login",$ware_house_info['ware_house_name']);
+						}else{
+							Session::set("zone_serial_no",'-1');
+							Session::set("zone_name",'Ware House Of The Zone Not Found.');
+							Session::set("ware_house_serial_login",'-1');
+							Session::set("ware_house_name_login",'Ware House Not Found');
+						}
+					}else{
+						Session::set("zone_serial_no",'-1');
+						Session::set("zone_name",'Zone Not Found.');
+					}
+
+				}
+			}
 			Session::set("login",true);
 			Session::set("name",$get_user['name']);
 			Session::set("role",$get_user['role']);

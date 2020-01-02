@@ -36,6 +36,35 @@
           <form class="form-horizontal form-bordered" id="add_data_form" action="" method="post">
 
             <div class="form-group">
+                <label class="col-md-3 control-label" for="inputDefault">Zone <span class="required" style="color: red">*</span></label>
+                <div class="col-md-6">
+                    <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+                      <option value="">Please Select One</option>
+                      <?php
+
+                      $query = "SELECT * FROM zone ORDER BY zone_name";
+                      $get_zone = $dbOb->select($query);
+                      if ($get_zone) {
+                        while ($row = $get_zone->fetch_assoc()) {
+
+                        ?>
+                        <option value="<?php echo $row['serial_no']; ?>" <?php if ($get_invoice_details['zone_serial_no'] == $row["serial_no"]) {
+                          echo "selected";
+                        } ?>
+                        ><?php echo $row['zone_name']; ?></option>
+                        <?php
+                      }
+                    }
+                    ?>
+                    </select>
+                    
+                </div>
+              </div>
+
+
+
+
+            <div class="form-group">
               <label class="col-md-3 control-label" for="inputDefault">Select Invoice Type</label>
               <div class="col-md-6">
                <select class="form-control" id="invoice_option" name="invoice_option" required="">
@@ -217,15 +246,18 @@
 
         success:function(data){
            // alert('ppppp');
-           swal({
-            title: data.type,
-            text: data.message,
-            icon: data.type,
-            button: "Done",
-          });
+           
            if (data.type == 'success') {
              if (data.type == 'success') {
               window.location = 'view_invoice_list.php';
+            }else{
+                  swal({
+                    title: data.type,
+                    text: data.message,
+                    icon: data.type,
+                    button: "Done",
+                  });
+
             }
 
           }

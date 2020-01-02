@@ -132,8 +132,6 @@ if (isset($_POST['submit_edit_logo'])) {
 
 	}
 
-
-
 	if (!empty($file_name2)) {
 
 		if (!in_array($file_extension2, $permitted)) {
@@ -158,10 +156,6 @@ if (isset($_POST['submit_edit_logo'])) {
 		}
 		
 	}
-
-
-
-
 
 
 	if ($update_logo && $update_favicon) {

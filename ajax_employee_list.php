@@ -82,12 +82,12 @@ if (isset($_POST['serial_no_delete'])) {
 
 // the following section will be used to add the role of an employee
 if (isset($_POST['submit'])) {
-	$role_serial_no = $_POST['role_name'];
-	$employee_serial_no = $_POST['employee_serial_no'];
+	$role_serial_no = validation($_POST['role_name']);
+	$employee_serial_no = validation($_POST['employee_serial_no']);
 
 	$query = "SELECT * FROM role WHERE serial_no = '$role_serial_no'";
 	$get_role = $dbOb->find($query);
-	$role_name = $get_role['role_name'];
+	$role_name = validation($get_role['role_name']);
 
 	$query = "DELETE FROM user_has_role WHERE user_serial_no = '$employee_serial_no' AND user_type = 'employee'";
 	$delete_role = $dbOb->delete($query);
@@ -115,7 +115,6 @@ if (isset($_POST['submit'])) {
 }
 
 if (isset($_POST['employee_id_role'])) {
-	// $
 	$user_serial_no = $row['employee_id_role'];
 	$query = "SELECT * FROM user_has_role WHERE user_serial_no = '$user_serial_no' AND user_type = 'employee'";
 	$get_user_role = $dbOb->select($query);

@@ -25,7 +25,7 @@ if (isset($_POST['id'])) {
 
 // changing area and getting the product quantity to be loaded
 if (isset($_POST['reg_no'])) {
-	$reg_no = $_POST['reg_no'];
+	$reg_no = validation($_POST['reg_no']);
 
 		$query = "SELECT * FROM truck_load WHERE vehicle_reg_no = '$reg_no' AND unload_status = '0'";
 		$get_load_info = $dbOb->find($query);

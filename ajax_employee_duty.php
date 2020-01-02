@@ -30,8 +30,6 @@ if (isset($_POST['submit'])) {
 
 	$id_no = validation($_POST["id_no"]);
 	$name = validation($_POST["name"]);
-	// $area = validation($_POST["area"]);
-	// $company = validation($_POST["company"]);
 	$per_day = validation($_POST["per_day"]);
 	$per_month = validation($_POST["per_month"]);
 	$comission = validation($_POST["comission"]);

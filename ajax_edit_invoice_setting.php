@@ -18,18 +18,18 @@ $dbOb = new Database();
 
 if (isset($_POST['submit'])) {
 
-	$discount_on_mrp  = $_POST['discount_on_mrp'];
-	$vat		      = $_POST['vat'];
-	$discount_on_tp   = $_POST['discount_on_tp'];
-	$special_discount = $_POST['special_discount'];
+	$discount_on_mrp  = validation($_POST['discount_on_mrp']);
+	$vat		      = validation($_POST['vat']);
+	$discount_on_tp   = validation($_POST['discount_on_tp']);
+	$special_discount = validation($_POST['special_discount']);
 
-	if (isset($_POST['show_dues'])) {
+	if (isset($_POST['show_dues'])){
 		$show_dues	= 1;
 	}else{
 		$show_dues	= 0;
 	}
 	
-	$edit_id		  = $_POST['edit_id'];
+	$edit_id		  = validation($_POST['edit_id']);
 
 	$query = "UPDATE invoice_setting 
 	SET

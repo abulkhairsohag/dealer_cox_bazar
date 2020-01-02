@@ -32,18 +32,17 @@ if(!permission_check('add_bank_loan')){
 
           <table id="datatable-buttons" class="table table-striped table-bordered">
             <thead>
-
+ 
               <tr>
                 <th style="text-align: center;">Sl No.</th>
+                <th style="text-align: center;">Zone Name</th>
                 <th style="text-align: center;">Bank Name</th>
                 <th style="text-align: center;">Branch Name</th>
-                <th style="text-align: center;">Installment Amount</th>
-                <th style="text-align: center;">Total Loan</th>
-                <th style="text-align: center;">Total Pay</th>
+                <th style="text-align: center;">Loan Amt</th>
+                <th style="text-align: center;">Paid</th>
                 <th style="text-align: center;">Due</th>
                 <th style="text-align: center;">Pay Status</th>
-                <th style="text-align: center;">Loan Taken</th>
-                <th style="text-align: center;">Installment Date</th>
+                <th style="text-align: center;">Loan Date</th>
                 <th style="text-align: center;">Action</th>
               </tr>
             </thead>
@@ -64,9 +63,9 @@ if(!permission_check('add_bank_loan')){
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['bank_name']; ?></td>
                     <td><?php echo $row['branch_name']; ?></td>
-                    <td><?php echo $row['installment_amount']; ?></td>
                     <td><?php echo $total_amount; ?></td>
                     
 
@@ -101,7 +100,6 @@ if(!permission_check('add_bank_loan')){
                     <?php }
                     ?>
                     <td><?php echo $row['loan_taken_date']; ?></td>
-                    <td><?php echo $row['installment_date']; ?></td>
                     <td align="center">
                       
                       <?php 
@@ -183,26 +181,73 @@ if(!permission_check('add_bank_loan')){
                       </div>
 
                       <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Total Amount <span class="required">*</span></label>
+                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Total Loan Amount <span class="required">*</span></label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <input type="number" min="0" step="0.01" required="" id="total_amount" name="total_amount" class="form-control col-md-7 col-xs-12" required="">
                         </div>
                       </div>
 
+                      
+
                       <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Installment Amount <span class="required">*</span></label>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Loan Taken Date <span class="required" style="color: red">*</span>
+                        </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="number" min="0" step="0.01" required="" id="installment_amount" name="installment_amount" class="form-control col-md-7 col-xs-12" >
+                          <input type="text" id="loan_taken_date" name="loan_taken_date" class="date-picker form-control col-md-7 col-xs-12 datepicker" required="required"  autocomplete="off" readonly="">
                         </div>
                       </div>
 
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Monthly Installment Date <span class="required" style="color: red">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" id="installment_date" name="installment_date" class="date-picker form-control col-md-7 col-xs-12 datepicker" required="required"  autocomplete="off" readonly="">
-                        </div>
-                      </div>
+
+
+
+                          
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="inputDefault">Zone </label>
+               <div class="col-md-6">
+            <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+           
+              <?php
+
+              if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("zone_name"); ?></option>
+                  <?php
+                }
+              }else{
+        $query = "SELECT * FROM zone ORDER BY zone_name";
+        $get_zone = $dbOb->select($query);
+        if ($get_zone) {
+          ?>
+           <option value="">Please Select One</option>
+          <?php
+                while ($row = $get_zone->fetch_assoc()) {
+
+                ?>
+                <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
+                <?php
+              }
+            }else{
+              ?>
+                <option value="">Please Add Zone First..</option>
+              <?php
+
+            }
+             }
+
+            ?>
+
+            </select>
+            
+              </div>
+            </div>
+
+
 
 
                       <div style="display: none;">
@@ -276,12 +321,7 @@ if(!permission_check('add_bank_loan')){
                         </div>
                       </div>
 
-                      <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Monthly Installment Amount <span class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="number" min="0" step="0.01" readonly="" id="installment_amount_pay" class="form-control col-md-7 col-xs-12" >
-                        </div>
-                      </div>
+                      
                       <div class="form-group">
                         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Total Paid <span class="required">*</span></label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -295,6 +335,9 @@ if(!permission_check('add_bank_loan')){
                           <input type="number" min="0" step="0.01" required="" id="installment_pay" name="installment_pay" class="form-control installment_pay col-md-7 col-xs-12" >
                         </div>
                       </div>
+
+                     
+                     
                       <input type="hidden" id="edit_id_pay" name="edit_id_pay">
 
                       <div class="ln_solid"></div>
@@ -441,8 +484,8 @@ if(!permission_check('add_bank_loan')){
           $("#bank_name").val(data.bank_name);
           $("#branch_name").val(data.branch_name);
           $("#total_amount").val(data.total_amount);
-          $("#installment_amount").val(data.installment_amount);
-          $("#installment_date").val(data.installment_date);
+          $("#loan_taken_date").val(data.loan_taken_date);
+          $("#zone_serial_no").val(data.zone_serial_no);
           $("#edit_id").val(data.serial_no);
 
         }

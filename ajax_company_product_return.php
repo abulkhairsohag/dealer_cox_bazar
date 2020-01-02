@@ -26,9 +26,9 @@ if (isset($_POST['serial_no_edit'])) {
 	$serial_no = $_POST['serial_no_edit'];
 	$query = "SELECT * FROM company_products_return WHERE serial_no = '$serial_no'";
 	$return_info = $dbOb->find($query);
-	$ware_house_serial_no = $return_info['ware_house_serial_no'];
+	$ware_house_serial_no = validation($return_info['ware_house_serial_no']);
 
-	$products_id_no = $return_info["products_id_no"];
+	$products_id_no = validation($return_info["products_id_no"]);
 	$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
 	$product_info = $dbOb->find($query);
 	$current_quantity = $product_info["quantity"];
@@ -54,24 +54,24 @@ if (isset($_POST['serial_no_edit'])) {
 // adding and updating data 
 
 if (isset($_POST['submit'])) {
-	$ware_house_serial_no = $_POST['ware_house_serial_no'];
+	$ware_house_serial_no = validation($_POST['ware_house_serial_no']);
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$get_warehouse = $dbOb->select($query);
 	$ware_house_name = "";
 	if ($get_warehouse) {
-		$ware_house_name = $get_warehouse->fetch_assoc()['ware_house_name'];
+		$ware_house_name = validation($get_warehouse->fetch_assoc()['ware_house_name']);
 	}
-	$products_id_no = $_POST['products_id_no'];
-	$products_name = $_POST['products_name'];
-	$company = $_POST['company'];
-	$products_id_no = $_POST['products_id_no'];
-	$company_price = $_POST['company_price'];
-	$return_quantity = $_POST['return_quantity'];
-	$total_price = $_POST['total_price'];
-	$return_reason = $_POST['return_reason'];
-	$description = $_POST['description'];
-	$edit_id = $_POST['edit_id'];
-	$return_date = $_POST['return_date'];
+	$products_id_no = validation($_POST['products_id_no']);
+	$products_name = validation($_POST['products_name']);
+	$company = validation($_POST['company']);
+	$products_id_no = validation($_POST['products_id_no']);
+	$company_price = validation($_POST['company_price']);
+	$return_quantity = validation($_POST['return_quantity']);
+	$total_price = validation($_POST['total_price']);
+	$return_reason = validation($_POST['return_reason']);
+	$description = validation($_POST['description']);
+	$edit_id = validation($_POST['edit_id']);
+	$return_date = validation($_POST['return_date']);
 
 	if ($edit_id) { // updating information 
 		$query = "SELECT * FROM company_products_return WHERE serial_no = '$edit_id'";
@@ -179,8 +179,8 @@ if (isset($_POST['serial_no_delete'])) {
 	$delete_return = $dbOb->delete($query);
 
 	if ($delete_return) {
-		$return_quantity = $get_return_info['return_quantity'];
-		$products_id_no = $get_return_info['products_id_no'];
+		$return_quantity = validation($get_return_info['return_quantity']);
+		$products_id_no = validation($get_return_info['products_id_no']);
 
 		$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
 		$get_products_info = $dbOb->find($query);

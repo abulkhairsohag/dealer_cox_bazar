@@ -51,58 +51,79 @@ if(!permission_check('product_report')){
 
      <div class="form-group col-md-12">
       <div class="col-md-1"></div>
-      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Ware House<span class="required" style="color: red">*</span></label>
+      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Zone<span class="required" style="color: red">*</span></label>
       <div class="col-md-4 col-sm-6 col-xs-12">
         
-        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
-          <option value="">Please Select One</option>
-          <?php
+        <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+              <option value="">Please Select One</option>
+              <?php
 
-          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-          $get_ware_house = $dbOb->select($query);
-          if ($get_ware_house) {
-            while ($row = $get_ware_house->fetch_assoc()) {
+              $query = "SELECT * FROM zone ORDER BY zone_name";
+              $get_zone = $dbOb->select($query);
+              if ($get_zone) {
+                while ($row = $get_zone->fetch_assoc()) {
+
+                ?>
+                <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("zone_serial_no") == $row["serial_no"]) {
+                  echo "selected";
+                } ?>
+                ><?php echo $row['zone_name']; ?></option>
+                <?php
+              }
+            }
 
             ?>
-            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
-              echo "selected";
-            } ?>
-            ><?php echo $row['ware_house_name']; ?></option>
-            <?php
-          }
-        }
 
-        ?>
-
-    </select>
+            </select>
       </div>
     </div>
 
 
      <div class="form-group col-md-12">
       <div class="col-md-1"></div>
-      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Report Type<span class="required" style="color: red">*</span></label>
+      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Area<span class="required" style="color: red">*</span></label>
       <div class="col-md-4 col-sm-6 col-xs-12">
         
+         <select name="area_employee" id="area_employee"  required="" class="form-control area_employee ">
+
+
+            <?php 
+            
+            if (Session::get("zone_serial_no")){
+              $zone_serial_no = Session::get("zone_serial_no") ;
+              $query = "SELECT * FROM area_zone WHERE zone_serial_no = '$zone_serial_no'";
+              $get_zone = $dbOb->select($query);
+              if ($get_zone) {
+                ?>
+                  <option value="">Please Select One</option>
+                <?php
+                while ($row = $get_zone->fetch_assoc()) {
+                  ?>
+                      <option value="<?php echo $row['area_name']?>"><?php echo $row['area_name']?></option>
+                  <?php
+                }
+              }else{
+                ?>
+                <option value="">Please Select Zone First..</option>
+                <?php
+              }
+
+            }
+            ?>
+    </select>
+      </div>
+    </div>
+
+     <div class="form-group col-md-12">
+      <div class="col-md-1"></div>
+      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Report Type<span class="required" style="color: red">*</span></label>
+      <div class="col-md-4 col-sm-6 col-xs-12">
 
         <select name="report_type" id="report_type" class="form-control">
           <option value="">Please Select One</option>
-          <!-- <option value="sales_dues">Sales And Dues Statement</option> -->
-          <!-- <option value="area_wise_sales_dues">Area Wise Sales And Dues</option> -->
-          <option value="all_product_stock_and_sell">All Product Stock & sell</option>
-          <!-- <option value="product_wise_stock_and_sell">Product Wise Stock & sell</option> -->
-          <!-- <option value="sell">Product Wise Sell</option> -->
-          <!-- <option value="market_return">Product Wise Returned From Market</option> -->
-          <!-- <option value="company_return">Product Wise Returned To Company</option> -->
-          <!-- <option value="top_sell">Top Selling Product</option> -->
-          <!-- <option value="lowest_sell">Lowest Selling Product</option> -->
-          <!-- <option value="top_profit">Top Profitable Product</option> -->
-          <!-- <option value="lowest_profit">Lowest Profitable Product</option> -->
-          <option value="products in stock">Products In Stock</option>
           <option value="dues">Summery Of Dues</option>
           <option value="order wise dues">Order Wise Dues</option>
           <option value="all sales">All Sales Summery</option>
-       <!--  -->
         </select>
       </div>
     </div>
@@ -196,14 +217,14 @@ if(!permission_check('product_report')){
       var report_type = $("#report_type").val();
       var product_id = $("#product_id").val();
       var area = $("#area").val();
-      var ware_house_serial_no = $("#ware_house_serial_no").val();
+      var area = $("#area_employee").val();
 
       $("#show_table").html("");
 
       $.ajax({
-        url: "ajax_ware_house_wise_report.php",
+        url: "ajax_area_wise_report.php",
         method: "POST",
-        data:{from_date:from_date,to_date:to_date,report_type:report_type,product_id:product_id,area:area,ware_house_serial_no:ware_house_serial_no},
+        data:{from_date:from_date,to_date:to_date,report_type:report_type,area:area},
         dataType: "json",
         success:function(data){
           $("#show_table").html(data);
@@ -247,6 +268,21 @@ if(!permission_check('product_report')){
         dataType:'json',
         success:function(data){
           // $("#cust_id").html(data);
+        }
+      });
+  });
+
+    $(document).on('change','#zone_serial_no',function(){
+     var zone_serial_no = $(this).val();
+     $.ajax({
+        url:'ajax_new_order.php',
+        data:{zone_serial_no:zone_serial_no},
+        type:'POST',
+        dataType:'json',
+        success:function(data){
+          $("#area_employee").html(data.area_options);
+          $("#zone_name").val(zone_name);
+          // console.log(data.area_options);
         }
       });
   });

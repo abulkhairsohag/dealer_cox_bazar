@@ -165,32 +165,53 @@ if(!permission_check('product')){
                     </div>
                   </div>
 
-                  <div class="form-group" id="ware_house" >
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Ware House<span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <select name="ware_house_serial_no" id="ware_house_serial_no" class=" form-control col-md-7 col-xs-12 " required="">
-                           <?php
-                            $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-                            $get_warehouse = $dbOb->select($query);
-                            if ($get_warehouse) {
-                              ?>
-                              <option value="">Select A Warehouse</option>
-                              <?php
-                              while ($row = $get_warehouse->fetch_assoc()) {
-                                ?>
-                                  <option value="<?php echo $row['serial_no']?>"><?php echo $row['ware_house_name']?></option>
-                                <?php
-                              }
-                            }else{
-                              ?>
-                              <option value="">Please Add Ware House First</option>
-                              <?php
-                            }
-                           ?>
-                      </select>
-                    </div>
-                  </div>
+                 
+  <div class="form-group row">
+    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+    <div class="col-md-6 col-6">
+        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
+          
+          <?php
+          if (Session::get("ware_house_serial_login")){
+                if (Session::get("ware_house_serial_login") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                  <?php
+                }
+              }else{
 
+          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+          $get_ware_house = $dbOb->select($query);
+          if ($get_ware_house) {
+            ?>
+                <option value="">Please Select One</option>
+            <?php
+            while ($row = $get_ware_house->fetch_assoc()) {
+
+            ?>
+            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+              echo "selected";
+            } ?>
+            ><?php echo $row['ware_house_name']; ?></option>
+            <?php
+          }
+        }else{
+          ?>
+            <option value="">Please Add Ware House First</option>
+          <?php
+        }
+      }
+
+        ?>
+
+    </select>
+    </div>
+  </div>
 
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="stock_date">Stock Date

@@ -353,6 +353,11 @@ if(!permission_check('unpaid_but_delivered')){
                                                 <input type="text" class="form-control date-picker datepicker" value="<?php echo date('d-m-Y') ?>"   id="pay_date" name="pay_date" readonly="" required="">
                                               </div>
 
+                                              <div class="form-group" style="display:">
+                                                <label for="current_due">Zone Serial No</label>
+                                                <input type="text" class="form-control " value=""   id="zone_serial" name="zone_serial_no" readonly="" required="">
+                                              </div>
+
                                               <div class="form-group" align="center">
                                                 <input type="submit" class="btn btn-success" name="submit" value="Pay Now">
                                               </div>
@@ -427,9 +432,10 @@ $(document).on('click','.pay',function(){
     type:'POST',
     dataType:'json',
     success:function(data){
-      $("#total_due").val(data);
-      $("#current_due").val(data);
+      $("#total_due").val(data.due);
+      $("#current_due").val(data.due);
       $("#deliver_order_serial_no").val(deliv_order_serial_no);
+      $("#zone_serial").val(data.zone_serial_no);
     }
   });
 
@@ -483,38 +489,38 @@ $(document).on('keyup blur','#pay_amt',function(){
     }); // end of insert and update 
 
     // cancelling order 
-    $(document).on('click','.cancel_order',function(){
-      var cancel_order_tbl_serial_no = $(this).data('order_tbl_serial_no');
-      var cancel_delivery_tbl_serial_no = $(this).data('delivery_tbl_serial_no');
+    // $(document).on('click','.cancel_order',function(){
+    //   var cancel_order_tbl_serial_no = $(this).data('order_tbl_serial_no');
+    //   var cancel_delivery_tbl_serial_no = $(this).data('delivery_tbl_serial_no');
 
-      swal({
-        title: "Are you sure to Cancel This Order?",
-        text: "Once Cancelled, You Will Not Be Able To Recover It!",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      })
-      .then((willDelete) => {
-        if (willDelete) {
+    //   swal({
+    //     title: "Are you sure to Cancel This Order?",
+    //     text: "Once Cancelled, You Will Not Be Able To Recover It!",
+    //     icon: "warning",
+    //     buttons: true,
+    //     dangerMode: true,
+    //   })
+    //   .then((willDelete) => {
+    //     if (willDelete) {
 
-          $.ajax({
-            url:'ajax_cancel_delivered_orders.php',
-            data:{cancel_order_tbl_serial_no:cancel_order_tbl_serial_no,cancel_delivery_tbl_serial_no:cancel_delivery_tbl_serial_no},
-            type:'POST',
-            dataType:'json',
-            success:function(data){
-              swal({
-                title: data.type,
-                text: data.message,
-                icon: data.type,
-                button: "Done",
-              });
-              get_data_table();
-            }
-          });
-        } 
-      });
-    });
+    //       $.ajax({
+    //         url:'ajax_cancel_delivered_orders.php',
+    //         data:{cancel_order_tbl_serial_no:cancel_order_tbl_serial_no,cancel_delivery_tbl_serial_no:cancel_delivery_tbl_serial_no},
+    //         type:'POST',
+    //         dataType:'json',
+    //         success:function(data){
+    //           swal({
+    //             title: data.type,
+    //             text: data.message,
+    //             icon: data.type,
+    //             button: "Done",
+    //           });
+    //           get_data_table();
+    //         }
+    //       });
+    //     } 
+    //   });
+    // });
 
   }); // end of document ready function 
 

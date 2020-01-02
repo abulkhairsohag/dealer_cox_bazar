@@ -15,7 +15,7 @@ include_once("class/Database.php");
 $dbOb = new Database();
 
 if (isset($_POST['serial_no_edit'])) {
-	$serial_no_edit = $_POST['serial_no_edit'];
+	$serial_no_edit = validation($_POST['serial_no_edit']);
 	$query = "SELECT * FROM transport WHERE serial_no = '$serial_no_edit'";
 	$get_transport = $dbOb->find($query);
 	echo json_encode($get_transport);

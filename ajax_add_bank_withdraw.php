@@ -24,15 +24,30 @@ if (isset($_POST['serial_no_edit'])) {
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-	  $bank_name = validation($_POST['bank_name']);
-      $bank_account_no = validation($_POST['bank_account_no']);
+      $bank_account_no = validation($_POST['bank_account_no']);$query = "SELECT * FROM account WHERE bank_account_no = '$bank_account_no'";
+	  $get_account_info = $dbOb->select($query);
+	  $bank_name = '';
+	  $branch_name = '';
+	  if ($get_account_info) {
+		  $account = $get_account_info->fetch_assoc();
+		  $bank_name = validation($account['bank_name']);
+		  $branch_name = validation($account['branch_name']);
+	  }
       $cheque_no = validation($_POST['cheque_no']);
-      $branch_name = validation($_POST['branch_name']);
       $amount = validation($_POST['amount']);
       $receiver_name = validation($_POST['receiver_name']);
       $cheque_active_date = validation($_POST['cheque_active_date']);
       $description = validation($_POST['description']);
-      $edit_id = validation($_POST['edit_id']);
+	  $edit_id = validation($_POST['edit_id']);
+	  
+	  $zone_serial_no = validation($_POST['zone_serial_no']);
+	  $query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+	  $get_zone = $dbOb->select($query);
+	  $zone_name = '';
+	  if ($get_zone) {
+		  $zone_name = validation($get_zone->fetch_assoc()['zone_name']);
+	  }
+
 
 	if ($edit_id) {
 		$query = "UPDATE bank_withdraw 
@@ -44,7 +59,9 @@ if (isset($_POST['submit'])) {
 					amount = '$amount',
 					receiver_name = '$receiver_name',
 					cheque_active_date = '$cheque_active_date',
-					description 	= '$description'
+					description 	= '$description',
+					zone_serial_no  = '$zone_serial_no',
+					zone_name  = '$zone_name'
 					
 				  WHERE
 					serial_no = '$edit_id' ";
@@ -62,9 +79,9 @@ if (isset($_POST['submit'])) {
 		}
 	}else{
 		$query = "INSERT INTO bank_withdraw 
-					(bank_name,bank_account_no,cheque_no,branch_name,amount,receiver_name,cheque_active_date,description)
+					(bank_name,bank_account_no,cheque_no,branch_name,amount,receiver_name,cheque_active_date,description,zone_serial_no,zone_name)
 				  VALUES 
-				  	('$bank_name','$bank_account_no','$cheque_no','$branch_name','$amount','$receiver_name','$cheque_active_date','$description')";
+				  	('$bank_name','$bank_account_no','$cheque_no','$branch_name','$amount','$receiver_name','$cheque_active_date','$description','$zone_serial_no','$zone_name')";
 		$insert = $dbOb->insert($query);
 		if ($insert) {
 			$message = "Congratulaitons! Information Is Successfully Saved.";
@@ -80,7 +97,7 @@ if (isset($_POST['submit'])) {
 }
 // the following block of code is for deleting data 
 if (isset($_POST['serial_no_delete'])) {
-	$serial_no_delete = $_POST['serial_no_delete'];
+	$serial_no_delete = validation($_POST['serial_no_delete']);
 	$query = "DELETE FROM bank_withdraw WHERE serial_no = '$serial_no_delete'";
 	$delete = $dbOb->delete($query);
 	if ($delete) {
@@ -100,15 +117,16 @@ if (isset($_POST['serial_no_delete'])) {
 if (isset($_POST["sohag"])) {
               
               
-              $query = "SELECT * FROM bank_withdraw  ORDER BY serial_no DESC";
-              $get_bank_withdraw = $dbOb->select($query);
-              if ($get_bank_withdraw) {
-                $i=0;
-                while ($row = $get_bank_withdraw->fetch_assoc()) {
-                  $i++;
-                  ?>
+             $query = "SELECT * FROM bank_withdraw ORDER BY serial_no DESC";
+$get_bank_withdraw = $dbOb->select($query);
+if ($get_bank_withdraw) {
+	$i = 0;
+	while ($row = $get_bank_withdraw->fetch_assoc()) {
+		$i++;
+		?>
                   <tr>
                     <td><?php echo $i; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['bank_name']; ?></td>
                     <td><?php echo $row['bank_account_no']; ?></td>
                     <td><?php echo $row['cheque_no']; ?></td>
@@ -119,22 +137,23 @@ if (isset($_POST["sohag"])) {
                     <td><?php echo $row['description']; ?></td>
                     <td align="center">
 
-                      <?php 
-                      if (permission_check('bank_withdraw_edit_button')) {
-                        ?>
-                         <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a> 
-                      <?php } ?>
+                      <?php
+if (permission_check('bank_withdraw_edit_button')) {
+			?>
+                         <a  class="badge bg-blue edit_data" id="<?php echo ($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a>
+                      <?php }?>
 
-                      <?php 
-                      if (permission_check('bank_withdraw_delete_button')) {
-                        ?>
-                        <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
-                      <?php } ?>    
+                      <?php
+if (permission_check('bank_withdraw_delete_button')) {
+			?>
+                        <a  class="badge  bg-red delete_data" id="<?php echo ($row['serial_no']) ?>"  style="margin:2px"> Delete</a>
+                      <?php }?>
                     </td>
                   </tr>
+
                   <?php
-                }
-              }
+}
+}
 }
 
  ?>

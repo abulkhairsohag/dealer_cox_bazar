@@ -55,7 +55,6 @@ if (isset($_POST['submit'])) {
 						id_no = '$id_no',
 						name = '$name', 
 						active_status = '$active_status'
-						
 					  WHERE
 						serial_no = '$edit_id' ";
 
@@ -132,7 +131,6 @@ if (isset($_POST['serial_no_delete'])) {
 
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
-              
  
               $query = "SELECT * FROM delivery_employee ORDER BY serial_no DESC";
               $get_delivery_employee = $dbOb->select($query);

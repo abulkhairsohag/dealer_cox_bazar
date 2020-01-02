@@ -36,6 +36,7 @@ if(!permission_check('company_comission')){
 
               <tr>
                 <th style="text-align: center;">Sl No.</th>
+                <th style="text-align: center;">Zone</th>
                 <th style="text-align: center;">Company</th>
                 <th style="text-align: center;">Month</th>
                 <th style="text-align: center;">Target Product</th>
@@ -60,6 +61,7 @@ if(!permission_check('company_comission')){
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['company']; ?></td>
                     <?php 
                     $month = $row['month'];
@@ -164,10 +166,81 @@ if(!permission_check('company_comission')){
                     <form id="form_edit_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
                       
 
+
+                               
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="inputDefault">Zone </label>
+               <div class="col-md-6">
+            <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+           
+              <?php
+
+              if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("zone_name"); ?></option>
+                  <?php
+                }
+              }else{
+        $query = "SELECT * FROM zone ORDER BY zone_name";
+        $get_zone = $dbOb->select($query);
+        if ($get_zone) {
+          ?>
+           <option value="">Please Select One</option>
+          <?php
+                while ($row = $get_zone->fetch_assoc()) {
+
+                ?>
+                <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
+                <?php
+              }
+            }else{
+              ?>
+                <option value="">Please Add Zone First..</option>
+              <?php
+
+            }
+             }
+
+            ?>
+
+            </select>
+            
+              </div>
+            </div>
+
+
+
                       <div class="form-group">
                         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Company <span class="required" style="color: red">*</span></label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" required="" id="company" name="company" class="form-control col-md-7 col-xs-12" >
+                              <select name="company" id="company"  required="" class="form-control company">
+                                  <option value="">Please Select One</option>
+                                  <?php
+
+                                  $query = "SELECT * FROM company ORDER BY company_name";
+                                  $get_company = $dbOb->select($query);
+                                  if ($get_company) {
+                                    while ($row = $get_company->fetch_assoc()) {
+
+                                    ?>
+                                    <option value="<?php echo $row['company_name']; ?>" ><?php echo $row['company_name']; ?></option>
+                                    <?php
+                                  }
+                                }else{
+                                  ?>
+                                    <option value="">Please Add Company First..</option>
+                                  <?php
+                                }
+
+                                ?>
+
+                                </select>
                         </div>
                       </div>
 
@@ -272,6 +345,7 @@ if(!permission_check('company_comission')){
           $("#target_product").val(data.target_product);
           $("#target_sell_amount").val(data.target_sell_amount);
           $("#edit_id").val(data.serial_no);
+          $("#zone_serial_no").val(data.zone_serial_no);
 
         }
       });
@@ -354,6 +428,21 @@ if(!permission_check('company_comission')){
 
   }); // end of delete 
 
+
+   $(document).on('change','#zone_serial_no',function(){
+     var zone_serial_no = $(this).val();
+     $.ajax({
+        url:'ajax_new_order.php',
+        data:{zone_serial_no:zone_serial_no},
+        type:'POST',
+        dataType:'json',
+        success:function(data){
+          $("#area_employee").html(data.area_options);
+          $("#zone_name").val(zone_name);
+          // console.log(data.area_options);
+        }
+      });
+  });
 
   }); // end of document ready function 
 

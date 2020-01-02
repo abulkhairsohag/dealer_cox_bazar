@@ -36,6 +36,7 @@ if(!permission_check('employee_payments')){
 
               <tr>
                 <th style="text-align: center;">#</th>
+                <th style="text-align: center;">Zone</th>
                 <th style="text-align: center;">ID No</th>
                 <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Designation</th>
@@ -65,6 +66,7 @@ if(!permission_check('employee_payments')){
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['id_no']; ?></td>
                     <td><?php echo $row['name']; ?></td>
                     <td><?php echo $row['designation']; ?></td>
@@ -173,6 +175,54 @@ if(!permission_check('employee_payments')){
                     <!-- Form starts From here  -->
                     <form id="form_edit_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
                       
+                                 
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="inputDefault">Zone </label>
+               <div class="col-md-6">
+            <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+           
+              <?php
+
+              if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("zone_name"); ?></option>
+                  <?php
+                }
+              }else{
+        $query = "SELECT * FROM zone ORDER BY zone_name";
+        $get_zone = $dbOb->select($query);
+        if ($get_zone) {
+          ?>
+           <option value="">Please Select One</option>
+          <?php
+                while ($row = $get_zone->fetch_assoc()) {
+
+                ?>
+                <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
+                <?php
+              }
+            }else{
+              ?>
+                <option value="">Please Add Zone First..</option>
+              <?php
+
+            }
+             }
+
+            ?>
+
+            </select>
+            
+              </div>
+            </div>
+
+
 
                       <div class="form-group">
                         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Employee ID <span class="required" style="color: red">*</span></label>
@@ -353,6 +403,7 @@ if(!permission_check('employee_payments')){
           $("#description").val(data.get_payment.description);
           $("#salary_to_be_paid").val(data.emp_salary);
           $("#edit_id").val(data.get_payment.serial_no);
+          $("#zone_serial_no").val(data.zone_serial_no);
 
         }
       });

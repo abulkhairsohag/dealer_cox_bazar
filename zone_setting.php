@@ -1,6 +1,4 @@
-<?php include_once('include/header.php'); ?>
-
-<?php 
+<?php include_once('include/header.php'); 
 
 if(!permission_check('sales_zone_setting')){
   ?>
@@ -15,7 +13,6 @@ if(!permission_check('sales_zone_setting')){
 	<div class="row">
 
 		<!-- page content -->
-
 
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<div class="x_panel">
@@ -35,9 +32,10 @@ if(!permission_check('sales_zone_setting')){
          <table id="datatable-buttons" class="table table-striped table-bordered">
           <thead>
            <tr>
-            <th  style="text-align: center;">Sl No.</th>
+            <th  style="text-align: center;">#</th>
             <th  style="text-align: center;">Zone Name</th>
             <th  style="text-align: center;">Areas Under The Zone</th>
+            <th  style="text-align: center;">Ware House</th>
             <th  style="text-align: center;">Action</th>
           </tr>
         </thead>
@@ -74,6 +72,16 @@ if(!permission_check('sales_zone_setting')){
                   }
                   ?>
                 </td>
+                <td><?php 
+                  $ware_house_serial_no = $row['ware_house_serial_no'];
+                  $query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
+                  $get_ware_house = $dbOb->select($query);
+                  $ware_house_name = '';
+                  if ($get_ware_house) {
+                    $ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
+                  }
+                  echo $ware_house_name;
+                ?></td>
                 <td align="center">
                   
                   <?php 
@@ -130,7 +138,7 @@ if(!permission_check('sales_zone_setting')){
                 <form id="form_edit_data" method="POST" action="" data-parsley-validate class="form-horizontal form-label-left">
 
                   <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Zone Name <span class="required">*</span>
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Zone Name <span class="required text-danger">*</span>
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="text" id="zone_name" name="zone_name" required="required" class="form-control col-md-7 col-xs-12">
@@ -138,9 +146,9 @@ if(!permission_check('sales_zone_setting')){
                   </div>
 
                   <div class="form-group">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Select Areas</label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Select Areas <span class="required text-danger">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                       <select class="select2 form-control col-md-7 col-xs-12"  multiple="multiple" name="area_name[]" id="area_name">
+                       <select class="select2 form-control col-md-7 col-xs-12"  multiple="multiple" name="area_name[]" id="area_name" required="" >
                        <?php
                        $query = "SELECT * FROM area";
                        $get_area = $dbOb->select($query);
@@ -150,6 +158,30 @@ if(!permission_check('sales_zone_setting')){
                           <option value='<?php echo $area['serial_no']; ?>' ><?php echo $area['area_name']; ?></option>
 
                         <?php } }?>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Select Ware House <span class="text-danger">*</span></label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                       <select class="form-control col-md-7 col-xs-12"    name="ware_house_serial_no" id="ware_house_serial_no" requiree>
+                       <?php
+                       $query = "SELECT * FROM ware_house";
+                       $get_ware_house = $dbOb->select($query);
+                       if ($get_ware_house) {
+                         ?>
+                          <option value="">Please Select One..</option>
+                         <?php
+                        while ($ware_house = $get_ware_house->fetch_assoc()) {
+                          ?>
+                          <option value='<?php echo $ware_house['serial_no']; ?>' ><?php echo $ware_house['ware_house_name']; ?></option>
+
+                        <?php } }else {
+                          ?>
+                            <option value="">No Ware house is added...</option>
+                          <?php
+                        }?>
                       </select>
                     </div>
                   </div>
@@ -207,6 +239,7 @@ $(document).on('click','.edit_data',function(){
       // console.log(data.zone_info.zone_name);
       $("#area_name").val(data.area_serial_no).trigger('change');
       $("#edit_id").val(data.zone_info.serial_no);
+      $("#ware_house_serial_no").val(data.zone_info.ware_house_serial_no);
     }
   });
 });
@@ -250,7 +283,6 @@ $(document).on('submit','#form_edit_data',function(e){
    }
  });
 });
-
 
 // The following section is for deleting information
 $(document).on('click','.delete_data',function(){

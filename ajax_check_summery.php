@@ -15,7 +15,7 @@ include_once("class/Database.php");
 $dbOb = new Database();
 
 if (isset($_POST['order_no'])) {
-    $order_no = $_POST['order_no'] ;
+    $order_no = validation($_POST['order_no']) ;
     $query = "SELECT * FROM order_summery_shop_info WHERE order_no = '$order_no'";
     $get_summery  =  $dbOb->select($query);
     if ($get_summery) {

@@ -6,13 +6,13 @@ $dbOb = new Database();
 
 
 <?php 
-if(!permission_check('truck_load_for_delivery')){
+// if(!permission_check('truck_load_for_delivery')){
   ?>
-  <script>
+  <!-- <script>
     window.location.href = '403.php';
-  </script>
+  </!--> -->
   <?php 
-}
+// }
 ?>
 
 <div class="right_col" role="main">
@@ -82,22 +82,40 @@ if(!permission_check('truck_load_for_delivery')){
               <label class="col-md-3 control-label" for="inputDefault">Zone </label>
                <div class="col-md-6">
             <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
-              <option value="">Please Select One</option>
+           
               <?php
 
-              $query = "SELECT * FROM zone ORDER BY zone_name";
-              $get_zone = $dbOb->select($query);
-              if ($get_zone) {
+              if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("zone_name"); ?></option>
+                  <?php
+                }
+              }else{
+        $query = "SELECT * FROM zone ORDER BY zone_name";
+        $get_zone = $dbOb->select($query);
+        if ($get_zone) {
+          ?>
+           <option value="">Please Select One</option>
+          <?php
                 while ($row = $get_zone->fetch_assoc()) {
 
                 ?>
-                <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("zone_serial_no") == $row["serial_no"]) {
-                  echo "selected";
-                } ?>
-                ><?php echo $row['zone_name']; ?></option>
+                <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
                 <?php
               }
+            }else{
+              ?>
+                <option value="">Please Add Zone First..</option>
+              <?php
+
             }
+             }
 
             ?>
 
@@ -132,12 +150,27 @@ if(!permission_check('truck_load_for_delivery')){
     <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
     <div class="col-md-6 col-6">
         <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
-          <option value="">Please Select One</option>
+          
           <?php
+          if (Session::get("ware_house_serial_login")){
+                if (Session::get("ware_house_serial_login") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                  <?php
+                }
+              }else{
 
           $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
           $get_ware_house = $dbOb->select($query);
           if ($get_ware_house) {
+            ?>
+                <option value="">Please Select One</option>
+            <?php
             while ($row = $get_ware_house->fetch_assoc()) {
 
             ?>
@@ -147,7 +180,12 @@ if(!permission_check('truck_load_for_delivery')){
             ><?php echo $row['ware_house_name']; ?></option>
             <?php
           }
+        }else{
+          ?>
+            <option value="">Please Add Ware House First</option>
+          <?php
         }
+      }
 
         ?>
 
@@ -378,20 +416,20 @@ if(!permission_check('truck_load_for_delivery')){
       });
   });
 
-  $(document).on('change','#zone_serial_no',function(){
-     var zone_serial_no = $(this).val();
-     $.ajax({
-        url:'ajax_new_order.php',
-        data:{zone_serial_no:zone_serial_no},
-        type:'POST',
-        dataType:'json',
-        success:function(data){
-          $("#area_employee").html(data.area_options);
-          $("#zone_name").val(zone_name);
-          // console.log(data.area_options);
-        }
-      });
-  });
+  // $(document).on('change','#zone_serial_no',function(){
+  //    var zone_serial_no = $(this).val();
+  //    $.ajax({
+  //       url:'ajax_new_order.php',
+  //       data:{zone_serial_no:zone_serial_no},
+  //       type:'POST',
+  //       dataType:'json',
+  //       success:function(data){
+  //         $("#area_employee").html(data.area_options);
+  //         $("#zone_name").val(zone_name);
+  //         // console.log(data.area_options);
+  //       }
+  //     });
+  // });
 
   $(document).on('change','#area_employee',function(){
      var area_name = $(this).val();

@@ -18,20 +18,6 @@ $company = "";
 if (isset($_POST['products_id_no_view'])) {
 	$products_id_no = $_POST['products_id_no_view'] ;
 
-	// $query = "SELECT * FROM `products` WHERE products_id_no = '$products_id_no'";
-	// $get_products_info = $dbOb->find($query);
-
-	// $query = "SELECT * FROM `product_stock` WHERE products_id_no = '$products_id_no'";
-	// $get_stock = $dbOb->select($query);
-	// $total_buy = 0;
-	// if ($get_stock) {
-	// 	while ($row = $get_stock->fetch_assoc()) {
-	// 		$total_buy = (int)$total_buy + (int)$row['quantity'] ;
-	// 	}
-	// }
-	// $totla_sell = (int)$total_buy - (int)$get_products_info['quantity'];
-
-
   $query = "SELECT * FROM `products` WHERE products_id_no = '$products_id_no'";
   $get_product = $dbOb->select($query);
   $get_products_info = $dbOb->find($query);
@@ -96,7 +82,7 @@ if (isset($_POST['products_id_no_view'])) {
 
 // the following section is for fetching data from database 
 if (isset($_POST["sohag_company"])) 
-	$company = $_POST["sohag_company"];
+	$company = validation($_POST["sohag_company"]);
 	 
           $query = "SELECT * FROM products WHERE company = '$company' ORDER BY serial_no DESC";
           $get_products = $dbOb->select($query);

@@ -18,21 +18,14 @@ if (isset($_POST['report_type'])) {
 	
  	$from_date = strtotime($_POST['from_date']);
  	$to_date = strtotime($_POST['to_date']);
- 	$vehicle_reg = $_POST['vehicle_reg'];
- 	$route  = $_POST['route'];
- 	$report_type = $_POST['report_type'];
+ 	$vehicle_reg = validation($_POST['vehicle_reg']);
+ 	$route  = validation($_POST['route']);
+ 	$report_type = validation($_POST['report_type']);
 
- 	// echo json_encode($report_type);
- 	// die();
-
- 	// $query = "SELECT * FROM products WHERE products_id_no = '$pr_id'";
- 	// $product_info = $dbOb->find($query);
 
  	$query = "SELECT * FROM transport WHERE reg_no = '$vehicle_reg'";
  	$get_vehicle = $dbOb->find($query);
- 		// echo json_encode($get_vehicle);
- 		// die();
-
+ 		
 
 
  	if ($report_type == "load") {

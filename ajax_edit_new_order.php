@@ -36,41 +36,41 @@ if (isset($_POST['products_id_no_get_info'])) {
 
 if (isset($_POST['submit'])) {
 
-	$employee_id       = $_POST['employee_id'];
-	$employee_name     = $_POST['employee_name'];
-	$area_employee     = $_POST['area_employee'];
+	$employee_id       = validation($_POST['employee_id']);
+	$employee_name     = validation($_POST['employee_name']);
+	$area_employee     = validation($_POST['area_employee']);
 	$order_date     = $_POST['date'];
 
 	// $employee_company  = $_POST['employee_company'];
 
-	$cust_id  = $_POST['cust_id'];
-	$customer_name  = $_POST['customer_name'];
-	$shop_name = $_POST['shop_name'];
-	$address   = $_POST['address'];
-	$mobile_no = $_POST['mobile_no'];
+	$cust_id  = validation($_POST['cust_id']);
+	$customer_name  = validation($_POST['customer_name']);
+	$shop_name = validation($_POST['shop_name']);
+	$address   = validation($_POST['address']);
+	$mobile_no = validation($_POST['mobile_no']);
 
 	
-	$products_id_no = $_POST['products_id_no'];
-	$products_name = $_POST['products_name'];
-	$pack_size = $_POST['pack_size'];
-	$unit_tp = $_POST['unit_tp'];
-	$unit_vat = $_POST['unit_vat'];
-	$tp_plus_vat = $_POST['tp_plus_vat'];
-	$qty = $_POST['qty'];
-	$total_tp = $_POST['total_tp'];
-	$total_vat = $_POST['total_vat'];
-	$total_price = $_POST['total_price'];
+	$products_id_no = validation($_POST['products_id_no']);
+	$products_name = validation($_POST['products_name']);
+	$pack_size = validation($_POST['pack_size']);
+	$unit_tp = validation($_POST['unit_tp']);
+	$unit_vat = validation($_POST['unit_vat']);
+	$tp_plus_vat = validation($_POST['tp_plus_vat']);
+	$qty = validation($_POST['qty']);
+	$total_tp = validation($_POST['total_tp']);
+	$total_vat = validation($_POST['total_vat']);
+	$total_price = validation($_POST['total_price']);
 
-	$net_total         = $_POST['net_total'];
-	$net_total_tp         = $_POST['net_total_tp'];
-	$net_total_vat         = $_POST['net_total_vat'];
-	$discount_on_tp         = $_POST['discount'];
-	$discount_amount  = $_POST['discount_amount'];
-	$payable_without_extra_discount      = $_POST['payable_amt'];
-	$extra_discount      = $_POST['extra_discount'];
-	$payable_amt      = $_POST['net_payable_amt'];
+	$net_total         = validation($_POST['net_total']);
+	$net_total_tp         = validation($_POST['net_total_tp']);
+	$net_total_vat         = validation($_POST['net_total_vat']);
+	$discount_on_tp         = validation($_POST['discount']);
+	$discount_amount  = validation($_POST['discount_amount']);
+	$payable_without_extra_discount      = validation($_POST['payable_amt']);
+	$extra_discount      = validation($_POST['extra_discount']);
+	$payable_amt      = validation($_POST['net_payable_amt']);
 
-	$edit_id 		 = $_POST['edit_id'];
+	$edit_id 		 = validation($_POST['edit_id']);
 
 	$query = "UPDATE  new_order_details
 	SET 
@@ -136,8 +136,6 @@ if (isset($_POST['submit'])) {
 		echo json_encode(['message'=>$message,'type'=>$type]);
 
 	}
-
-
 
 	      } // end of  if (isset($_POST['submit']))
 

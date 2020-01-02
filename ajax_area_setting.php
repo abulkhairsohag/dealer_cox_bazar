@@ -43,7 +43,7 @@ if (isset($_POST['submit'])) {
 		$confirmation_edit = true;
 		if ($get_area) {
 			while ($row = $get_area->fetch_assoc()) {
-				if ($row['area_name']==$area_name) {
+				if (validation($row['area_name'])==$area_name) {
 					$confirmation_edit = false;
 					break;
 				}

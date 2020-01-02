@@ -172,7 +172,7 @@ if (isset($_POST['customer_id'])) {
 
 
 if (isset($_POST['area_name'])) {
-	$area_name = $_POST['area_name'];
+	$area_name = validation($_POST['area_name']);
 	$query = "SELECT * FROM client WHERE area_name = '$area_name' order by organization_name asc";
 	$get_cust = $dbOb->select($query);
 	if ($get_cust) {
@@ -244,8 +244,8 @@ if (isset($_POST['zone_serial_no'])) {
 	if ($zone) {
 		$zone_name = $zone->fetch_assoc()['zone_name'];
 	}
-	Session::set("zone_serial_no",$zone_serial_no);
-	Session::set("zone_name",$zone_name);
+	// Session::set("zone_name",$zone_name);
+	// Session::set("zone_serial_no",$zone_serial_no);
 	
 	$query = "SELECT * from area_zone WHERE zone_serial_no = '$zone_serial_no'";
 	$get_all_area = $dbOb->select($query);

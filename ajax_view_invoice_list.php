@@ -81,7 +81,7 @@ if (isset($_POST['serial_no_delete'])) {
 
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
-   $query = "SELECT * FROM invoice_details ORDER BY serial_no DESC";
+    $query = "SELECT * FROM invoice_details ORDER BY serial_no DESC";
               $get_invoice = $dbOb->select($query);
               if ($get_invoice) {
                 $i=0;
@@ -96,6 +96,7 @@ if (isset($_POST["sohag"])) {
                       echo '<span class="badge bg-orange">Expense</span>';
                     } ?></td>
                     
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['name']; ?></td>
                     <td><?php echo $row['designation']; ?></td>
                     <td><?php echo $row['phone_no']; ?></td>

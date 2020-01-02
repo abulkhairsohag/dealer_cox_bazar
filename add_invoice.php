@@ -35,6 +35,59 @@ if (permission_check('view_invoice_list')) {
     <!-- form starts form here -->
           <form class="form-horizontal form-bordered" data-parsley-validate id="add_data_form" action="" method="post">
 
+
+
+                
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="inputDefault">Zone </label>
+               <div class="col-md-6">
+            <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+           
+              <?php
+
+              if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("zone_name"); ?></option>
+                  <?php
+                }
+              }else{
+        $query = "SELECT * FROM zone ORDER BY zone_name";
+        $get_zone = $dbOb->select($query);
+        if ($get_zone) {
+          ?>
+           <option value="">Please Select One</option>
+          <?php
+                while ($row = $get_zone->fetch_assoc()) {
+
+                ?>
+                <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
+                <?php
+              }
+            }else{
+              ?>
+                <option value="">Please Add Zone First..</option>
+              <?php
+
+            }
+             }
+
+            ?>
+
+            </select>
+            
+              </div>
+            </div>
+
+
+
+
+
             <div class="form-group">
               <label class="col-md-3 control-label" for="inputDefault">Select Invoice Type <span style="color:red">*</span></label>
               <div class="col-md-6">
@@ -161,6 +214,20 @@ if (permission_check('view_invoice_list')) {
     });
 
 
+   $(document).on('change','#zone_serial_no',function(){
+     var zone_serial_no = $(this).val();
+     $.ajax({
+        url:'ajax_new_order.php',
+        data:{zone_serial_no:zone_serial_no},
+        type:'POST',
+        dataType:'json',
+        success:function(data){
+          $("#area_employee").html(data.area_options);
+          $("#zone_name").val(zone_name);
+          // console.log(data.area_options);
+        }
+      });
+  });
     // now we are going to  insert data
       $(document).on('submit','#add_data_form',function(e){
         e.preventDefault();

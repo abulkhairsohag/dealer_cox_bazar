@@ -19,22 +19,20 @@ $dbOb = new Database();
         $get_order = $dbOb->select($query);
 
         if ($get_order) {
-            $due = $get_order->fetch_assoc()['due'];
+            $order = $get_order->fetch_assoc();
+           
         }
-        die(json_encode($due));
+        die(json_encode($order));
     }
 
     if (isset($_POST['submit'])) {
-        $deliver_order_serial_no = $_POST['deliver_order_serial_no'];
-        $current_due = $_POST['current_due'];
-        $pay_amt = $_POST['pay_amt'];
-        $employee_id = $_POST['employee_id'];
-        $pay_date = $_POST['pay_date'];
-        // $message=$deliver_order_serial_no;
-        // die(json_encode(['message'=>$message]));
-
-        // die($deliver_order_serial_no);
-
+        $deliver_order_serial_no = validation($_POST['deliver_order_serial_no']);
+        $current_due = validation($_POST['current_due']);
+        $pay_amt = validation($_POST['pay_amt']);
+        $employee_id = validation($_POST['employee_id']);
+        $pay_date = validation($_POST['pay_date']);
+        $zone_serial_no = validation($_POST['zone_serial_no']);
+        
 
         $query = "SELECT * FROM order_delivery WHERE serial_no = '$deliver_order_serial_no'";
         $get_order_info = $dbOb->select($query);
@@ -45,9 +43,9 @@ $dbOb = new Database();
         $new_pay = $order_info['pay']*1 + $pay_amt*1;
         
         $query = "INSERT INTO delivered_order_payment_history 
-                  (deliver_order_serial_no,delivery_emp_id,pay_amt,date) 
+                  (deliver_order_serial_no,delivery_emp_id,pay_amt,date,zone_serial_no) 
                   VALUES
-                  ('$deliver_order_serial_no','$employee_id','$pay_amt','$pay_date')";
+                  ('$deliver_order_serial_no','$employee_id','$pay_amt','$pay_date','$zone_serial_no')";
         $insert_expense = $dbOb->insert($query);
 
         if ($insert_expense) {

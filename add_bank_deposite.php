@@ -36,9 +36,9 @@ if(!permission_check('add_bank_deposite')){
 
               <tr>
                 <th style="text-align: center;">Sl No.</th>
+                <th style="text-align: center;">Zone Name</th>
+                <th style="text-align: center;">Account No</th>
                 <th style="text-align: center;">Bank Name</th>
-                <th style="text-align: center;">Bank Account No</th>
-                <th style="text-align: center;">Account Holder Name</th>
                 <th style="text-align: center;">Branch Name</th>
                 <th style="text-align: center;">Amount</th>
                 <th style="text-align: center;">Deposite Date</th>
@@ -61,9 +61,9 @@ if(!permission_check('add_bank_deposite')){
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
-                    <td><?php echo $row['bank_name']; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['bank_account_no']; ?></td>
-                    <td><?php echo $row['account_holder_name']; ?></td>
+                    <td><?php echo $row['bank_name']; ?></td>
                     <td><?php echo $row['branch_name']; ?></td>
                     <td><?php echo $row['amount']; ?></td>
                     <td><?php echo $row['deposite_date']; ?></td>
@@ -121,34 +121,31 @@ if(!permission_check('add_bank_deposite')){
                     <form id="form_edit_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
                       
 
-                      <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Bank Name <span class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" required="" id="bank_name" name="bank_name" class="form-control col-md-7 col-xs-12" >
-                        </div>
-                      </div>
+                     
 
                       <div class="form-group">
                         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Bank Account Number  <span class="required">*</span></label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" required="" id="bank_account_no" name="bank_account_no" class="form-control col-md-7 col-xs-12" >
+                          <select id="bank_account_no" name="bank_account_no" class="form-control col-md-7 col-xs-12">
+                            <option value="">Please Select One..</option>
+                            <?php
+                              $query = "SELECT * FROM account";
+                              $get_account = $dbOb->select($query);
+                              if ($get_account) {
+                                while ($row = $get_account->fetch_assoc()) {
+                                  ?>
+                                      <option value='<?php echo $row["bank_account_no"]?>'><?php echo $row["bank_account_no"].', '.$row['bank_name'].', '.$row['branch_name']?></option>
+                                  <?php
+                                }
+                              }
+                            ?>
+                          </select>
                         </div>
                       </div>
 
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Account Holder Name<span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text"  required=""id="account_holder_name" name="account_holder_name"  class="form-control col-md-7 col-xs-12">
-                        </div>
-                      </div>
+                
 
-                      <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Branch Name  <span class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" required="" id="branch_name" name="branch_name" class="form-control col-md-7 col-xs-12" >
-                        </div>
-                      </div>
+                   
 
                       <div class="form-group">
                         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Amount <span class="required">*</span></label>
@@ -172,6 +169,55 @@ if(!permission_check('add_bank_deposite')){
                           <input  type="text" id="description" name="description" class="form-control col-md-7 col-xs-12" >
                         </div>
                       </div>
+
+                
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="inputDefault">Zone </label>
+               <div class="col-md-6">
+            <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+           
+              <?php
+
+              if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("zone_name"); ?></option>
+                  <?php
+                }
+              }else{
+        $query = "SELECT * FROM zone ORDER BY zone_name";
+        $get_zone = $dbOb->select($query);
+        if ($get_zone) {
+          ?>
+           <option value="">Please Select One</option>
+          <?php
+                while ($row = $get_zone->fetch_assoc()) {
+
+                ?>
+                <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
+                <?php
+              }
+            }else{
+              ?>
+                <option value="">Please Add Zone First..</option>
+              <?php
+
+            }
+             }
+
+            ?>
+
+            </select>
+            
+              </div>
+            </div>
+
+
 
 
                       <div style="display: none;">
@@ -224,7 +270,7 @@ if(!permission_check('add_bank_deposite')){
           $("#bank_name").val(data.bank_name);
           $("#bank_account_no").val(data.bank_account_no);
           $("#account_holder_name").val(data.account_holder_name);
-          $("#branch_name").val(data.branch_name);
+          $("#zone_serial_no").val(data.zone_serial_no);
           $("#amount").val(data.amount);
           $("#deposite_date").val(data.deposite_date);
           $("#description").val(data.description);
@@ -311,6 +357,21 @@ if(!permission_check('add_bank_deposite')){
       });
 
   }); // end of delete 
+
+  //  $(document).on('change','#zone_serial_no',function(){
+  //    var zone_serial_no = $(this).val();
+  //    $.ajax({
+  //       url:'ajax_new_order.php',
+  //       data:{zone_serial_no:zone_serial_no},
+  //       type:'POST',
+  //       dataType:'json',
+  //       success:function(data){
+  //         $("#area_employee").html(data.area_options);
+  //         $("#zone_name").val(zone_name);
+  //         // console.log(data.area_options);
+  //       }
+  //     });
+  // });
 
 
   }); // end of document ready function 

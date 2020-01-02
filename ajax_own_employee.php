@@ -140,7 +140,6 @@ if (isset($_POST['serial_no_delete'])) {
 
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
-              
  
               $query = "SELECT * FROM own_shop_employee ORDER BY serial_no DESC";
               $get_shop_employee = $dbOb->select($query);

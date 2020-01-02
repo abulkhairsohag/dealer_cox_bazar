@@ -32,11 +32,15 @@ $dbOb = new Database();
 
 
     $edit_id = validation($_POST['edit_id']);
-    
-    // $payment_date = date("d-m-Y");
 
 
-
+    $zone_serial_no = validation($_POST['zone_serial_no']);
+    $query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+    $get_zone = $dbOb->select($query);
+    $zone_name = '';
+    if ($get_zone) {
+      $zone_name = validation($get_zone->fetch_assoc()['zone_name']);
+    }
     
     $query = "DELETE FROM invoice_expense WHERE invoice_serial_no = '$edit_id'";
     $delete_exp = $dbOb->delete($query); 
@@ -50,7 +54,9 @@ $dbOb = new Database();
                 phone_no = '$phone_no', 
                 total_amount = '$total_amount', 
                 pay = '$pay',
-                invoice_date = '$invoice_date'
+                invoice_date = '$invoice_date',
+                zone_serial_no = '$zone_serial_no',
+                zone_name      = '$zone_name'
                 WHERE 
                 serial_no = '$edit_id'";
 

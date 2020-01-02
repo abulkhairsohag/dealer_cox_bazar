@@ -21,14 +21,12 @@ $dbOb = new Database();
 if (isset($_POST['submit'])) {
 
 	
-
-
 	$ware_house_serial_no= validation($_POST['ware_house_serial_no']);
 	$ware_house_name= '';
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$get_ware_house  = $dbOb->select($query);
 	if ($get_ware_house) {
-		$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
+		$ware_house_name = validation($get_ware_house->fetch_assoc()['ware_house_name']);
 	}
 
 

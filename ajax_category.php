@@ -36,7 +36,7 @@ if (isset($_POST['submit'])) {
 		$confirmation_edit = true;
 		if ($get_category_info) {
 			while ($row = $get_category_info->fetch_assoc()) {
-				if ($row['category_name']==$category_name) {
+				if (validation($row['category_name'])==$category_name) {
 					$confirmation_edit = false;
 					break;
 				}
@@ -72,7 +72,7 @@ if (isset($_POST['submit'])) {
 	}else{ // inserting data into database
 		$query = "SELECT * FROM category WHERE category_name = '$category_name'";
 		$get_category = $dbOb->find($query);
-		$get_category_name = $get_category['category_name'];
+		$get_category_name = validation($get_category['category_name']);
 
 		$confirmation = true;
 		if ($get_category_name) {
@@ -142,7 +142,7 @@ if (isset($_POST['sohag'])) {
 
 // deleting data from the table using one delete id
 if (isset($_POST['delete_id'])) {
-	$delete_id = $_POST['delete_id'];
+	$delete_id = validation($_POST['delete_id']);
 	$query = "DELETE FROM category WHERE serial_no = '$delete_id'";
 	$delete = $dbOb->delete($query);
 	if ($delete) {

@@ -18,10 +18,10 @@ if (isset($_POST['from_date'])) {
 
 	$from_date =  strtotime($_POST['from_date']);
 	$to_date =  strtotime($_POST['to_date']);
-	$report_type = $_POST['report_type'];
-	$customer_id = $_POST['customer_id'];
-	$employee_id = $_POST['employee_id'];
-	$paid_due = $_POST['paid_due'];
+	$report_type = validation($_POST['report_type']);
+	$customer_id = validation($_POST['customer_id']);
+	$employee_id = validation($_POST['employee_id']);
+	$paid_due = validation($_POST['paid_due']);
 
 
 			

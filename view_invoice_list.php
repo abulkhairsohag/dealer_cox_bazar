@@ -38,6 +38,7 @@ if(!permission_check('view_invoice_list')){
               <tr>
                 <th style="text-align: center;">Sl No.</th>
                 <th style="text-align: center;">Type</th>
+                <th style="text-align: center;">Zone</th>
                 <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Designation</th>
                 <th style="text-align: center;">Phone</th>
@@ -67,6 +68,7 @@ if(!permission_check('view_invoice_list')){
                       echo '<span class="badge bg-orange">Expense</span>';
                     } ?></td>
                     
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['name']; ?></td>
                     <td><?php echo $row['designation']; ?></td>
                     <td><?php echo $row['phone_no']; ?></td>

@@ -16,9 +16,9 @@ $dbOb = new Database();
 
 if (isset($_POST['report_type'])) {
 	
- 	$report_type = $_POST['report_type'];
-    $customer_id = $_POST['customer_id'];
-    $area = $_POST['area'];
+ 	$report_type = validation($_POST['report_type']);
+    $customer_id = validation($_POST['customer_id']);
+    $area = validation($_POST['area']);
 
     $query = "SELECT * FROM client WHERE cust_id = '$customer_id'";
     $get_cust_info = $dbOb->select($query);

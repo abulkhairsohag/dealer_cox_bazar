@@ -82,9 +82,9 @@ if (isset($_POST['attendance_date'])) {
 
 if (isset($_POST['employee_id'])) {
 
-	$id = $_POST['employee_id'];
-	$attendance = $_POST['attendance'];
-	$attendance_date = $_POST['date'];
+	$id = validation($_POST['employee_id']);
+	$attendance = validation($_POST['attendance']);
+	$attendance_date = validation($_POST['date']);
 	$query = "UPDATE employee_attendance SET attendance = '$attendance' WHERE employee_id_no = '$id' AND attendance_date = '$attendance_date'";
 	$update_attendance = $dbOb->update($query);
 	if ($update_attendance) {

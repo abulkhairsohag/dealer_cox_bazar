@@ -17,8 +17,8 @@ $dbOb = new Database();
 
 if (isset($_POST['cancel_order_tbl_serial_no'])) {
 
-	$order_id = $_POST['cancel_order_tbl_serial_no'];
-	$deliver_id = $_POST['cancel_delivery_tbl_serial_no'];
+	$order_id = validation($_POST['cancel_order_tbl_serial_no']);
+	$deliver_id = validation($_POST['cancel_delivery_tbl_serial_no']);
 
 	$query = "DELETE FROM order_delivery WHERE serial_no = '$deliver_id'";
 	$delete_deliv = $dbOb->delete($query);

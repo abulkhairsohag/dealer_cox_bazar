@@ -36,6 +36,14 @@ if (isset($_POST['submit'])) {
           $date = date("d-m-Y");
           $edit_id = validation($_POST['edit_id']);
 
+          $zone_serial_no = validation($_POST['zone_serial_no']);
+          $query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+          $get_zone = $dbOb->select($query);
+          $zone_name = '';
+          if ($get_zone) {
+            $zone_name = validation($get_zone->fetch_assoc()['zone_name']);
+          }
+
 	if ($edit_id) {
 		$query = "UPDATE employee_commission 
 				  SET 
@@ -47,7 +55,9 @@ if (isset($_POST['submit'])) {
           sell_target = '$sell_target',
 					total_sell_amount = '$total_sell_amount',
           comission_persent   ='$comission_persent',
-					date = '$date'
+					date = '$date',
+          zone_serial_no = '$zone_serial_no',
+          zone_name      = '$zone_name'
 				  WHERE
 					serial_no = '$edit_id' ";
 
@@ -64,9 +74,9 @@ if (isset($_POST['submit'])) {
 		}
 	}else{
 		$query = "INSERT INTO employee_commission 
-					(id_no,name,designation,company,month,sell_target,total_sell_amount,comission_persent,date)
+					(id_no,name,designation,company,month,sell_target,total_sell_amount,comission_persent,date,zone_serial_no,zone_name)
 				  VALUES 
-				  	('$id_no','$name','$designation','$company','$month','$sell_target','$total_sell_amount','$comission_persent','$date')";
+				  	('$id_no','$name','$designation','$company','$month','$sell_target','$total_sell_amount','$comission_persent','$date','$zone_serial_no','$zone_name')";
 
 		$insert = $dbOb->insert($query);
 		if ($insert) {
@@ -101,7 +111,7 @@ if (isset($_POST['serial_no_delete'])) {
 
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
-              $query = "SELECT * FROM employee_commission ORDER BY serial_no DESC";
+             $query = "SELECT * FROM employee_commission ORDER BY serial_no DESC";
               $get_employee_commission = $dbOb->select($query);
               if ($get_employee_commission) {
                 $i=0;
@@ -110,62 +120,62 @@ if (isset($_POST["sohag"])) {
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['id_no']; ?></td>
                     <td><?php echo $row['name']; ?></td>
                     <td><?php echo $row['designation']; ?></td>
                     <!-- <td><?php //echo $row['company']; ?></td> -->
                     <?php 
-                      $month = $row['month'];
-                      $exp = explode('-', $month);
-                      $month = $exp[0];
-                      $year = $exp[1];
-                      $month_name = '';
-                      switch ($month) {
-                        case '01':
-                          $month_name = "January".'-'.$year;
-                          break;
-                        case '02':
-                          $month_name = "February".'-'.$year;
-                          break;
-                        case '03':
-                          $month_name = "March".'-'.$year;
-                          break;
-                        case '04':
-                          $month_name = "April".'-'.$year;
-                          break;
-                        case '05':
-                          $month_name = "May".'-'.$year;
-                          break;
-                        case '06':
-                          $month_name = "June".'-'.$year;
-                          break;
-                        case '07':
-                          $month_name = "July".'-'.$year;
-                          break;
-                        case '08':
-                          $month_name = "August".'-'.$year;
-                          break;
-                        case '09':
-                          $month_name = "September".'-'.$year;
-                          break;
-                        case '10':
-                          $month_name = "October".'-'.$year;
-                          break;
-                        case '11':
-                          $month_name = "November".'-'.$year;
-                          break;
-                        case '12':
-                          $month_name = "December".'-'.$year;
-                          break;
-                        
-                        
-                      }
-                     ?>
+                    $month = $row['month'];
+                    $exp = explode('-', $month);
+                    $month = $exp[0];
+                    $year = $exp[1];
+                    $month_name = '';
+                    switch ($month) {
+                      case '01':
+                      $month_name = "January".'-'.$year;
+                      break;
+                      case '02':
+                      $month_name = "February".'-'.$year;
+                      break;
+                      case '03':
+                      $month_name = "March".'-'.$year;
+                      break;
+                      case '04':
+                      $month_name = "April".'-'.$year;
+                      break;
+                      case '05':
+                      $month_name = "May".'-'.$year;
+                      break;
+                      case '06':
+                      $month_name = "June".'-'.$year;
+                      break;
+                      case '07':
+                      $month_name = "July".'-'.$year;
+                      break;
+                      case '08':
+                      $month_name = "August".'-'.$year;
+                      break;
+                      case '09':
+                      $month_name = "September".'-'.$year;
+                      break;
+                      case '10':
+                      $month_name = "October".'-'.$year;
+                      break;
+                      case '11':
+                      $month_name = "November".'-'.$year;
+                      break;
+                      case '12':
+                      $month_name = "December".'-'.$year;
+                      break;
+                      
+                      
+                    }
+                    ?>
                     <td><?php echo $month_name; ?></td>
                     <td><?php echo $row['sell_target']; ?></td>
                     <td><?php echo $row['total_sell_amount']; ?></td>
                     <td><?php echo $row['comission_persent']; ?></td>
-                    <!-- <td><?php //echo $row['comission_persent']; ?></td> -->
                     <?php 
                     
                     if ($row['sell_target'] <= $row['total_sell_amount']) {
@@ -200,7 +210,6 @@ if (isset($_POST["sohag"])) {
                       <?php } ?>    
                     </td>
                   </tr>
-
 
                   <?php
                 }

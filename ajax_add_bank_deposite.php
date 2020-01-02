@@ -23,13 +23,27 @@ if (isset($_POST['serial_no_edit'])) {
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-	  $bank_name = validation($_POST['bank_name']);
-      $bank_account_no = validation($_POST['bank_account_no']);
-      $account_holder_name = validation($_POST['account_holder_name']);
-      $branch_name = validation($_POST['branch_name']);
+	  $bank_account_no = validation($_POST['bank_account_no']);
+	  
+	  $query = "SELECT * FROM account WHERE bank_account_no = '$bank_account_no'";
+	  $get_account_info = $dbOb->select($query);
+	  $bank_name = '';
+	  $branch_name = '';
+	  if ($get_account_info) {
+		  $account = $get_account_info->fetch_assoc();
+		  $bank_name = validation($account['bank_name']);
+		  $branch_name = validation($account['branch_name']);
+	  }
       $amount = validation($_POST['amount']);
       $deposite_date = validation($_POST['deposite_date']);
       $description = validation($_POST['description']);
+	  $zone_serial_no = validation($_POST['zone_serial_no']);
+	  $query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+	  $get_zone = $dbOb->select($query);
+	  $zone_name = '';
+	  if ($get_zone) {
+		  $zone_name = validation($get_zone->fetch_assoc()['zone_name']);
+	  }
       $edit_id = validation($_POST['edit_id']);
 
 	if ($edit_id) {
@@ -37,11 +51,12 @@ if (isset($_POST['submit'])) {
 				  SET 
 					bank_name = '$bank_name',
 					bank_account_no = '$bank_account_no',
-					account_holder_name 	='$account_holder_name',
 					branch_name ='$branch_name',
 					amount = '$amount',
 					deposite_date = '$deposite_date',
-					description 	= '$description'
+					description 	= '$description',
+					zone_serial_no = '$zone_serial_no',
+					zone_name      = '$zone_name'
 					
 				  WHERE
 					serial_no = '$edit_id' ";
@@ -59,9 +74,9 @@ if (isset($_POST['submit'])) {
 		}
 	}else{
 		$query = "INSERT INTO bank_deposite 
-					(bank_name,bank_account_no,account_holder_name,branch_name,amount,deposite_date,description)
+					(bank_name,bank_account_no,branch_name,amount,deposite_date,description,zone_serial_no,zone_name)
 				  VALUES 
-				  	('$bank_name','$bank_account_no','$account_holder_name','$branch_name','$amount','$deposite_date','$description')";
+				  	('$bank_name','$bank_account_no','$branch_name','$amount','$deposite_date','$description','$zone_serial_no','$zone_name')";
 		$insert = $dbOb->insert($query);
 		if ($insert) {
 			$message = "Congratulaitons! Information Is Successfully Saved.";
@@ -88,7 +103,6 @@ if (isset($_POST['serial_no_delete'])) {
 		$message = "Sorry! Information Is Not Deleted.";
 		$type = "warning";
 		echo json_encode(['message'=>$message, 'type'=>$type]);
-
 	}
 }
 
@@ -96,9 +110,7 @@ if (isset($_POST['serial_no_delete'])) {
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
               
-              
-              
-              $query = "SELECT * FROM bank_deposite ORDER BY serial_no DESC";
+                  $query = "SELECT * FROM bank_deposite ORDER BY serial_no DESC";
               $get_bank_deposite = $dbOb->select($query);
               if ($get_bank_deposite) {
                 $i=0;
@@ -107,13 +119,14 @@ if (isset($_POST["sohag"])) {
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
-                    <td><?php echo $row['bank_name']; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['bank_account_no']; ?></td>
-                    <td><?php echo $row['account_holder_name']; ?></td>
+                    <td><?php echo $row['bank_name']; ?></td>
                     <td><?php echo $row['branch_name']; ?></td>
                     <td><?php echo $row['amount']; ?></td>
                     <td><?php echo $row['deposite_date']; ?></td>
                     <td><?php echo $row['description']; ?></td>
+                    
                     <td align="center">
 
                       <?php 

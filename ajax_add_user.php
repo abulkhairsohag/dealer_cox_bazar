@@ -113,8 +113,9 @@ if (isset($_POST['submit'])) {
 
 // inserting role information of the user
 if (isset($_POST['submit_role'])) {
-    $role_serial_no = $_POST['role_name'];
-    $user_serial_no = $_POST['user_serial_no'];
+    $role_serial_no = validation($_POST['role_name']);
+    $user_serial_no = validation($_POST['user_serial_no']);
+    $zone_serial_no = validation($_POST['zone_serial_no']);
 
     $query = "SELECT * FROM role WHERE serial_no = '$role_serial_no'";
     $get_role = $dbOb->find($query);
@@ -123,15 +124,24 @@ if (isset($_POST['submit_role'])) {
     $query = "DELETE FROM user_has_role WHERE user_serial_no = '$user_serial_no' AND user_type = 'user'";
     $delete_role = $dbOb->delete($query);
 
+    $query = "DELETE FROM user_zone_permission WHERE user_serial_no = '$user_serial_no'";
+    $delete_zone_permission = $dbOb->delete($query);
+
+
     $query = "INSERT INTO user_has_role (role_serial_no,user_serial_no,user_type) VALUES ('$role_serial_no','$user_serial_no','user')";
     $insert_user_has_role = $dbOb->insert($query);
     if ($insert_user_has_role) {
-        $query = "UPDATE login
-		SET
-		role = '$role_name'
-		WHERE
-		user_id = '$user_serial_no' AND user_type = 'user'";
-        $update_login = $dbOb->update($query);
+        $query = "INSERT INTO user_zone_permission (user_serial_no,zone_serial_no) values ('$user_serial_no','$zone_serial_no')";
+        $insert_zone_permission =$dbOb->insert($query);
+        if ($insert_zone_permission) {
+             $query = "UPDATE login
+                SET
+                role = '$role_name'
+                WHERE
+                user_id = '$user_serial_no' AND user_type = 'user'";
+                $update_login = $dbOb->update($query);
+                }
+       
     }
     if ($update_login) {
         $message = "Congratulations! Role Is Successfully Saved.";
@@ -147,70 +157,87 @@ if (isset($_POST['submit_role'])) {
 
 // getting data table information
 if (isset($_POST['sohag'])) {
-    $query = "SELECT * FROM user ORDER BY serial_no DESC";
-    $get_user = $dbOb->select($query);
-    if ($get_user) {
-        $i = 0;
-        while ($row = $get_user->fetch_assoc()) {
-            $i++;
-            $user_serial_no = $row['serial_no'];
-            $query = "SELECT * FROM user_has_role WHERE user_serial_no = '$user_serial_no' AND user_type = 'user'";
-            $get_user_role = $dbOb->select($query);
-            if ($get_user_role) {
-                $user_and_role = $get_user_role->fetch_assoc();
-                $role_serial_no = $user_and_role['role_serial_no'];
-                $query = "SELECT * FROM role WHERE serial_no = '$role_serial_no'";
-                $get_role_info = $dbOb->select($query);
-                if ($get_role_info) {
-                    $role_name = $get_role_info->fetch_assoc()['role_name'];
-                    $role_badge_color = 'bg-blue';
-                } else {
-                    $role_name = 'Not Assigned';
-                    $role_badge_color = 'bg-red';
+     $query = "SELECT * FROM user ORDER BY serial_no DESC";
+              $get_user = $dbOb->select($query);
+              if ($get_user) {
+                $i = 0;
+                while ($row = $get_user->fetch_assoc()) {
+                  $i++;
+                  $user_serial_no = $row['serial_no'];
+                    $query = "SELECT * FROM user_has_role WHERE user_serial_no = '$user_serial_no' AND user_type = 'user'";
+                    $get_user_role = $dbOb->select($query);
+                    if ($get_user_role) {
+                      $user_and_role = $get_user_role->fetch_assoc();
+                      $role_serial_no = $user_and_role['role_serial_no'];
+                      $query = "SELECT * FROM role WHERE serial_no = '$role_serial_no'";
+                      $get_role_info = $dbOb->select($query);
+                      if ($get_role_info) {
+                        $role_name = $get_role_info->fetch_assoc()['role_name'];
+                        $role_badge_color = 'bg-blue';
+                      }else{
+                        $role_name = 'Not Assigned';
+                        $role_badge_color = 'bg-red';
+                      }
+                    }else{
+                      $role_name = 'Not Assigned';
+                      $role_badge_color = 'bg-red';
+                    }
+                    // getting zone info 
+                    $query = "SELECT * FROM user_zone_permission WHERE user_serial_no = '$user_serial_no' ";
+                    $get_user_zone = $dbOb->select($query);
+                    if ($get_user_zone) {
+                      $user_and_zone = $get_user_zone->fetch_assoc();
+                      $zone_serial_no = $user_and_zone['zone_serial_no'];
+                      $query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+                      $zone = $dbOb->select($query);
+                      if ($zone) {
+                        $zone_name = $zone->fetch_assoc()['zone_name'];
+                        $zone_badge_color = 'bg-blue';
+                      }else{
+                        $zone_name = 'Not Assigned';
+                        $zone_badge_color = 'bg-red';
+                      }
+                    }else{
+                      $zone_name = 'Not Assigned';
+                      $zone_badge_color = 'bg-red';
+                    }
+                  ?>
+                  <tr class="tbl_row"<?php echo $row['serial_no']; ?>>
+                    <td><?php echo $i; ?></td>
+                    <td><?php echo $row['name']; ?></td>
+                    <td><?php echo $row['designation'] ?></td>
+                    <td><?php echo $row['mobile_no'] ?></td>
+                    <td><?php echo $row['address'] ?></td>
+                    <td><?php echo $row['email'] ?></td>
+                    <td><?php echo $row['user_name'] ?></td>
+                    <td><?php echo $row['password'] ?></td>
+                    <td><span class="badge <?php echo $role_badge_color?>"><?php echo $role_name; ?></span></td>
+                    <td><span class="badge <?php echo $zone_badge_color?>"><?php echo $zone_name; ?></span></td>
+								
+                    <td align="center">
+
+                      <?php 
+                      if (permission_check('user_edit_button')) {
+                        ?>
+
+                        <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a>
+                      <?php } ?>
+
+                      <?php 
+                      if (permission_check('user_delete_button')) {
+                        ?> 
+
+                        <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
+                      <?php } ?>
+
+                         
+
+                        <a  class="badge bg-green  assign_role_button" id="<?php echo $row['serial_no'] ?>" data-toggle="modal" data-target="#assign_role_modal" style="margin:2px">Role</a>  
+                    </td>
+                  </tr>
+                  <?php
                 }
-            } else {
-                $role_name = 'Not Assigned';
-                $role_badge_color = 'bg-red';
-            }
-            ?>
-<tr class="tbl_row" <?php echo $row['serial_no']; ?>>
-    <td><?php echo $i; ?></td>
-    <td><?php echo $row['name']; ?></td>
-    <td><?php echo $row['designation'] ?></td>
-    <td><?php echo $row['mobile_no'] ?></td>
-    <td><?php echo $row['address'] ?></td>
-    <td><?php echo $row['email'] ?></td>
-    <td><?php echo $row['user_name'] ?></td>
-    <td><?php echo $row['password'] ?></td>
-    <td><span class="badge <?php echo $role_badge_color ?>"><?php echo $role_name; ?></span></td>
-
-    <td align="center">
-
-        <?php
-if (permission_check('user_edit_button')) {
-                ?>
-
-        <a class="badge bg-blue edit_data" id="<?php echo ($row['serial_no']) ?>" data-toggle="modal"
-            data-target="#add_update_modal" style="margin:2px">Edit</a>
-        <?php }?>
-
-        <?php
-if (permission_check('user_delete_button')) {
-                ?>
-
-        <a class="badge  bg-red delete_data" id="<?php echo ($row['serial_no']) ?>" style="margin:2px"> Delete</a>
-        <?php }?>
-
-
-
-        <a class="badge bg-green  assign_role_button" id="<?php echo $row['serial_no'] ?>" data-toggle="modal"
-            data-target="#assign_role_modal" style="margin:2px">Role</a>
-    </td>
-</tr>
-<?php
-}
-        exit();
-    }
+              }
 }
 
 // here we are going to delete data from the database

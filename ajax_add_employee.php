@@ -17,39 +17,39 @@ $dbOb = new Database();
 if (isset($_POST['submit'])) {
 
 	//Office Information
-	$id_no = $_POST['id_no'];
-	$area_name = $_POST['area_name'];
-	$designation = $_POST['designation'];
-	$joining_date = $_POST['joining_date'];
-	$basic_salary = $_POST['basic_salary'];
-	$house_rent = $_POST['house_rent'];
+	$id_no = validation($_POST['id_no']);
+	$area_name = validation($_POST['area_name']);
+	$designation = validation($_POST['designation']);
+	$joining_date = validation($_POST['joining_date']);
+	$basic_salary = validation($_POST['basic_salary']);
+	$house_rent = validation($_POST['house_rent']);
 	if ($house_rent == '') {
 		$house_rent = 0;
 	}
-	$medical_allowance = $_POST['medical_allowance'];
+	$medical_allowance = validation($_POST['medical_allowance']);
 	if ($medical_allowance == '') {
 		$medical_allowance = 0;
 	}
-	$transport_allowance = $_POST['transport_allowance'];
+	$transport_allowance = validation($_POST['transport_allowance']);
 	if ($transport_allowance == '') {
 		$transport_allowance = 0;
 	}
-	$insurance = $_POST['insurance'];
+	$insurance = validation($_POST['insurance']);
 	if ($insurance == '') {
 		$insurance = 0;
 	}
-	$commission = $_POST['commission'];
+	$commission = validation($_POST['commission']);
 	if ($commission == '') {
 		$commission = 0;
 	}
-	$extra_over_time = $_POST['extra_over_time'];
+	$extra_over_time = validation($_POST['extra_over_time']);
 	if ($extra_over_time == '') {
 		$extra_over_time = 0;
 	}
-	$total_salary = $_POST['total_salary'];
+	$total_salary = validation($_POST['total_salary']);
 
-	$user_name = $_POST['user_name'];
-	$password = $_POST['password'];
+	$user_name = validation($_POST['user_name']);
+	$password = validation($_POST['password']);
 
 	if (isset($_POST['create_confirmation'])) {
 		$create_confirmation =  1;
@@ -63,16 +63,16 @@ if (isset($_POST['submit'])) {
 
 
 	//Basic Informaion
-	$name =$_POST['name'];
-	$fathers_name =$_POST['fathers_name'];
-	$mothers_name =$_POST['mothers_name'];
-	$spouses_name =$_POST['spouses_name'];
-	$birth_date = $_POST['birth_date'];
-	$gender = $_POST['gender'];
-	$nid_no =$_POST['nid_no'];
-	$birth_certificate_no =$_POST['birth_certificate_no'];
-	$nationality =$_POST['nationality'];
-	$religion =$_POST['religion'];
+	$name =validation($_POST['name']);
+	$fathers_name =validation($_POST['fathers_name']);
+	$mothers_name =validation($_POST['mothers_name']);
+	$spouses_name =validation($_POST['spouses_name']);
+	$birth_date = validation($_POST['birth_date']);
+	$gender = validation($_POST['gender']);
+	$nid_no =validation($_POST['nid_no']);
+	$birth_certificate_no =validation($_POST['birth_certificate_no']);
+	$nationality =validation($_POST['nationality']);
+	$religion =validation($_POST['religion']);
 
 	$photo = $_FILES['photo'];
 	$permitted = array('jpg', 'png', 'gif', 'jpeg');
@@ -87,24 +87,24 @@ if (isset($_POST['submit'])) {
 	$uploaded_image = 'images/' . $unique_image;
 
 	//Contact Information
-	$present_address =$_POST['present_address'];
-	$permanent_address =$_POST['permanent_address'];
-	$mobile_no =$_POST['mobile_no'];
-	$phone_no =$_POST['phone_no'];
-	$email =$_POST['email'];
+	$present_address =validation($_POST['present_address']);
+	$permanent_address =validation($_POST['permanent_address']);
+	$mobile_no =validation($_POST['mobile_no']);
+	$phone_no =validation($_POST['phone_no']);
+	$email =validation($_POST['email']);
 
 	// education details
-	$exam_name =$_POST['exam_name'];
-	$institute =$_POST['institute'];
-	$board_university =$_POST['board_university'];
-	$group_name =$_POST['group_name'];
-	$result =$_POST['result'];
-	$passing_year =$_POST['passing_year'];
+	$exam_name =validation($_POST['exam_name']);
+	$institute =validation($_POST['institute']);
+	$board_university =validation($_POST['board_university']);
+	$group_name =validation($_POST['group_name']);
+	$result =validation($_POST['result']);
+	$passing_year =validation($_POST['passing_year']);
 
 	//document Information
-	$document_name = $_POST['document_name'];
-	$document_type = $_POST['document_type'];
-	$description = $_POST['description'];
+	$document_name = validation($_POST['document_name']);
+	$document_type = validation($_POST['document_type']);
+	$description = validation($_POST['description']);
 	$upload_document = $_FILES['upload_document'];
 
 	if ($upload_document) {
@@ -123,19 +123,19 @@ if (isset($_POST['submit'])) {
 	}
 
 	// Account Information 
-	$account_name =$_POST['account_name'];
-	$bank_name =$_POST['bank_name'];
-	$branch_name =$_POST['branch_name'];
-	$account_no =$_POST['account_no'];
+	$account_name =validation($_POST['account_name']);
+	$bank_name =validation($_POST['bank_name']);
+	$branch_name =validation($_POST['branch_name']);
+	$account_no =validation($_POST['account_no']);
 
 	// Helth Information
-	$height =$_POST['height'];
-	$wieght =$_POST['wieght'];
-	$blood_group =$_POST['blood_group'];
-	$body_identify_mark =$_POST['body_identify_mark'];
+	$height =validation($_POST['height']);
+	$wieght =validation($_POST['wieght']);
+	$blood_group =validation($_POST['blood_group']);
+	$body_identify_mark =validation($_POST['body_identify_mark']);
 
 	// active status 
-	$active_status = $_POST['active_status'];
+	$active_status = validation($_POST['active_status']);
 
 	$last_insert_id = '';
 

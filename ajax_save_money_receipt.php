@@ -15,18 +15,18 @@ $dbOb = new Database();
 
 if (isset($_POST['from_date'])) {
     
-    $receipt_no = $_POST['receipt_no'];
+    $receipt_no = validation($_POST['receipt_no']);
     $from_date = strtotime($_POST['from_date']);
  	$from_date_show = $_POST['from_date'];
  	$to_date = strtotime($_POST['to_date']);
     $to_date_show = $_POST['to_date'];
      
-    $employee_id  = $_POST['employee_id'];
-    $emp_name  = $_POST['employee_name'];
-    $printing_date  = $_POST['printing_date'];
-    $printing_time  = $_POST['printing_time'];
-    $in_word  = $_POST['in_word'];
-    $total_pay  = $_POST['total_pay'];
+    $employee_id  = validation($_POST['employee_id']);
+    $emp_name  = validation($_POST['employee_name']);
+    $printing_date  = validation($_POST['printing_date']);
+    $printing_time  = validation($_POST['printing_time']);
+    $in_word  = validation($_POST['in_word']);
+    $total_pay  = validation($_POST['total_pay']);
 
     $order_no = '';
     $order_date = '';

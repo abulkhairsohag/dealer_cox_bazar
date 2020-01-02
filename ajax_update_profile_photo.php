@@ -18,8 +18,8 @@ $dbOb = new Database();
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-	$user_id = $_POST['user_id'];
-	$user_type = $_POST['user_type'];
+	$user_id = validation($_POST['user_id']);
+	$user_type = validation($_POST['user_type']);
 
     $profile_photo = $_FILES['profile_photo'];
 
@@ -62,31 +62,6 @@ if (isset($_POST['submit'])) {
 	     }
 
 }
-	     // elseif ($user_type == "user") {
-//   $query = "SELECT * FROM user WHERE serial_no = '$user_id' ";
-//   $get_user_info =  $dbOb->find($query);
-//   $photo = $get_user_info['photo'];
-//      if ($photo) {
-//         	unlink($photo);
-// 	    }
-// 	   if ( move_uploaded_file($file_temp, $uploaded_image)) {
-// 		   	$query_update = "UPDATE employee_main_info SET photo = '$uploaded_image' WHERE serial_no = '$user_id' ";
-// 		    $update_photo = $dbOb->update($query_update);
-// 	   }
-	    
-// 	    if ($update_photo) {
-// 	    	$message = "Profile Photo Updated Successfully";
-// 	    	$type = "success";
-// 	    	echo json_encode(["message"=>$message,"type"=>$type]);
-// 	    }else{
-// 	    	$message = "Profile Photo Update Failed";
-// 	    	$type = "warning";
-// 	    	echo json_encode(["message"=>$message,"type"=>$type,'uploaded_image'=>$uploaded_image]);
-// 	     }
-
-// }
-
-
 
 }
 

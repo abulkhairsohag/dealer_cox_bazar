@@ -15,7 +15,7 @@ include_once('class/Database.php');
 $dbOb = new Database();
 
 if (isset($_POST['serial_no'])) {
-	$serial_no = $_POST['serial_no'] ;
+	$serial_no = validation($_POST['serial_no']) ;
          
     $company_profile = '';
     $query = "SELECT * FROM profile";

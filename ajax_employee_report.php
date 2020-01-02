@@ -16,9 +16,9 @@ $dbOb = new Database();
 
 if (isset($_POST['report_type'])) {
 	
- 	$report_type = $_POST['report_type'];
-	$employee_id = $_POST['employee_id'];
-	$deliv_employee_id = $_POST['deliv_employee_id'];
+ 	$report_type = validation($_POST['report_type']);
+	$employee_id = validation($_POST['employee_id']);
+	$deliv_employee_id = validation($_POST['deliv_employee_id']);
 
 	$query = "SELECT * FROM employee_main_info where id_no = '$employee_id'";
 	$get_emp = $dbOb->select($query);

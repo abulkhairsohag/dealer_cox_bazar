@@ -34,50 +34,50 @@ if (isset($_POST['products_id_no_get_info'])) {
 
 if (isset($_POST['submit'])) {
     //delivery employee info
-    $employee_id_delivery = $_POST['employee_id_delivery'];
-    $employee_name_delivery = $_POST['employee_name_delivery'];
+    $employee_id_delivery = validation($_POST['employee_id_delivery']);
+    $employee_name_delivery = validation($_POST['employee_name_delivery']);
     // die($employee_id_delivery);
-    $area_employee_delivery = $_POST['area_employee_delivery'];
-    $company_delivery_employee = $_POST['company_delivery_employee'];
-    $delivery_date = $_POST['delivery_date'];
+    $area_employee_delivery = validation($_POST['area_employee_delivery']);
+    $company_delivery_employee = validation($_POST['company_delivery_employee']);
+    $delivery_date = validation($_POST['delivery_date']);
     $delivery_month = date("m-Y");
 
     // Order employee Info
-    $employee_id = $_POST['employee_id'];
-    $employee_name = $_POST['employee_name'];
-    $area_employee = $_POST['area_employee'];
-    $employee_company = $_POST['employee_company'];
-    $order_date = $_POST['date'];
+    $employee_id = validation($_POST['employee_id']);
+    $employee_name = validation($_POST['employee_name']);
+    $area_employee = validation($_POST['area_employee']);
+    $employee_company = validation($_POST['employee_company']);
+    $order_date = validation($_POST['date']);
 
-    $order_no = $_POST['order_no'];
-    $cust_id = $_POST['cust_id'];
-    $customer_name = $_POST['customer_name'];
-    $shop_name = $_POST['shop_name'];
-    $address = $_POST['address'];
-    $mobile_no = $_POST['mobile_no'];
+    $order_no = validation($_POST['order_no']);
+    $cust_id = validation($_POST['cust_id']);
+    $customer_name = validation($_POST['customer_name']);
+    $shop_name = validation($_POST['shop_name']);
+    $address = validation($_POST['address']);
+    $mobile_no = validation($_POST['mobile_no']);
 
-    $products_id_no = $_POST['products_id_no'];
-    $products_name = $_POST['products_name'];
-    $pack_size = $_POST['pack_size'];
-    $unit_tp = $_POST['unit_tp'];
-    $unit_vat = $_POST['unit_vat'];
-    $tp_plus_vat = $_POST['tp_plus_vat'];
-    $quantity = $_POST['qty'];
-    $total_tp = $_POST['total_tp'];
-    $total_vat = $_POST['total_vat'];
-    $total_price = $_POST['total_price'];
+    $products_id_no = validation($_POST['products_id_no']);
+    $products_name = validation($_POST['products_name']);
+    $pack_size = validation($_POST['pack_size']);
+    $unit_tp = validation($_POST['unit_tp']);
+    $unit_vat = validation($_POST['unit_vat']);
+    $tp_plus_vat = validation($_POST['tp_plus_vat']);
+    $quantity = validation($_POST['qty']);
+    $total_tp = validation($_POST['total_tp']);
+    $total_vat = validation($_POST['total_vat']);
+    $total_price = validation($_POST['total_price']);
 
-    $net_total = $_POST['net_total'];
-    $net_total_tp = $_POST['net_total_tp'];
-    $net_total_vat = $_POST['net_total_vat'];
-    $discount_on_tp = $_POST['discount'];
-    $discount_amount = $_POST['discount_amount'];
-    $payable_without_extra_discount = $_POST['payable_amt'];
-    $extra_discount = $_POST['extra_discount'];
-    $payable_amt = $_POST['net_payable_amt'];
-    $pay = $_POST['pay'];
-    $due = $_POST['due'];
-    $order_tbl_serial_no = $_POST['edit_id'];
+    $net_total = validation($_POST['net_total']);
+    $net_total_tp = validation($_POST['net_total_tp']);
+    $net_total_vat = validation($_POST['net_total_vat']);
+    $discount_on_tp = validation($_POST['discount']);
+    $discount_amount = validation($_POST['discount_amount']);
+    $payable_without_extra_discount = validation($_POST['payable_amt']);
+    $extra_discount = validation($_POST['extra_discount']);
+    $payable_amt = validation($_POST['net_payable_amt']);
+    $pay = validation($_POST['pay']);
+    $due = validation($_POST['due']);
+    $order_tbl_serial_no = validation($_POST['edit_id']);
 
     if (strtotime($delivery_date) < strtotime($order_date)) {
         $message = "Be Careful You Have Provided Delivery Date That Is Smaller Than The Order Date. Order Date: " . $order_date . ' & Delivery Date: ' . $delivery_date;

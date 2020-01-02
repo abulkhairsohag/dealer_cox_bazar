@@ -347,10 +347,6 @@ if ($user_type == "employee") {
                 <li><a href="view_invoice_list.php"><i class="fas fa-eye"></i> View Invoice List</a></li>
               <?php } 
 
-              if (permission_check('receive')) {
-                ?>
-                <li><a href="receive.php"><i class="fas fa-arrow-circle-left"></i> Receive</a></li>
-              <?php } 
               if (permission_check('company_comission')) {
                 ?>
                 <li><a href="company_comission.php"><i class="fas fa-arrow-circle-left"></i> Company Comission</a></li>
@@ -358,11 +354,6 @@ if ($user_type == "employee") {
               if (permission_check('employee_comission')) {
                 ?>
                 <li><a href="employee_comission.php"><i class="fas fa-arrow-circle-left"></i> Employee Comission</a></li>
-              <?php } 
-
-              if (permission_check('expense')) {
-                ?>
-                <li><a href="expense.php"><i class="fas fa-arrow-circle-right"></i> Expense</a></li>
               <?php } 
 
               if (permission_check('employee_payments')) {
@@ -397,6 +388,7 @@ if ($user_type == "employee") {
                 <!-- <li><a href="accounts_report.php"><i class="fas fa-dollar"></i> Accounts Report</a></li> -->
                 <?php } 
                 ?>
+                
                   <li><a href="ware_house_wise_report.php"><i class="fas fa-user"></i> Ware House Wise Report</a></li>
                   <li><a href="area_wise_report.php"><i class="fas fa-user"></i> Area Wise Report</a></li>
               </ul>

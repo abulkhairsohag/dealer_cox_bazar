@@ -27,7 +27,7 @@ if (isset($_POST['serial_no_edit'])) {
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
 
-	$company = strtolower($_POST["company"]);
+	$company = strtolower(validation($_POST["company"]));
 
 
 
@@ -57,13 +57,13 @@ if (isset($_POST['submit'])) {
 
 
 
-	$products_name = $_POST["products_name"];
-	$category = $_POST["category"];
-	$company_price = $_POST["company_price"];
-	$sell_price = $_POST["sell_price"];
-	$mrp_price = $_POST["mrp_price"];
-	$pack_size = $_POST["pack_size"];
-	$quantity = $_POST["quantity"];
+	$products_name = validation($_POST["products_name"]);
+	$category = validation($_POST["category"]);
+	$company_price = validation($_POST["company_price"]);
+	$sell_price = validation($_POST["sell_price"]);
+	$mrp_price = validation($_POST["mrp_price"]);
+	$pack_size = validation($_POST["pack_size"]);
+	$quantity = validation($_POST["quantity"]);
 
 	$product_photo = $_FILES['product_photo'];
 	if ($product_photo) {
@@ -81,23 +81,20 @@ if (isset($_POST['submit'])) {
 		$uploaded_image = "";
 	}
 
-	$description =  $_POST["description"];
+	$description =  validation($_POST["description"]);
 	$stock_date = date("d-m-Y");
-	$ware_house_serial_no = $_POST["ware_house_serial_no"];
+	$ware_house_serial_no = validation($_POST["ware_house_serial_no"]);
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$ware_house_name = $dbOb->find($query)['ware_house_name'];
 
-	$edit_id = $_POST["edit_id"];
+	$edit_id = validation($_POST["edit_id"]);
 
 
 	if ($edit_id) { // updating data
 		$query = "SELECT * FROM products WHERE serial_no = '$edit_id'";
 		$get_product = $dbOb->find($query);
 
-		// $total_quantity = $quantity;
-		// if ($get_product) {
-		// 	$total_quantity = intval($get_product['quantity']) + intval($quantity);
-		// }
+	
 		if (!empty($file_name)) { // while editing if an image is choosen then the following section will work
 			if (!in_array($file_extension, $permitted)) {
 				$message = "Please Upload Image With Extension : ".implode(', ',$permitted);

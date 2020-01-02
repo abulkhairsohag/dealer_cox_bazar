@@ -18,12 +18,12 @@ $dbOb = new Database();
 
 if (isset($_POST['submit'])) {
 
-	$quantity           = $_POST['quantity'];
-	$existing_quantity  = $_POST['existing_quantity'];
-	$products_id_no     = $_POST['products_id_no'];
-	$company_price      = $_POST['company_price'];
-	$stock_date         = $_POST['stock_date'];
-	$serial_no_edit     = $_POST['serial_no_edit'];
+	$quantity           = validation($_POST['quantity']);
+	$existing_quantity  = validation($_POST['existing_quantity']);
+	$products_id_no     = validation($_POST['products_id_no']);
+	$company_price      = validation($_POST['company_price']);
+	$stock_date         = validation($_POST['stock_date']);
+	$serial_no_edit     = validation($_POST['serial_no_edit']);
     
     $query = "SELECT * FROM products WHERE products_id_no = '$products_id_no' ";
     $products_info = $dbOb->select($query);

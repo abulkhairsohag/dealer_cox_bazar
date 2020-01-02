@@ -30,6 +30,56 @@ if(!permission_check('cash_balance')){
       <div class="panel-body">
         <div class="form-group col-md-12">
           <div class="col-md-1"></div>
+          <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Ware house<span
+              class="required" style="color: red">*</span></label>
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
+          
+          <?php
+          if (Session::get("ware_house_serial_login")){
+                if (Session::get("ware_house_serial_login") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                  <?php
+                }
+              }else{
+
+          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+          $get_ware_house = $dbOb->select($query);
+          if ($get_ware_house) {
+            ?>
+                <option value="">Please Select One</option>
+            <?php
+            while ($row = $get_ware_house->fetch_assoc()) {
+
+            ?>
+            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+              echo "selected";
+            } ?>
+            ><?php echo $row['ware_house_name']; ?></option>
+            <?php
+          }
+        }else{
+          ?>
+            <option value="">Please Add Ware House First</option>
+          <?php
+        }
+      }
+
+        ?>
+
+    </select>
+          </div>
+        </div>
+
+
+        <div class="form-group col-md-12">
+          <div class="col-md-1"></div>
           <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">From Date<span
               class="required" style="color: red">*</span></label>
           <div class="col-md-4 col-sm-6 col-xs-12">
@@ -111,7 +161,6 @@ $printing_time = date('h:i:s A');
                   <h5 style="margin:0px ; margin-top: -8px;">Time : <span id="printing_time"></span></span></span></h5>
                 </td>
               </tr>
-
             </tbody>
           </table>
         </div>
@@ -139,42 +188,7 @@ $printing_time = date('h:i:s A');
                 <tr>
                   <td>Delivery  </td>
                   <td id="delivery" class="text-right"> 0.0  </td>
-                  <td>Expense Amount  </td>
-                  <td id="expense" class="text-right"> 0.0  </td>
-                </tr>
-
-                <tr>
-                  <td>Receive  </td>
-                  <td id="receive" class="text-right"> 0.0  </td>
-                  <td>Salary Payment  </td>
-                  <td id="salary_payment" class="text-right"> 0.0  </td>
-                </tr>
-
-                <tr>
-                  <td>Income Invoice  </td>
-                  <td id="sell_invoice" class="text-right"> 0.0  </td>
-                  <td>Bank Deposit  </td>
-                  <td id="bank_deposite" class="text-right"> 0.0  </td>
-                </tr>
-
-                <tr>
-                  <td>Bank Withdraw </td>
-                  <td id="bank_withdraw" class="text-right"> 0.0  </td>
-                  <td>Loan Pay  </td>
-                  <td id="loan_pay" class="text-right"> 0.0  </td>
-                </tr>
-
-                <tr>
-                  <td>Bank Loan </td>
-                  <td id="bank_loan" class="text-right"> 0.0  </td>
-                  <td>Expense Invoice  </td>
-                  <td id="buy_invoice" class="text-right"> 0.0  </td>
-                </tr>
-                
-                <tr>
-                  <td>Company Commission </td>
-                  <td id="company_commission" class="text-right"> 0.0  </td>
-                  <td>Product Buy  </td>
+                   <td>Product Buy  </td>
                   <td id="products_buy" class="text-right"> 0.0  </td>
                 </tr>
 
@@ -184,6 +198,40 @@ $printing_time = date('h:i:s A');
                   <td>Market Returned Product  </td>
                   <td id="market_returned_product" class="text-right"> 0.0  </td>
                 </tr>
+                <tr>
+                   <td>Company Commission </td>
+                  <td id="company_commission" class="text-right"> 0.0  </td>
+                  <td>Salary Payment  </td>
+                  <td id="salary_payment" class="text-right"> 0.0  </td>
+                </tr>
+
+                <tr>
+                  <td>Income Invoice  </td>
+                  <td id="sell_invoice" class="text-right"> 0.0  </td>
+                  <td>Expense Invoice  </td>
+                  <td id="buy_invoice" class="text-right"> 0.0  </td>
+                 
+                </tr>
+
+                <tr>
+                  <td>Bank Withdraw </td>
+                  <td id="bank_withdraw" class="text-right"> 0.0  </td>
+               
+                   <td>Bank Deposit  </td>
+                  <td id="bank_deposite" class="text-right"> 0.0  </td>
+                </tr>
+
+                <tr>
+                  <td>Bank Loan </td>
+                  <td id="bank_loan" class="text-right"> 0.0  </td>
+                  
+                   <td>Loan Pay  </td>
+                  <td id="loan_pay" class="text-right"> 0.0  </td>
+                </tr>
+                
+              
+
+               
 
                 <tr>
                   <td></td>
@@ -222,6 +270,7 @@ $printing_time = date('h:i:s A');
     $(document).on('click', '#view_record', function () {
       var from_date = $("#from_date").val();
       var to_date = $("#to_date").val();
+      var ware_house_serial_no = $("#ware_house_serial_no").val();
 
 
       $.ajax({
@@ -236,7 +285,7 @@ $printing_time = date('h:i:s A');
           // credit info 
           $("#delivery").html(data.delivery);
           $("#own_shop_sell").html(data.own_shop_sell);
-          $("#receive").html(data.receive);
+          // $("#receive").html(data.receive);
           $("#sell_invoice").html(data.cell_invoice);
           // console.log(data.cell_invoice);
           $("#buy_invoice").html(data.buy_invoice);

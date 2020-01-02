@@ -22,12 +22,12 @@ if (isset($_POST['submit'])) {
 
 
 
-	$products_id = $_POST["products_id"];
-	$quantity = $_POST["quantity"];
-	$ware_house_serial_no = $_POST["ware_house_serial_no"];
+	$products_id = validation($_POST["products_id"]);
+	$quantity = validation($_POST["quantity"]);
+	$ware_house_serial_no = validation($_POST["ware_house_serial_no"]);
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$ware_house_name = $dbOb->find($query)['ware_house_name'];
-	$stock_date = $_POST["stock_date"];
+	$stock_date = validation($_POST["stock_date"]);
 
 
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
@@ -64,7 +64,7 @@ if (isset($_POST['submit'])) {
 }
 // the following block of code is for deleting data 
 if (isset($_POST['serial_no_delete'])) {
-	$products_id_no = $_POST['serial_no_delete'];
+	$products_id_no = validation($_POST['serial_no_delete']);
 
 	$query_product_details = "DELETE FROM offered_products WHERE products_id = '$products_id_no'";
 	$query_stock_product = "DELETE FROM offered_products_stock WHERE products_id = '$products_id_no'";
@@ -93,7 +93,7 @@ if (isset($_POST['serial_no_delete'])) {
 
 // in the following section we are going to get data for addin new quantity of product
 if (isset($_POST['get_products_id_no_stock'])) {
-	$products_id_no_stock = $_POST['get_products_id_no_stock'];
+	$products_id_no_stock = validation($_POST['get_products_id_no_stock']);
 	$query = "SELECT * FROM `offered_products` WHERE products_id = '$products_id_no_stock'";
 	$get_products_info = $dbOb->find($query);
 	
@@ -107,12 +107,12 @@ if (isset($_POST['get_products_id_no_stock'])) {
 // In the following section we are going to add new stock
 if (isset($_POST['submit_stock'])) {
 
-	$products_id_stock = $_POST['products_id_stock'];
-	$available_quantity   = $_POST['available_quantity'];
-	$new_quantity 		  = $_POST['new_quantity'];
+	$products_id_stock = validation($_POST['products_id_stock']);
+	$available_quantity   = validation($_POST['available_quantity']);
+	$new_quantity 		  = validation($_POST['new_quantity']);
 	$total_quantity 	  = $available_quantity*1 + $new_quantity*1;
-	$stock_date 	  	  = $_POST['stock_date'];
-	$ware_house_serial_no  = $_POST['ware_house_serial_no'];
+	$stock_date 	  	  = validation($_POST['stock_date']);
+	$ware_house_serial_no  = validation($_POST['ware_house_serial_no']);
 
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$ware_house_name = $dbOb->find($query)['ware_house_name'];

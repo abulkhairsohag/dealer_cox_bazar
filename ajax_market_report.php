@@ -20,9 +20,9 @@ if (isset($_POST['report_type'])) {
  	$from_date_show = $_POST['from_date'];
  	$to_date = strtotime($_POST['to_date']);
  	$to_date_show = $_POST['to_date'];
- 	$report_type = $_POST['report_type'];
+ 	$report_type = validation($_POST['report_type']);
  	$area = $_POST['area'];
-	 $employee_type = $_POST['employee_type'];
+	 $employee_type = validation($_POST['employee_type']);
 	 
 	 $print_table = 'print_table';
 	 $printing_date = date('d F, Y');

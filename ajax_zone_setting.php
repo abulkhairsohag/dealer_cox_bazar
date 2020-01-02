@@ -7,21 +7,14 @@ Session::init();
 Session::checkSession();
 error_reporting(1);
 include_once ('helper/helper.php');
-?>
-
-
-<?php 
 
 include_once("class/Database.php");
 $dbOb = new Database();
-
-
 
 if (isset($_POST['serial_no_edit'])) {
 	$serial_no = $_POST['serial_no_edit'];
 	$query = "SELECT * FROM zone WHERE serial_no = '$serial_no'";
 	$zone_info = $dbOb->find($query);
-
 	$query = "SELECT * FROM area_zone WHERE zone_serial_no = '$serial_no'";
 	$get_area = $dbOb->select($query);
 	$area_serial_no = [];
@@ -32,7 +25,6 @@ if (isset($_POST['serial_no_edit'])) {
 			$i++ ; 
 		}
 	}
-
 	die(json_encode(['area_serial_no'=>$area_serial_no, 'zone_info'=>$zone_info]));
 }
 
@@ -41,10 +33,42 @@ if (isset($_POST['serial_no_edit'])) {
 if (isset($_POST['submit'])) { 
 	$zone_name = validation($_POST['zone_name']);
 	$area_name =  validation($_POST['area_name']);
+	$ware_house_serial_no =  validation($_POST['ware_house_serial_no']);
+
 	
 	$edit_id = $_POST['edit_id'];
 
 	if ($edit_id) { // UPDATING DATA INTO DATABASE
+
+			for ($i = 0; $i < count($area_name); $i++) {
+			$area_id = $area_name[$i];
+			$query = "SELECT * FROM area_zone WHERE area_serial_no = '$area_id' AND zone_serial_no <> '$edit_id'";
+			$get_area_zone = $dbOb->select($query);
+			if ($get_area_zone) {
+				$existing_area_zone = $get_area_zone->fetch_assoc();
+				$zon_id = $existing_area_zone['zone_serial_no'];
+				$zone_id_query = "SELECT * FROM zone WHERE serial_no = '$zon_id'";
+				$zone = $dbOb->select($zone_id_query);
+				$zn_nm = "";
+				if ($zone) {
+					$zn_nm = $zone->fetch_assoc()['zone_name'];
+				} 
+				$message = $existing_area_zone['area_name']." Is Already Assigned With a Zone (".$zn_nm.")";
+				$type = "warning";
+				die(json_encode(['message'=>$message,'type'=>$type]));
+			}
+		}
+
+
+		$query="SELECT * FROM zone WHERE ware_house_serial_no = '$ware_house_serial_no' AND serial_no <> '$edit_id'";
+		$get_ware_house = $dbOb->select($query);
+		if ($get_ware_house) {
+			$zn_name  = $get_ware_house->fetch_assoc()['zone_name'];
+			$message = "Ware House Already Assigned With Zone: ".$zn_name.". Please Choose A Ware House Which Is Not Assigned Yeat..";
+			$type = "warning";
+			die(json_encode(['message'=>$message,'type'=>$type]));
+		}
+
 
 		$query = "SELECT * FROM zone WHERE serial_no <> '$edit_id'";
 		$get_zone = $dbOb->select($query);
@@ -63,7 +87,8 @@ if (isset($_POST['submit'])) {
 
 			$query = "UPDATE zone 
 			SET 
-			zone_name = '$zone_name'
+			zone_name = '$zone_name',
+			ware_house_serial_no = '$ware_house_serial_no'
 			WHERE 
 			serial_no = '$edit_id'
 			";
@@ -73,7 +98,7 @@ if (isset($_POST['submit'])) {
 				$delete = $dbOb->delete($query);
 				if ($delete) {
 					
-// here is the change of areas 
+		// here is the change of areas 
 						$insertrow1 = '';
 						for ($i = 0; $i < count($area_name); $i++) {
 							$area_serial_no = $area_name[$i];
@@ -91,11 +116,6 @@ if (isset($_POST['submit'])) {
 							$type = 'warning';
 							die(json_encode(['message'=>$message,'type'=>$type]));
 						}
-
-
-
-
-
 				}
 				
 			}else{
@@ -110,6 +130,16 @@ if (isset($_POST['submit'])) {
 			die(json_encode(['message'=>$message,'type'=>$type]));
 		}
 	}else{ //INSERTING DATA INTO DATABASE
+
+		$query="SELECT * FROM zone WHERE ware_house_serial_no = '$ware_house_serial_no'";
+		$get_ware_house = $dbOb->select($query);
+		if ($get_ware_house) {
+			$zn_name  = $get_ware_house->fetch_assoc()['zone_name'];
+			$message = "Ware House Already Assigned With Zone: ".$zn_name.". Please Choose A Ware House Which Is Not Assigned Yeat..";
+			$type = "warning";
+			die(json_encode(['message'=>$message,'type'=>$type]));
+		}
+
 		$query = "SELECT * FROM zone WHERE zone_name = '$zone_name'";
 		$get_zone = $dbOb->find($query);
 		$get_zone_name = $get_zone['zone_name'];
@@ -119,12 +149,31 @@ if (isset($_POST['submit'])) {
 			$confirmation = false;
 		}
 
+		for ($i = 0; $i < count($area_name); $i++) {
+			$area_id = $area_name[$i];
+			$query = "SELECT * FROM area_zone WHERE area_serial_no = '$area_id'";
+			$get_area_zone = $dbOb->select($query);
+			if ($get_area_zone) {
+				$existing_area_zone = $get_area_zone->fetch_assoc();
+				$zon_id = $existing_area_zone['zone_serial_no'];
+				$zone_id_query = "SELECT * FROM zone WHERE serial_no = '$zon_id'";
+				$zone = $dbOb->select($zone_id_query);
+				$zn_nm = "";
+				if ($zone) {
+					$zn_nm = $zone->fetch_assoc()['zone_name'];
+				} 
+				$message = $existing_area_zone['area_name']." Is Already Assigned With a Zone (".$zn_nm.")";
+				$type = "warning";
+				die(json_encode(['message'=>$message,'type'=>$type]));
+			}
+		}
+
 		if ($confirmation) {
 
 			$query = "INSERT INTO zone 
-			(zone_name)
+			(zone_name,ware_house_serial_no)
 			VALUES 
-			('$zone_name')";
+			('$zone_name','$ware_house_serial_no')";
 			$last = $dbOb->custom_insert($query);
 			if ($last) {
 				for ($i = 0; $i < count($area_name); $i++) {
@@ -161,7 +210,7 @@ if (isset($_POST['submit'])) {
 }
 
 if (isset($_POST['sohag'])) {
-$query = "SELECT * FROM zone ORDER BY serial_no DESC";
+  $query = "SELECT * FROM zone ORDER BY serial_no DESC";
           $get_zone = $dbOb->select($query);
           if ($get_zone) {
             $i = 0;
@@ -188,6 +237,16 @@ $query = "SELECT * FROM zone ORDER BY serial_no DESC";
                   }
                   ?>
                 </td>
+                <td><?php 
+                  $ware_house_serial_no = $row['ware_house_serial_no'];
+                  $query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
+                  $get_ware_house = $dbOb->select($query);
+                  $ware_house_name = '';
+                  if ($get_ware_house) {
+                    $ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
+                  }
+                  echo $ware_house_name;
+                ?></td>
                 <td align="center">
                   
                   <?php 

@@ -29,8 +29,6 @@ $company = $get_delivery_employee['company'];
 if (isset($_POST['products_id_no_get_info'])) {
 	$products_id_no = $_POST['products_id_no_get_info'];
 
-	
-
 	$query = "SELECT * FROM products WHERE company = '$company' AND products_id_no = '$products_id_no'";
 	$get_products = $dbOb->find($query);
 	$today = date("d-m-Y");
@@ -50,35 +48,35 @@ if (isset($_POST['products_id_no_get_info'])) {
 
 	 if (isset($_POST['submit'])) {
 
-            $employee_id       = $_POST['employee_id'];
-            $employee_name     = $_POST['employee_name'];
-            $area_employee     = $_POST['area_employee'];
-            $employee_company  = $_POST['employee_company'];
+            $employee_id       = validation($_POST['employee_id']);
+            $employee_name     = validation($_POST['employee_name']);
+            $area_employee     = validation($_POST['area_employee']);
+            $employee_company  = validation($_POST['employee_company']);
 
-            $order_no  = $_POST['order_no'];
-            $shop_name = $_POST['shop_name'];
-            $address   = $_POST['address'];
-            $mobile_no = $_POST['mobile_no'];
+            $order_no  = validation($_POST['order_no']);
+            $shop_name = validation($_POST['shop_name']);
+            $address   = validation($_POST['address']);
+            $mobile_no = validation($_POST['mobile_no']);
 
-            $products_id_no  = $_POST['products_id_no'];
-            $products_name	 = $_POST['products_name'];
-            $category        = $_POST['category'];
-            $quantity        = $_POST['quantity'];
+            $products_id_no  = validation($_POST['products_id_no']);
+            $products_name	 = validation($_POST['products_name']);
+            $category        = validation($_POST['category']);
+            $quantity        = validation($_POST['quantity']);
 
-            $sell_price   = $_POST['sell_price'];
-            $mrp_price    = $_POST['mrp_price'];
-            $total_price  = $_POST['total_price'];
-            $promo_offer  = $_POST['promo_offer'];
+            $sell_price   = validation($_POST['sell_price']);
+            $mrp_price    = validation($_POST['mrp_price']);
+            $total_price  = validation($_POST['total_price']);
+            $promo_offer  = validation($_POST['promo_offer']);
 
 
-            $net_total        = $_POST['net_total'];
-            $vat              = $_POST['vat'];
-            $vat_amount       = $_POST['vat_amount'];
-            $discount         = $_POST['discount'];
-            $discount_amount  = $_POST['discount_amount'];
-            $grand_total      = $_POST['grand_total'];
-            $pay              = $_POST['pay'];
-            $due              = $_POST['due'];
+            $net_total        = validation($_POST['net_total']);
+            $vat              = validation($_POST['vat']);
+            $vat_amount       = validation($_POST['vat_amount']);
+            $discount         = validation($_POST['discount']);
+            $discount_amount  = validation($_POST['discount_amount']);
+            $grand_total      = validation($_POST['grand_total']);
+            $pay              = validation($_POST['pay']);
+            $due              = validation($_POST['due']);
             $order_date       = date("d-m-Y");
 
             

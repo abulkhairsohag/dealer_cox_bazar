@@ -45,6 +45,7 @@ if(!permission_check('add_system_user')){
                 <th  style="text-align: center;">User Name</th>
                 <th  style="text-align: center;">Password</th>
                 <th  style="text-align: center;">Role</th>
+                <th  style="text-align: center;">Zone</th>
                 <th  style="text-align: center;">Action</th>
               </tr>
             </thead>
@@ -79,6 +80,25 @@ if(!permission_check('add_system_user')){
                       $role_name = 'Not Assigned';
                       $role_badge_color = 'bg-red';
                     }
+                    // getting zone info 
+                    $query = "SELECT * FROM user_zone_permission WHERE user_serial_no = '$user_serial_no' ";
+                    $get_user_zone = $dbOb->select($query);
+                    if ($get_user_zone) {
+                      $user_and_zone = $get_user_zone->fetch_assoc();
+                      $zone_serial_no = $user_and_zone['zone_serial_no'];
+                      $query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+                      $zone = $dbOb->select($query);
+                      if ($zone) {
+                        $zone_name = $zone->fetch_assoc()['zone_name'];
+                        $zone_badge_color = 'bg-blue';
+                      }else{
+                        $zone_name = 'Not Assigned';
+                        $zone_badge_color = 'bg-red';
+                      }
+                    }else{
+                      $zone_name = 'Not Assigned';
+                      $zone_badge_color = 'bg-red';
+                    }
                   ?>
                   <tr class="tbl_row"<?php echo $row['serial_no']; ?>>
                     <td><?php echo $i; ?></td>
@@ -90,6 +110,7 @@ if(!permission_check('add_system_user')){
                     <td><?php echo $row['user_name'] ?></td>
                     <td><?php echo $row['password'] ?></td>
                     <td><span class="badge <?php echo $role_badge_color?>"><?php echo $role_name; ?></span></td>
+                    <td><span class="badge <?php echo $zone_badge_color?>"><?php echo $zone_name; ?></span></td>
 								
                     <td align="center">
 
@@ -136,7 +157,7 @@ if(!permission_check('add_system_user')){
             </div>
           </div>
           <div class="modal-body">
-
+ 
             <div class="row">
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel" style="background: #f2ffe6">
@@ -170,6 +191,35 @@ if(!permission_check('add_system_user')){
                           </select>
                         </div>
                       </div>
+
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="inputDefault">Zone <span class="required" style="color: red">*</span></label>
+               <div class="col-md-6">
+            <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+              <option value="">Please Select One</option>
+              <?php
+
+              $query = "SELECT * FROM zone ORDER BY zone_name";
+              $get_zone = $dbOb->select($query);
+              if ($get_zone) {
+                while ($row = $get_zone->fetch_assoc()) {
+
+                ?>
+                <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("zone_serial_no") == $row["serial_no"]) {
+                  echo "selected";
+                } ?>
+                ><?php echo $row['zone_name']; ?></option>
+                <?php
+              }
+            }
+
+            ?>
+
+            </select>
+            
+              </div>
+            </div>
+
 
                       <div style="display: none;">
                         <input type="text" name="user_serial_no" id="user_serial_no">
@@ -397,6 +447,7 @@ $(document).on('submit','#assign_role_form',function(e){
       if (data.type == 'success') {
        $("#assign_role_modal").modal("hide"); 
        show_data_table();
+      //  location.reload();
      }
    }
  });
@@ -491,7 +542,20 @@ $(document).on('click','.delete_data',function(){
   });
 });
 
-
+ $(document).on('change','#zone_serial_no',function(){
+     var zone_serial_no = $(this).val();
+     $.ajax({
+        url:'ajax_new_order.php',
+        data:{zone_serial_no:zone_serial_no},
+        type:'POST',
+        dataType:'json',
+        success:function(data){
+          $("#area_employee").html(data.area_options);
+          $("#zone_name").val(zone_name);
+          // console.log(data.area_options);
+        }
+      });
+  });
 });
 
 </script>

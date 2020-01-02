@@ -123,7 +123,7 @@ if (isset($_POST['submit'])) {
 }
 // the following block of code is for deleting data 
 if (isset($_POST['serial_no_delete'])) {
-	$serial_no_delete = $_POST['serial_no_delete'];
+	$serial_no_delete = validation($_POST['serial_no_delete']);
 	$query = "DELETE FROM client WHERE serial_no = '$serial_no_delete'";
 	$delete = $dbOb->delete($query);
 	if ($delete) {

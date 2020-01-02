@@ -19,8 +19,8 @@ $dbOb = new Database();
 // getting employee info while changing the employee id
 if (isset($_POST['employee_id'])) {
 
-	$id = $_POST['employee_id'];
-	$attendance = $_POST['attendance'];
+	$id = validation($_POST['employee_id']);
+	$attendance = validation($_POST['attendance']);
 
 	$today = strtotime(date("d-m-Y"));
 	$query = "SELECT * FROM employee_attendance ";

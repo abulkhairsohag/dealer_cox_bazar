@@ -176,33 +176,56 @@ if(!permission_check('return_sold_product_from_market')){
                   </div>
 
 
-                  <div class="form-group" >
-                    <label class="col-md-3 control-label" for="inputDefault">Zone <span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6">
-                     <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
-                      <option value="">Please Select One</option>
-                      <?php
+                 
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="inputDefault">Zone </label>
+               <div class="col-md-6">
+            <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+           
+              <?php
 
-                      $query = "SELECT * FROM zone ORDER BY zone_name";
-                      $get_zone = $dbOb->select($query);
-                      if ($get_zone) {
-                        while ($row = $get_zone->fetch_assoc()) {
-
-                         ?>
-                         <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("zone_serial_no") == $row["serial_no"]) {
-                          echo "selected";
-                        } ?>
-                        ><?php echo $row['zone_name']; ?></option>
-                        <?php
-                      }
-                    }
-
-                    ?>
-
-                  </select>
+              if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
                 
-                </div>
+                ?>
+                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("zone_name"); ?></option>
+                  <?php
+                }
+              }else{
+        $query = "SELECT * FROM zone ORDER BY zone_name";
+        $get_zone = $dbOb->select($query);
+        if ($get_zone) {
+          ?>
+           <option value="">Please Select One</option>
+          <?php
+                while ($row = $get_zone->fetch_assoc()) {
+
+                ?>
+                <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
+                <?php
+              }
+            }else{
+              ?>
+                <option value="">Please Add Zone First..</option>
+              <?php
+
+            }
+             }
+
+            ?>
+
+            </select>
+            
               </div>
+            </div>
+
+
+
+
 
               <div class="form-group" >
                 <label class="col-md-3 control-label" for="inputDefault">Area <span class="required" style="color: red">*</span></label>
@@ -211,45 +234,85 @@ if(!permission_check('return_sold_product_from_market')){
 
                    <?php 
 
-                   if (Session::get("area_options")) {
-                     echo Session::get("area_options");
-                   }else{
-                    ?>
-                    <option value="">Please Select Zone First</option>
-                    <?php
-                  }
+                      if (Session::get("zone_serial_no")){
+                          if (Session::get("zone_serial_no") != '-1') {
+                            $zone_serial = Session::get("zone_serial_no");
+                            $query = "SELECT * FROM area_zone WHERE zone_serial_no = '$zone_serial' ORDER BY area_name";
+                            $get_area = $dbOb->select($query);
+                            if ($get_area) {
+                              ?>
+                              <option value="">Please Select One..</option>
+                              <?php
+                              while ($row = $get_area->fetch_assoc()) {
+                                ?>
+                                <option value="<?php echo $row['area_name']?>"><?php echo $row['area_name']?></option>
+                                <?php
+                              }
+                            }
+                         
+                          }else{
+                            ?>
+                              <option value=''> Sorry User's Zone Missing.. </option>
+                            <?php
+                          }
+                        }else{
+                            ?>
+                            <option value="">Please Select Zone First</option>
+                            <?php
+                        }
                   ?>
 
                 </select>
               </div>
             </div>
 
-      <div class="form-group row">
-        <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
-        <div class="col-md-6 col-6">
-             <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
-              <option value="">Please Select One</option>
-              <?php
-
-              $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-              $get_ware_house = $dbOb->select($query);
-              if ($get_ware_house) {
-                while ($row = $get_ware_house->fetch_assoc()) {
-
-                 ?>
-                 <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
-                  echo "selected";
-                } ?>
-                ><?php echo $row['ware_house_name']; ?></option>
+      
+  <div class="form-group row">
+    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+    <div class="col-md-6 col-6">
+        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
+          
+          <?php
+          if (Session::get("ware_house_serial_login")){
+                if (Session::get("ware_house_serial_login") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
                 <?php
-              }
-            }
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                  <?php
+                }
+              }else{
+
+          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+          $get_ware_house = $dbOb->select($query);
+          if ($get_ware_house) {
+            ?>
+                <option value="">Please Select One</option>
+            <?php
+            while ($row = $get_ware_house->fetch_assoc()) {
 
             ?>
+            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+              echo "selected";
+            } ?>
+            ><?php echo $row['ware_house_name']; ?></option>
+            <?php
+          }
+        }else{
+          ?>
+            <option value="">Please Add Ware House First</option>
+          <?php
+        }
+      }
 
-        </select>
-        </div>
-      </div>
+        ?>
+
+    </select>
+    </div>
+  </div>
             <div class="form-group row">
               <label class="col-md-3 col-6 control-label" for="inputDefault">Select Customer<span class="required" style="color: red">*</span></label>
               <div class="col-md-6 col-6">

@@ -33,8 +33,7 @@ if (isset($_POST['submit'])) {
 	$products_name 	= validation($_POST['products_name']);
 	$sell_price 	= validation($_POST['sell_price']);
 	$qty      	= validation($_POST['qty']);
-	// $sell_price    	= validation($_POST['sell_price']);
-	// $mrp_price     	= validation($_POST['mrp_price']);
+	
 	$total_price   	= validation($_POST['total_price']);
 	$sell_date   	= validation($_POST['date']);
 

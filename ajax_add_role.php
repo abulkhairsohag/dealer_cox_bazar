@@ -19,7 +19,7 @@ $dbOb = new Database();
 
 
 if (isset($_POST['serial_no_edit'])) {
-	$serial_no = $_POST['serial_no_edit'];
+	$serial_no = validation($_POST['serial_no_edit']);
 	$query = "SELECT * FROM role WHERE serial_no = '$serial_no'";
 	$role = $dbOb->find($query);
 
@@ -38,8 +38,8 @@ if (isset($_POST['serial_no_edit'])) {
 
 if (isset($_POST['submit'])) {
 	$permission = validation($_POST['permission']);
-	$role_name = $_POST['role_name'];
-	$edit_id = $_POST['edit_id'];
+	$role_name = validation($_POST['role_name']);
+	$edit_id = validation($_POST['edit_id']);
 
 
 

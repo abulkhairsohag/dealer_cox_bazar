@@ -139,7 +139,11 @@ if (isset($_POST['submit'])) {
 		}
 
 		if ($insert_order_expense) {
-
+			$query = "INSERT INTO delivered_order_payment_history 
+					  (deliver_order_serial_no,delivery_emp_id,pay_amt,date,zone_serial_no)
+					  VALUES
+					  ('$last_id','$delivery_employee_id','$pay','$delivery_date','$zone_serial_no')";
+			$insert_history = $dbOb->insert($query);
 			$message = "Congratulaiton! Order Is Successfully Saved.";
 			$type = "success";
 			echo json_encode(['message' => $message, 'type' => $type]);

@@ -28,55 +28,56 @@ if(!permission_check('cash_balance')){
         </h2>
       </div>
       <div class="panel-body">
+        
+
+
         <div class="form-group col-md-12">
           <div class="col-md-1"></div>
-          <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Ware house<span
+          <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Zone<span
               class="required" style="color: red">*</span></label>
           <div class="col-md-4 col-sm-6 col-xs-12">
-            <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
-          
-          <?php
-          if (Session::get("ware_house_serial_login")){
-                if (Session::get("ware_house_serial_login") != '-1') {
+              <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+           
+              <?php
+
+              if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
                 
                 ?>
-                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
                 <?php
                 }else{
                   ?>
-                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                    <option value=''><?php echo Session::get("zone_name"); ?></option>
                   <?php
                 }
               }else{
-
-          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-          $get_ware_house = $dbOb->select($query);
-          if ($get_ware_house) {
-            ?>
-                <option value="">Please Select One</option>
-            <?php
-            while ($row = $get_ware_house->fetch_assoc()) {
-
-            ?>
-            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
-              echo "selected";
-            } ?>
-            ><?php echo $row['ware_house_name']; ?></option>
-            <?php
-          }
-        }else{
+        $query = "SELECT * FROM zone ORDER BY zone_name";
+        $get_zone = $dbOb->select($query);
+        if ($get_zone) {
           ?>
-            <option value="">Please Add Ware House First</option>
+           <option value="">Please Select One</option>
           <?php
-        }
-      }
+                while ($row = $get_zone->fetch_assoc()) {
 
-        ?>
+                ?>
+                <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
+                <?php
+              }
+            }else{
+              ?>
+                <option value="">Please Add Zone First..</option>
+              <?php
 
-    </select>
+            }
+             }
+
+            ?>
+
+            </select>
+            
           </div>
         </div>
-
 
         <div class="form-group col-md-12">
           <div class="col-md-1"></div>
@@ -270,7 +271,9 @@ $printing_time = date('h:i:s A');
     $(document).on('click', '#view_record', function () {
       var from_date = $("#from_date").val();
       var to_date = $("#to_date").val();
-      var ware_house_serial_no = $("#ware_house_serial_no").val();
+      var zone_serial_no = $("#zone_serial_no").val();
+
+      // alert(zone_serial_no)
 
 
       $.ajax({
@@ -278,7 +281,8 @@ $printing_time = date('h:i:s A');
         method: "POST",
         data: {
           from_date: from_date,
-          to_date: to_date
+          to_date: to_date,
+          zone_serial_no:zone_serial_no
         },
         dataType: "json",
         success: function (data) {

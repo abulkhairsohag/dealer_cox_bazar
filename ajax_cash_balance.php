@@ -17,6 +17,7 @@ if (isset($_POST['from_date'])) {
 	$from_date = strtotime($_POST['from_date']);
 	$to_date = strtotime($_POST['to_date']);
 	$zone_serial_no = $_POST['zone_serial_no'];
+	// die($zone_serial_no);
 
 	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
 	$get_zone = $dbOb->select($query);
@@ -86,8 +87,7 @@ if (isset($_POST['from_date'])) {
  			}
 
  		}
-
-
+// die($zone_serial_no.'sohag');
 
 	// calculating Bank Withdraw 
 	$bank_withdraw = 0;
@@ -130,13 +130,15 @@ if (isset($_POST['from_date'])) {
 			if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
 
 				if ($row['target_product'] <= $row['target_sell_amount']) {
-					$target = $row['target_sell_amount'];
-					$comission_persent = $row['comission_persent'];
+					$target = $row['target_product'];
+					$target_sell_amount = $row['target_sell_amount'];
 
-					$comission_amount = 1*$target * 1*$comission_persent / 100 ;
+						$extra_sell = $target_sell_amount - $target ;
+						$comission_persent = $row['comission_persent'];
+						$comission_amount = $extra_sell * $comission_persent / 100 ;
+						$company_commission = 1*$company_commission + 1*$comission_amount;
 
-					$comission = 1*$target + 1*$comission_amount;
-					$company_commission = 1*$company_commission + 1*$comission;
+
 				}
 
 			}

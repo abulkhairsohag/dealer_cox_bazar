@@ -59,11 +59,6 @@ if ($user_type == "employee") {
                 <li><a href="add_user.php"><i class="fas fa-users-cog"></i> Add System User</a></li>
                 <?php 
                       }
-        if (permission_check('add_expense_head')) {
-          ?>
-                <li><a href="expense_head.php"><i class="fas fa-dollar"></i> Add Expense Head</a></li>
-                <?php 
-                      }
          
           ?>
 

@@ -110,8 +110,17 @@ if (isset($_POST['serial_no_delete'])) {
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
               
+                 if (Session::get("zone_serial_no")){
+                  if (Session::get("zone_serial_no") != '-1') {
+                    $zone_serial = Session::get("zone_serial_no");
+                      $query = "SELECT * FROM bank_deposite WHERE zone_serial_no = '$zone_serial' ORDER BY serial_no DESC";
+                      $get_bank_deposite = $dbOb->select($query);
+                  }
+                }else{
+
                   $query = "SELECT * FROM bank_deposite ORDER BY serial_no DESC";
-              $get_bank_deposite = $dbOb->select($query);
+                  $get_bank_deposite = $dbOb->select($query);
+                }
               if ($get_bank_deposite) {
                 $i=0;
                 while ($row = $get_bank_deposite->fetch_assoc()) {

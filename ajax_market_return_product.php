@@ -246,60 +246,70 @@ if (isset($_POST['view_id'])) {
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
              
-	$query = "SELECT * FROM market_products_return ORDER BY serial_no DESC";
-                $get_return_products = $dbOb->select($query);
-                if ($get_return_products) {
-                  $i=0;
-                  while ($row = $get_return_products->fetch_assoc()) {
-					$i++;
-					if ($row['unload_status'] == '1') {
-						$unload_status = 'Yes';
-						$background = 'green';
-					  }else{
-						$unload_status = 'No';
-						$background = 'red';
-					  }
-                    ?>
-                    <tr>
-                      <td><?php echo $i; ?></td>
-                      <td><?php echo strtoupper($row['products_id_no']); ?></td>
-                      <td><?php echo $row['products_name']; ?></td>
-                      <td><?php echo $row['company']; ?></td>
-                      <td><?php echo $row['shop_name']; ?></td>
-                      <td><?php echo $row['marketing_sell_price']; ?></td>
-                      <td><?php echo $row['return_quantity']; ?></td>
-					  <td><?php echo $row['total_price']; ?></td>
-					  <td><span style="color: white" class="badge bg-<?php echo($background) ?>"><?php echo($unload_status) ?></span></td>
-                      <td><?php echo $row['return_reason']; ?></td>
-                      <td><?php echo $row['return_date']; ?></td>
-                      <td align="center">
-                      
-
-					  <?php 
-                        if (permission_check('return_product_edit_button')) {
-
-                          ?>
-                          <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a> 
-                        <?php } ?>
-
-                        <?php 
-                        if (permission_check('return_product_delete_button')) {
-
-                          ?>
-                          <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
-                        <?php } ?>
-
-                        <?php 
-                        if (permission_check('return_product_view_button')) {
-
-                          ?>
-                          <a class="badge bg-green view_data" id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#view_modal" style="margin:2px">View</a> 
-                        <?php } ?>
-
-                      </td>
-                    </tr>
-                    <?php
+	 if (Session::get("zone_serial_no")){
+                  if (Session::get("zone_serial_no") != '-1') {
+                    $zone_serial = Session::get("zone_serial_no");
+                    $query = "SELECT * FROM market_products_return WHERE zone_serial_no = '$zone_serial' ORDER BY serial_no DESC";
+                    $get_return_products = $dbOb->select($query);
                   }
+                }else{
+                    $query = "SELECT * FROM market_products_return ORDER BY serial_no DESC";
+                    $get_return_products = $dbOb->select($query);
                 }
+                    
+
+                    if ($get_return_products) {
+                      $i=0;
+                      while ($row = $get_return_products->fetch_assoc()) {
+                        $i++;
+                        if ($row['unload_status'] == '1') {
+                          $unload_status = 'Yes';
+                          $background = 'green';
+                        }else{
+                          $unload_status = 'No';
+                          $background = 'red';
+                        }
+                        ?>
+                        <tr>
+                          <td><?php echo $i; ?></td>
+                          <td><?php echo strtoupper($row['products_id_no']); ?></td>
+                          <td><?php echo $row['products_name']; ?></td>
+                          <td><?php echo $row['company']; ?></td>
+                          <td><?php echo $row['shop_name']; ?></td>
+                          <td><?php echo $row['marketing_sell_price']; ?></td>
+                          <td><?php echo $row['return_quantity']; ?></td>
+                          <td><?php echo $row['total_price']; ?></td>
+                          <td><span style="color: white" class="badge bg-<?php echo($background) ?>"><?php echo($unload_status) ?></span></td>
+                          <td><?php echo $row['ware_house_name']; ?></td>
+                          <td><?php echo $row['return_date']; ?></td>
+                          <td align="center">
+
+
+                            <?php 
+                            if (permission_check('return_product_edit_button')) {
+
+                              ?>
+                              <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a> 
+                            <?php } ?>
+
+                            <?php 
+                            if (permission_check('return_product_delete_button')) {
+
+                              ?>
+                              <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
+                            <?php } ?>
+
+                            <?php 
+                            if (permission_check('return_product_view_button')) {
+
+                              ?>
+                              <a class="badge bg-green view_data" id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#view_modal" style="margin:2px">View</a> 
+                            <?php } ?>
+
+                          </td>
+                        </tr>
+                        <?php
+                      }
+                    }
 }
  ?>

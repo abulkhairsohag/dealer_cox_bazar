@@ -42,6 +42,7 @@ if (!permission_check('add_product')) {
               <th style="width: 80px">Category</th>
               <th style="width: 35px">Pack Size</th>
               <th style="width: 35px">Available QTY(PCS)</th>
+              <th style="width: 35px">Ware House</th>
               <!-- <th style="width: 80px">Barcode</th> -->
               <th style="width: 210px;text-align: center;">Action</th>
             </tr>
@@ -75,6 +76,7 @@ if (!permission_check('add_product')) {
                   
                   <td><?php echo $product_details['pack_size']; ?></td>
                   <td><?php echo $row['available_qty']; ?></td>
+                  <td><?php echo $row['ware_house_name']; ?></td>
                 
 
                   <td align="center">
@@ -140,7 +142,7 @@ if (!permission_check('add_product')) {
                   <div class="form-group">
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Select Product <span class="required" style="color: red">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <select required="" id="products_id" name="products_id" class="form-control col-md-7 col-xs-12" >
+                      <select required="" id="products_id" name="products_id" class="form-control col-md-7 col-xs-12" >ware_house_serial_no
                         <option value="">Select a Product</option>
                         <?php
                         $query = "SELECT * FROM products";
@@ -167,27 +169,52 @@ if (!permission_check('add_product')) {
                     </div>
                   </div>
 
-                  <div class="form-group" id="warehouse_div">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ware_house_serial_no">Ware House <span class="required" style="color: red">*</span>
-                    </label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <select name="ware_house_serial_no" id="ware_house_serial_no" required="" class="form-control col-md-7 col-xs-12" required="">
-                        <option value="">Please Select A Warehouse</option>
-                        <?php
-                        $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-                        $get_warehouse = $dbOb->select("$query");
-                        if ($get_warehouse) {
-                          while ($row = $get_warehouse->fetch_assoc()) {
-                            ?>
-                            <option value="<?php echo $row['serial_no']; ?>"><?php echo $row['ware_house_name'] ?></option>
+                  <div class="form-group row">
+    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+    <div class="col-md-6 col-6">
+        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no col-md-7 col-xs-12 ">
+          
+          <?php
+          if (Session::get("ware_house_serial_login")){
+                if (Session::get("ware_house_serial_login") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                  <?php
+                }
+              }else{
 
-                            <?php
-                          }
-                        }
-                        ?>
-                      </select>
-                    </div>
-                  </div>
+          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+          $get_ware_house = $dbOb->select($query);
+          if ($get_ware_house) {
+            ?>
+                <option value="">Please Select One</option>
+            <?php
+            while ($row = $get_ware_house->fetch_assoc()) {
+
+            ?>
+            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+              echo "selected";
+            } ?>
+            ><?php echo $row['ware_house_name']; ?></option>
+            <?php
+          }
+        }else{
+          ?>
+            <option value="">Please Add Ware House First</option>
+          <?php
+        }
+      }
+
+        ?>
+
+    </select>
+    </div>
+  </div>
 
 
                   <div class="form-group" id="">

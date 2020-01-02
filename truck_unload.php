@@ -50,24 +50,48 @@ if(!permission_check('unload_truck_after_delivery')){
                 <select name="vehicle_reg_no" id="vehicle_reg_no" class="form-control" required="">
 
                   <?php 
-                  $query = "SELECT * FROM truck_load WHERE unload_status = 0 ";
-                  $get_loaded_trucks = $dbOb->select($query);
-                  if ($get_loaded_trucks) {
-                    ?>
-                  <option value="">Please Select One</option>
-                    <?php
-                    while ($row = $get_loaded_trucks->fetch_assoc()) {
-                      $area_name = $row["area_name"];
-                      ?>
-                      <option value="<?php echo $row['vehicle_reg_no'] ?>"><?php echo $row['vehicle_reg_no'].', '.$row['vehicle_name'] ; ?></option>
+                  if (Session::get("zone_serial_no")){
+                    if (Session::get("zone_serial_no") != '-1') {
+                      $zone_serial_no = Session::get("zone_serial_no");
+                      $query = "SELECT * FROM truck_load WHERE zone_serial_no ='$zone_serial_no' AND unload_status = 0 ";
+                      $get_loaded_trucks = $dbOb->select($query);
+                      if ($get_loaded_trucks) {
+                        ?>
+                      <option value="">Please Select One</option>
+                        <?php
+                        while ($row = $get_loaded_trucks->fetch_assoc()) {
+                          $area_name = $row["area_name"];
+                          ?>
+                          <option value="<?php echo $row['vehicle_reg_no'] ?>"><?php echo $row['vehicle_reg_no'].', '.$row['vehicle_name'] ; ?></option>
 
-                      <?php
+                          <?php
+                        }
+                      }else{
+                        ?>
+                          <option value="">No Truck Is Loaded...</option>
+                        <?php
+                      }
                     }
                   }else{
-                    ?>
-                      <option value="">No Truck Is Loaded...</option>
-                    <?php
-                  }
+                      $query = "SELECT * FROM truck_load WHERE unload_status = 0 ";
+                      $get_loaded_trucks = $dbOb->select($query);
+                      if ($get_loaded_trucks) {
+                        ?>
+                      <option value="">Please Select One</option>
+                        <?php
+                        while ($row = $get_loaded_trucks->fetch_assoc()) {
+                          $area_name = $row["area_name"];
+                          ?>
+                          <option value="<?php echo $row['vehicle_reg_no'] ?>"><?php echo $row['vehicle_reg_no'].', '.$row['vehicle_name'] ; ?></option>
+
+                          <?php
+                        }
+                      }else{
+                        ?>
+                          <option value="">No Truck Is Loaded...</option>
+                        <?php
+                      }
+                }
                   ?>
 
                 </select>
@@ -105,10 +129,6 @@ if(!permission_check('unload_truck_after_delivery')){
         </div>
       </div>
     </div>
-
-
-
-
 
     <!-- /page content -->
 

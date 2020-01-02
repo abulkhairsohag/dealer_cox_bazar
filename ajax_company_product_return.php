@@ -210,48 +210,58 @@ if (isset($_POST['serial_no_delete'])) {
 // the following section is for fetching data from database and showing them into data table
 if (isset($_POST["sohag"])) {
 
-	$query = "SELECT * FROM company_products_return ORDER BY serial_no DESC";
-	$get_return_products = $dbOb->select($query);
-	if ($get_return_products) {
-		$i=0;
-		while ($row = $get_return_products->fetch_assoc()) {
-			$i++;
-			?>
-			<tr>
-				<td><?php echo $i; ?></td>
-				<td><?php echo strtoupper($row['products_id_no']); ?></td>
-				<td><?php echo $row['products_name']; ?></td>
-				<td><?php echo $row['company']; ?></td>
-				<td><?php echo $row['company_price']; ?></td>
-				<td><?php echo $row['return_quantity']; ?></td>
-				<td><?php echo $row['total_price']; ?></td>
-				<td><?php echo $row['return_reason']; ?></td>
-				<td><?php echo $row['description']; ?></td>
-				<td><?php echo $row['return_date']; ?></td>
-				<td align="center">
-
-
-                      <?php 
-                      if (permission_check('return_edit_button')) {
+	if (Session::get("ware_house_serial_login")){
+                    if (Session::get("ware_house_serial_login") != '-1') {
+                      $ware_house_serial = Session::get("ware_house_serial_login");
+                      $query = "SELECT * FROM company_products_return WHERE ware_house_serial_no = '$ware_house_serial' ORDER BY serial_no DESC";
+                      $get_return_products = $dbOb->select($query);
+                    }
+                  }else{
+                    $query = "SELECT * FROM company_products_return ORDER BY serial_no DESC";
+                    $get_return_products = $dbOb->select($query);
+                   
+                  }
+                   if ($get_return_products) {
+                      $i=0;
+                      while ($row = $get_return_products->fetch_assoc()) {
+                        $i++;
                         ?>
-                        <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a> 
-                      <?php } ?>
+                        <tr>
+                          <td><?php echo $i; ?></td>
+                          <td><?php echo strtoupper($row['products_id_no']); ?></td>
+                          <td><?php echo $row['products_name']; ?></td>
+                          <td><?php echo $row['company']; ?></td>
+                          <td><?php echo $row['company_price']; ?></td>
+                          <td><?php echo $row['return_quantity']; ?></td>
+                          <td><?php echo $row['total_price']; ?></td>
+                          <td><?php echo $row['return_reason']; ?></td>
+                          <td><?php echo $row['description']; ?></td>
+                          <td><?php echo $row['ware_house_name']; ?></td>
+                          <td><?php echo $row['return_date']; ?></td>
+                          <td align="center">
 
 
-                      <?php 
-                      if (permission_check('return_delete_button')) {
-                        ?>
+                            <?php 
+                            if (permission_check('return_edit_button')) {
+                              ?>
+                              <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a> 
+                            <?php } ?>
 
-                        <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
-                      <?php } ?>
-                      
-                      
-                    </td>
-                    
-                  </tr>
 
-			<?php
-		}
-	}
+                            <?php 
+                            if (permission_check('return_delete_button')) {
+                              ?>
+
+                              <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
+                            <?php } ?>
+                            
+                            
+                          </td>
+                          
+                        </tr>
+
+                        <?php
+                      }
+                    }
 }
 ?>

@@ -175,8 +175,16 @@ if (isset($_POST['emp_id_no'])) {
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
         
-             $query = "SELECT * FROM employee_payments ORDER BY serial_no DESC";
-              $get_employee_commission = $dbOb->select($query);
+        if (Session::get("zone_serial_no")){
+                  if (Session::get("zone_serial_no") != '-1') {
+                    $zone_serial = Session::get("zone_serial_no");
+                    $query = "SELECT * FROM employee_payments WHERE zone_serial_no = '$zone_serial' ORDER BY serial_no DESC";
+                    $get_employee_commission = $dbOb->select($query);
+                  }
+                }else{
+                  $query = "SELECT * FROM employee_payments ORDER BY serial_no DESC";
+                  $get_employee_commission = $dbOb->select($query);
+                }
               if ($get_employee_commission) {
                 $i=0;
                 while ($row = $get_employee_commission->fetch_assoc()) {

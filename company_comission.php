@@ -52,8 +52,17 @@ if(!permission_check('company_comission')){
               <?php 
               include_once('class/Database.php');
               $dbOb = new Database();
-              $query = "SELECT * FROM company_commission ORDER BY serial_no DESC";
-              $get_company_commission = $dbOb->select($query);
+              if (Session::get("zone_serial_no")){
+                  if (Session::get("zone_serial_no") != '-1') {
+                    $zone_serial = Session::get("zone_serial_no");
+                    $query = "SELECT * FROM company_commission WHERE zone_serial_no = '$zone_serial' ORDER BY serial_no DESC";
+                    $get_company_commission = $dbOb->select($query);
+                  }
+                }else{
+
+                  $query = "SELECT * FROM company_commission ORDER BY serial_no DESC";
+                  $get_company_commission = $dbOb->select($query);
+                }
               if ($get_company_commission) {
                 $i=0;
                 while ($row = $get_company_commission->fetch_assoc()) {

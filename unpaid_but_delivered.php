@@ -60,9 +60,18 @@ if(!permission_check('unpaid_but_delivered')){
               include_once('class/Database.php');
               $dbOb = new Database();
 
-              $query = "SELECT * FROM order_delivery where due > 0  ORDER BY serial_no DESC ";
+              if (Session::get("zone_serial_no")){
+                  if (Session::get("zone_serial_no") != '-1') {
+                    $zone_serial = Session::get("zone_serial_no");
+                    $query = "SELECT * FROM order_delivery where zone_serial_no = '$zone_serial' AND due > 0 ORDER BY serial_no DESC ";
+                    $get_order_info = $dbOb->select($query);
+                  }
+                }else{
+                  $query = "SELECT * FROM order_delivery where due > 0 ORDER BY serial_no DESC ";
+                  $get_order_info = $dbOb->select($query);
+                }
 
-              $get_order_info = $dbOb->select($query);
+
               if ($get_order_info) {
                 $i=0;
                 while ($row = $get_order_info->fetch_assoc()) {

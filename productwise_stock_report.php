@@ -77,6 +77,7 @@ if(!permission_check('product_wise_stock_report')){
             <th style="width: 100px">products_id_no</th>
             <th style="width: 50px">Stock Qty</th>
             <th  style="width: 50px">Company Return Qty</th>
+            <th  style="width: 50px">Ware House</th>
             <th  style="width: 50px">Date</th>
           </tr>
         </thead>

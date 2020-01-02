@@ -108,25 +108,51 @@ if (!permission_check('new_order')) {
               <select name="delivery_employee_id" id="delivery_employee_id"  required="" class="form-control delivery_employee_id ">
                 <option value="">Please Select</option>
                 <?php
-                $query = "SELECT * FROM delivery_employee WHERE active_status = 'Active' ORDER BY id_no";
-                $get_delivery_man = $dbOb->select($query);
-                if ($get_delivery_man) {
-                  while ($row = $get_delivery_man->fetch_assoc()) {
-                   ?>
-                   <option value="<?php echo $row['id_no']; ?>" <?php if (Session::get("delivery_emp_id") == $row['id_no']) {
-                    echo "selected";
-                  } ?>><?php echo $row['id_no'].', '.$row['name']; ?></option>
-                  <?php
+                 if (Session::get("zone_serial_no")){
+                    if (Session::get("zone_serial_no") != '-1') {
+                      $zone_serial_no = Session::get("zone_serial_no");
+                      $query = "SELECT DISTINCT employee_id FROM truck_load WHERE zone_serial_no ='$zone_serial_no' AND unload_status = 0 ";
+                      $get_emp = $dbOb->select($query);
+                      if ($get_emp) {
+                        
+                        while ($row = $get_emp->fetch_assoc()) {
+                          $emp_id = $row['employee_id'];
+                          $query = "SELECT * FROM employee_main_info WHERE id_no = '$emp_id'";
+                          $get_emp_ifo = $dbOb->select($query);
+                          if ($get_emp_ifo) {
+                            $emp= $get_emp_ifo->fetch_assoc();
+                            ?>
+                            <option value="<?php echo $emp['id_no']; ?>"><?php echo $emp['id_no'].', '.$emp['name']; ?></option>
+                            <?php
+                          }
+                        }
+                      }
+
+                  }
+                }else{
+                      $query = "SELECT DISTINCT employee_id FROM truck_load WHERE  unload_status = 0 ";
+                      $get_emp = $dbOb->select($query);
+                      if ($get_emp) {
+                     
+                        while ($row = $get_emp->fetch_assoc()) {
+                          $emp_id = $row['employee_id'];
+                          $query = "SELECT * FROM employee_main_info WHERE id_no = '$emp_id'";
+                          $get_emp_ifo = $dbOb->select($query);
+                          if ($get_emp_ifo) {
+                            $emp= $get_emp_ifo->fetch_assoc();
+                            ?>
+                            <option value="<?php echo $emp['id_no']; ?>"><?php echo $emp['id_no'].', '.$emp['name']; ?></option>
+                            <?php
+                          }
+                        }
+                      }
                 }
-              }
               ?>
 
             </select>
           </td> 
           <td>
-           <input type="text" class="form-control delivery_employee_name" required="" id="delivery_employee_name" name="delivery_employee_name" readonly="" value="<?php if (Session::get("delivery_employee_name")) {
-            echo Session::get("delivery_employee_name");
-          } ?>" >
+           <input type="text" class="form-control delivery_employee_name" required="" id="delivery_employee_name" name="delivery_employee_name" readonly="" value="" >
         </td>
 
       </tr>

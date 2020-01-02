@@ -52,15 +52,23 @@ if (permission_check('add_bank_withdraw_button')) {
 
             <tbody id="data_table_body">
               <?php
-include_once 'class/Database.php';
-$dbOb = new Database();
-$query = "SELECT * FROM bank_withdraw ORDER BY serial_no DESC";
-$get_bank_withdraw = $dbOb->select($query);
-if ($get_bank_withdraw) {
-	$i = 0;
-	while ($row = $get_bank_withdraw->fetch_assoc()) {
-		$i++;
-		?>
+                  include_once 'class/Database.php';
+                  $dbOb = new Database();
+                  if (Session::get("zone_serial_no")){
+                    if (Session::get("zone_serial_no") != '-1') {
+                      $zone_serial = Session::get("zone_serial_no");
+                      $query = "SELECT * FROM bank_withdraw WHERE zone_serial_no = '$zone_serial' ORDER BY serial_no DESC";
+                      $get_bank_withdraw = $dbOb->select($query);
+                    }
+                  }else{
+                    $query = "SELECT * FROM bank_withdraw ORDER BY serial_no DESC";
+                    $get_bank_withdraw = $dbOb->select($query);
+                  }
+                  if ($get_bank_withdraw) {
+                    $i = 0;
+                    while ($row = $get_bank_withdraw->fetch_assoc()) {
+                      $i++;
+                      ?>
                   <tr>
                     <td><?php echo $i; ?></td>
                     <td><?php echo $row['zone_name']; ?></td>

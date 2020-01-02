@@ -45,40 +45,63 @@ if(!permission_check('take_back_market_product_return')){
 
 
 
-            <div class="form-group">
-              <label class="col-md-3 control-label" for="inputDefault">Employee ID </label>
-              <div class="col-md-6">
+           
+                       <div class="form-group" >
+                        <label class="col-md-3 control-label" for="inputDefault">Select Employee <span class="required" style="color: red">*</span></label>
+                        <div class="col-md-6">
+                          <select name="employee_id" id="employee_id"  class="form-control" required="">
+                            <option value="">Please Select</option>
+                            <?php
+                            // die(Session::get("ware_house_serial_login"));
+                              if (Session::get("ware_house_serial_login")){
+                                if (Session::get("ware_house_serial_login") != '-1') {
+                                  $ware_house_serial = Session::get("ware_house_serial_login");
+                                  // die($ware_house_serial);
+                                  $query = "SELECT DISTINCT employee_id_delivery FROM market_products_return WHERE unload_status = 0 AND ware_house_serial_no = '$ware_house_serial'";
+                                  $get_emp = $dbOb->select($query);
+                                  if ($get_emp) {
+                                    // die($query);
+                                    while ($row = $get_emp->fetch_assoc()) {
+                                      $emp_id = $row['employee_id_delivery'];
+                                      $query = "SELECT * FROM employee_main_info WHERE id_no = '$emp_id'";
+                                      $gt_emp = $dbOb->select($query);
+                                      if ($gt_emp) {
+                                        $emp_name = $gt_emp->fetch_assoc()['name'];
+                                        ?>
+                                            <option value="<?php echo $emp_id; ?>"><?php echo $emp_id.', '.$emp_name; ?></option>
+                                        <?php
+                                      }
+                                    }
+                                  }
+                                }else{
+                                    ?>
+                                    <option value="">Ware House Not Assigned. Contact With Admin.</option>
+                                    <?php
+                                }
+                              }else{
+                                 $query = "SELECT DISTINCT employee_id_delivery FROM market_products_return WHERE unload_status = 0 ";
+                                  $get_emp = $dbOb->select($query);
+                                  if ($get_emp) {
+                                    // die($query);
+                                    while ($row = $get_emp->fetch_assoc()) {
+                                      $emp_id = $row['employee_id_delivery'];
+                                      $query = "SELECT * FROM employee_main_info WHERE id_no = '$emp_id'";
+                                      $gt_emp = $dbOb->select($query);
+                                      if ($gt_emp) {
+                                        $emp_name = $gt_emp->fetch_assoc()['name'];
+                                        ?>
+                                            <option value="<?php echo $emp_id; ?>"><?php echo $emp_id.', '.$emp_name; ?></option>
+                                        <?php
+                                      }
+                                    }
+                                  }
+                            }
+                          ?>
 
-                <select name="employee_id" id="employee_id"  class="form-control" required="">
-                	<option value="">Select Employee</option>
-                	<?php 
-                		$query = "SELECT * FROM employee_duty WHERE  active_status = 'Active'";
-                		$get_emp_duty = $dbOb->select($query);
-                		if ($get_emp_duty) {
-                			while ($row=$get_emp_duty->fetch_assoc()) {
-                				?>
-									<option value="<?php echo($row['id_no']) ?>"><?php echo $row['id_no']; ?>, <?php echo $row['name'] ?></option>
-                				<?php
-                			}
-                		}
-                	 ?>
-
-
-                	 <?php 
-                		$query = "SELECT * FROM delivery_employee WHERE  active_status = 'Active'";
-                		$get_delivery_emp = $dbOb->select($query);
-                		if ($get_delivery_emp) {
-                			while ($res=$get_delivery_emp->fetch_assoc()) {
-                				?>
-									<option value="<?php echo($res['id_no']) ?>"><?php echo $res['id_no']; ?>, <?php echo $res['name'] ?></option>
-                				<?php
-                			}
-                		}
-                	 ?>
-                </select>
-                
-              </div>
-            </div>
+                        </select>
+                       
+                      </div>
+                    </div>
 
             <div class="form-group">
               <label class="col-md-3 control-label" for="inputDefault">Employee Name </label>

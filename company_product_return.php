@@ -46,6 +46,7 @@ if(!permission_check('company_product_return')){
                 <th style="">Price</th>
                 <th style="">Reason</th>
                 <th style="">Description</th>
+                <th style="">Ware House</th>
                 <th style="">Date</th>
                 <th style="text-align: center;">Action</th>
               </tr>
@@ -56,49 +57,60 @@ if(!permission_check('company_product_return')){
               <?php 
               include_once('class/Database.php');
               $dbOb = new Database();
-              $query = "SELECT * FROM company_products_return ORDER BY serial_no DESC";
-              $get_return_products = $dbOb->select($query);
-              if ($get_return_products) {
-                $i=0;
-                while ($row = $get_return_products->fetch_assoc()) {
-                  $i++;
-                  ?>
-                  <tr>
-                    <td><?php echo $i; ?></td>
-                    <td><?php echo strtoupper($row['products_id_no']); ?></td>
-                    <td><?php echo $row['products_name']; ?></td>
-                    <td><?php echo $row['company']; ?></td>
-                    <td><?php echo $row['company_price']; ?></td>
-                    <td><?php echo $row['return_quantity']; ?></td>
-                    <td><?php echo $row['total_price']; ?></td>
-                    <td><?php echo $row['return_reason']; ?></td>
-                    <td><?php echo $row['description']; ?></td>
-                    <td><?php echo $row['return_date']; ?></td>
-                    <td align="center">
-
-
-                      <?php 
-                      if (permission_check('return_edit_button')) {
+                if (Session::get("ware_house_serial_login")){
+                    if (Session::get("ware_house_serial_login") != '-1') {
+                      $ware_house_serial = Session::get("ware_house_serial_login");
+                      $query = "SELECT * FROM company_products_return WHERE ware_house_serial_no = '$ware_house_serial' ORDER BY serial_no DESC";
+                      $get_return_products = $dbOb->select($query);
+                    }
+                  }else{
+                    $query = "SELECT * FROM company_products_return ORDER BY serial_no DESC";
+                    $get_return_products = $dbOb->select($query);
+                   
+                  }
+                   if ($get_return_products) {
+                      $i=0;
+                      while ($row = $get_return_products->fetch_assoc()) {
+                        $i++;
                         ?>
-                        <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a> 
-                      <?php } ?>
+                        <tr>
+                          <td><?php echo $i; ?></td>
+                          <td><?php echo strtoupper($row['products_id_no']); ?></td>
+                          <td><?php echo $row['products_name']; ?></td>
+                          <td><?php echo $row['company']; ?></td>
+                          <td><?php echo $row['company_price']; ?></td>
+                          <td><?php echo $row['return_quantity']; ?></td>
+                          <td><?php echo $row['total_price']; ?></td>
+                          <td><?php echo $row['return_reason']; ?></td>
+                          <td><?php echo $row['description']; ?></td>
+                          <td><?php echo $row['ware_house_name']; ?></td>
+                          <td><?php echo $row['return_date']; ?></td>
+                          <td align="center">
 
 
-                      <?php 
-                      if (permission_check('return_delete_button')) {
-                        ?>
+                            <?php 
+                            if (permission_check('return_edit_button')) {
+                              ?>
+                              <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a> 
+                            <?php } ?>
 
-                        <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
-                      <?php } ?>
-                      
-                      
-                    </td>
-                    
-                  </tr>
 
-                  <?php
-                }
-              }
+                            <?php 
+                            if (permission_check('return_delete_button')) {
+                              ?>
+
+                              <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
+                            <?php } ?>
+                            
+                            
+                          </td>
+                          
+                        </tr>
+
+                        <?php
+                      }
+                    }
+              
               ?>
 
             </tbody>
@@ -129,7 +141,7 @@ if(!permission_check('company_product_return')){
                     <form id="form_edit_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
 
                   
-  <div class="form-group row">
+ <div class="form-group row">
     <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
     <div class="col-md-6 col-6">
         <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
@@ -327,7 +339,7 @@ if(!permission_check('company_product_return')){
         type:"POST",
         dataType:'json',
         success:function(data){
-          $("#ware_house_serial_no").html(data.ware_house_option);
+          $("#ware_house_serial_no").html(data.ware_house_serial_no);
           $("#products_id_no").val(data.return_info.products_id_no);
           $("#products_id_div").hide();
           $("#products_name").val(data.return_info.products_name);

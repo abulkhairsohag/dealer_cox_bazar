@@ -52,8 +52,17 @@ if(!permission_check('add_bank_deposite')){
               <?php 
               include_once('class/Database.php');
               $dbOb = new Database();
-              $query = "SELECT * FROM bank_deposite ORDER BY serial_no DESC";
-              $get_bank_deposite = $dbOb->select($query);
+              if (Session::get("zone_serial_no")){
+                  if (Session::get("zone_serial_no") != '-1') {
+                    $zone_serial = Session::get("zone_serial_no");
+                      $query = "SELECT * FROM bank_deposite WHERE zone_serial_no = '$zone_serial' ORDER BY serial_no DESC";
+                      $get_bank_deposite = $dbOb->select($query);
+                  }
+                }else{
+
+                  $query = "SELECT * FROM bank_deposite ORDER BY serial_no DESC";
+                  $get_bank_deposite = $dbOb->select($query);
+                }
               if ($get_bank_deposite) {
                 $i=0;
                 while ($row = $get_bank_deposite->fetch_assoc()) {
@@ -358,20 +367,7 @@ if(!permission_check('add_bank_deposite')){
 
   }); // end of delete 
 
-  //  $(document).on('change','#zone_serial_no',function(){
-  //    var zone_serial_no = $(this).val();
-  //    $.ajax({
-  //       url:'ajax_new_order.php',
-  //       data:{zone_serial_no:zone_serial_no},
-  //       type:'POST',
-  //       dataType:'json',
-  //       success:function(data){
-  //         $("#area_employee").html(data.area_options);
-  //         $("#zone_name").val(zone_name);
-  //         // console.log(data.area_options);
-  //       }
-  //     });
-  // });
+  
 
 
   }); // end of document ready function 

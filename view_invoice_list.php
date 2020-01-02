@@ -53,8 +53,16 @@ if(!permission_check('view_invoice_list')){
               <?php 
               include_once('class/Database.php');
               $dbOb = new Database();
-              $query = "SELECT * FROM invoice_details ORDER BY serial_no DESC";
-              $get_invoice = $dbOb->select($query);
+               if (Session::get("zone_serial_no")){
+                  if (Session::get("zone_serial_no") != '-1') {
+                    $zone_serial = Session::get("zone_serial_no");
+                    $query = "SELECT * FROM invoice_details WHERE zone_serial_no = '$zone_serial' ORDER BY serial_no DESC";
+                    $get_invoice = $dbOb->select($query);
+                  }
+                }else{
+                  $query = "SELECT * FROM invoice_details ORDER BY serial_no DESC";
+                  $get_invoice = $dbOb->select($query);
+                }
               if ($get_invoice) {
                 $i=0;
                 while ($row = $get_invoice->fetch_assoc()) {

@@ -28,6 +28,32 @@ if (!permission_check('account_report')) {
       <div class="panel-body">
 
 
+
+     <div class="form-group col-md-12" id="zone" style="display:none">
+      <div class="col-md-1"></div>
+      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Zone<span class="required" style="color: red">*</span></label>
+      <div class="col-md-4 col-sm-6 col-xs-12">
+
+        <?php 
+
+           if (Session::get("zone_serial_no")){
+              if (Session::get("zone_serial_no") != '-1') {
+                $zone_serial_no = Session::get("zone_serial_no");
+                ?>
+                <input type="text" class="form-control " id='zone_serial_no' name="zone_serial_no" value="<?php echo $zone_serial_no ?>" required="" readonly="">
+
+                <?php
+              }
+            }else{
+              ?>
+               <input type="text" class="form-control " id='zone_serial_no' name="zone_serial_no" value="-1" required="" readonly="">
+               <?php
+            }
+        
+        ?>
+      </div>
+    </div>
+
        <div class="form-group col-md-12" id="date_from">
         <div class="col-md-1"></div>
         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">From Date<span class="required" style="color: red">*</span></label>
@@ -36,6 +62,7 @@ if (!permission_check('account_report')) {
          <input type="text" class="form-control datepicker " id='from_date' name="from_date" value="<?php echo $today ?>" required="" readonly="">
        </div>
      </div>
+
 
 
 
@@ -153,20 +180,6 @@ if (permission_check('account_report')) {
                     <div class="col-md-3"></div>
                   </div>
 
-                  <div class="row" style="margin-top:10px" >
-                    <div class="col-md-3"></div>
-                    <div class="col-md-3"><h5 style="color:black">Installment Amount</h5></div>
-                    <div class="col-md-3"><h5 style="color:black" id="installment_amount_view"></h5></div>
-                    <div class="col-md-3"></div>
-                  </div>
-
-                  <div class="row" style="margin-top:10px" >
-                    <div class="col-md-3"></div>
-                    <div class="col-md-3"><h5 style="color:black">Installment Date</h5></div>
-                    <div class="col-md-3"><h5 style="color:black" id="installment_date_view"></h5></div>
-                    <div class="col-md-3"></div>
-                  </div>
-
 
                   <div class="row" style="margin-top:10px"><div class="col"> <h3 style="color:  #34495E">Pay Information</h3><hr></div></div>
 
@@ -214,6 +227,8 @@ if (permission_check('account_report')) {
       var from_date = $("#from_date").val();
       var to_date = $("#to_date").val();
       var report_type = $("#report_type").val();
+      var zone_serial_no = $("#zone_serial_no").val();
+      // alert(zone_serial_no);
       $("#show_table").html("");
 
       if (report_type == 'Balance Sheet/Cash Balance') {
@@ -221,11 +236,11 @@ if (permission_check('account_report')) {
         $.ajax({
           url: "ajax_cash_balance.php",
           method: "POST",
-          data:{from_date:from_date,to_date:to_date,report_type:report_type},
+          data:{from_date:from_date,to_date:to_date,report_type:report_type,zone_serial_no:zone_serial_no},
           dataType: "json",
           success:function(data){
 
-            var cash_balance_tbl ='<div class="row" id="print_table" ><div style="color:black" class="col-md-12"><span class="text-center"><h3><b>'+data.organization_name+'</b></h3><h5>'+data.organization_address+'</h5><h5>'+data.organization_email+', '+data.organization_mobile_no+'</h5><h5 id="show_date">'+data.show_date+'</h5></span><div class="text-center"><h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>BALANCE SHEET</b></h4> </div><br><table class="table table-responsive"><tbody><tr><td></td><td class="text-center"></td><td class="text-right"><h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span id="printing_date">'+data.printing_date+'</span></span></h5><h5 style="margin:0px ; margin-top: -8px;">Time : <span id="printing_time">'+data.printing_time+'</span></span></span></h5></td></tr></tbody></table></div> <div class="col-md-12 text-dark" style="color:black"><table class="table table-responsive table-bordered "><tbody><tr class="text-center bg-green"><td colspan="2"><h4><b>CASH IN</b></h4></td> <td  colspan="2"><h4><b>CASH OUT </b></h4></td></tr><tr class="bg-success"> <td> <h5><b>DESCRIPTION</b></h5>  </td> <td> <h5><b>AMOUNT (৳)</b></h5>  </td> <td> <h5><b>DESCRIPTION</b></h5>  </td> <td> <h5><b>AMOUNT (৳)</b></h5>  </td> </tr> <tr> <td>Delivery  </td> <td id="delivery" class="text-right"> '+data.delivery+' </td> <td>Expense Amount  </td> <td id="expense" class="text-right">'+data.expense+'</td> </tr> <tr> <td>Receive  </td> <td id="receive" class="text-right">'+data.receive+'</td>  <td>Salary Payment  </td> <td id="salary_payment" class="text-right">'+data.salary_payment+'</td> </tr> <tr> <td>Income Invoice  </td>  <td id="sell_invoice" class="text-right">'+data.cell_invoice+'</td> <td>Bank Deposit  </td>  <td id="bank_deposite" class="text-right">'+data.bank_deposite+'</td> </tr> <tr> <td>Bank Withdraw </td> <td id="bank_withdraw" class="text-right">'+data.bank_withdraw+'</td> <td>Loan Pay  </td> <td id="loan_pay" class="text-right">'+data.loan_pay+'</td>  </tr> <tr> <td>Bank Loan </td> <td id="bank_loan" class="text-right">'+data.bank_loan+'</td> <td>Expense Invoice  </td> <td id="buy_invoice" class="text-right">'+data.buy_invoice+'</td> </tr> <tr> <td>Company Commission </td> <td id="company_commission" class="text-right">'+data.company_commission+'</td> <td>Product Buy  </td> <td id="products_buy" class="text-right">'+data.products_buy+'</td> </tr> <tr> <td>Company Product Return </td> <td id="company_products_return" class="text-right">'+data.company_products_return+'</td> <td>Market Returned Product  </td>  <td id="market_returned_product" class="text-right">'+data.market_return+'</td>  </tr> <tr>  <td></td>  <td>   </td><td>Employee Commission  </td> <td id="employee_commission" class="text-right">'+data.employee_commission+'</td></tr> <tr><td>Total Cash In</td><td id="total_credit" class="text-right">'+data.total_credit+'</td><td>Total Cash Out </td> <td id="total_debit" class="text-right">'+data.total_debit+'</td></tr> <tr class="bg-success"><td colspan="4" class="text-center"> <h4><b>Cash In Hand : <span id="cash_balance">'+data.cash_balance+'</span> (Taka)</b></h4></td>  </tr> </tbody> </table> </div> </div> <div class="text-center"> <a class="text-light btn-primary btn" onclick="printContent(\'print_table\')" name="print" id="print_receipt"> <i class="fa fa-print"></i> Print Balance Sheet</a> </div>';
+            var cash_balance_tbl ='<div class="row" id="print_table" ><div style="color:black" class="col-md-12"><span class="text-center"><h3><b>'+data.organization_name+'</b></h3><h5>'+data.organization_address+'</h5><h5>'+data.organization_email+', '+data.organization_mobile_no+'</h5><h5 id="show_date">'+data.show_date+'</h5></span><div class="text-center"><h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>BALANCE SHEET</b></h4> </div><br><table class="table table-responsive"><tbody><tr><td><h5 style="margin:0px ; margin-top: -8px;">Zone : <span id="printing_date">'+data.zone_name+'</span></span></h5></td><td class="text-center"></td><td class="text-right"><h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span id="printing_date">'+data.printing_date+'</span></span></h5><h5 style="margin:0px ; margin-top: -8px;">Time : <span id="printing_time">'+data.printing_time+'</span></span></span></h5></td></tr></tbody></table></div> <div class="col-md-12 text-dark" style="color:black"><table class="table table-responsive table-bordered "><tbody><tr class="text-center bg-green"><td colspan="2"><h4><b>CASH IN</b></h4></td> <td  colspan="2"><h4><b>CASH OUT </b></h4></td></tr><tr class="bg-success"> <td> <h5><b>DESCRIPTION</b></h5>  </td> <td> <h5><b>AMOUNT (৳)</b></h5>  </td> <td> <h5><b>DESCRIPTION</b></h5>  </td> <td> <h5><b>AMOUNT (৳)</b></h5>  </td> </tr> <tr> <td>Delivery  </td> <td id="delivery" class="text-right"> '+data.delivery+' </td> <td>Product Purchase  </td> <td id="expense" class="text-right">'+data.products_buy+'</td> </tr> <tr> <td>Company Product Return </td> <td id="company_products_return" class="text-right">'+data.company_products_return+'</td> <td>Market Returned Product  </td>  <td id="market_returned_product" class="text-right">'+data.market_return+'</td>  </tr> <tr> <td>Company Commission </td> <td id="company_commission" class="text-right">'+data.company_commission+'</td>   <td>Salary Payment  </td> <td id="salary_payment" class="text-right">'+data.salary_payment+'</td> </tr> <tr> <td>Income Invoice  </td>  <td id="sell_invoice" class="text-right">'+data.cell_invoice+'</td> <td>Expense Invoice  </td> <td id="buy_invoice" class="text-right">'+data.buy_invoice+'</td> </tr> <tr> <td>Bank Withdraw </td> <td id="bank_withdraw" class="text-right">'+data.bank_withdraw+'</td><td>Bank Deposit  </td>  <td id="bank_deposite" class="text-right">'+data.bank_deposite+'</td> </tr> <tr> <td>Bank Loan </td> <td id="bank_loan" class="text-right">'+data.bank_loan+'</td>  <td>Loan Pay  </td> <td id="loan_pay" class="text-right">'+data.loan_pay+'</td> </tr> <tr>  <td></td>  <td>   </td><td>Employee Commission  </td> <td id="employee_commission" class="text-right">'+data.employee_commission+'</td></tr> <tr><td>Total Cash In</td><td id="total_credit" class="text-right">'+data.total_credit+'</td><td>Total Cash Out </td> <td id="total_debit" class="text-right">'+data.total_debit+'</td></tr> <tr class="bg-success"><td colspan="4" class="text-center"> <h4><b>Cash In Hand : <span id="cash_balance">'+data.cash_balance+'</span> (Taka)</b></h4></td>  </tr> </tbody> </table> </div> </div> <div class="text-center"> <a class="text-light btn-primary btn" onclick="printContent(\'print_table\')" name="print" id="print_receipt"> <i class="fa fa-print"></i> Print Balance Sheet</a> </div>';
             $("#show_table").html(cash_balance_tbl);
           }
         });

@@ -510,7 +510,20 @@ if (isset($_POST['report_type'])) {
  		}
  		echo json_encode($present_employee_tbl);
  	}else if($report_type == 'sales_and_dues'){
-		 $query = "SELECT * FROM `order_delivery`";
+
+ 		if (Session::get("zone_serial_no")){
+ 			if (Session::get("zone_serial_no") != '-1') {
+ 				$zone_serial = Session::get("zone_serial_no");
+ 				$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial'";
+ 				$get_zone = $dbOb->find($query);
+ 				$zone_name = $get_zone['zone_name'];
+ 				$query = "SELECT * FROM `order_delivery` WHERE zone_serial_no = '$zone_serial' ORDER BY zone_serial_no";
+ 			}
+ 		}else{
+ 			$zone_name = "All Zone";
+ 			$query = "SELECT * FROM `order_delivery`  ORDER BY zone_serial_no";
+ 		}
+		 //  $query = "SELECT * FROM `order_delivery`";
 		 $get_order = $dbOb->select($query);
 
 		 $sales_dues_tbl = '<div  id="print_table" style="color:black">
@@ -519,227 +532,215 @@ if (isset($_POST['report_type'])) {
 			 <h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
 			 <h5>'.$show_date.'</h5>
 			 
-	 </span>
-	 <div class="text-center">
-		 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>ALL SALES MAN\'S SALES & DUES</b></h4>
-	 </div>
-	 <br>
-		 <table class="table table-responsive">
-			 <tbody>
-				 <tr>
-					 <td>
-						 
-					 </td>
-					 <td class="text-center">
-						 
-					 </td>
-					 <td class="text-right">
-						 <h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
-						 <h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
-					 </td>
-				 </tr>
-			 
-			 </tbody>
-		 </table>
-	 <!--     
-	 <hr> -->
-	 <table class="table table-bordered table-responsive">
+					 </span>
+					 <div class="text-center">
+						 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>ALL SALES MAN\'S SALES & DUES</b></h4>
+					 </div>
+					 <br>
+						 <table class="table table-responsive">
+							 <tbody>
+								 <tr>
+									 <td>
+										 <h5 style="margin:0px ; margin-top: -8px;">Zone Name : <span></span>'.$zone_name.'</span></h5>
+									 </td>
+									 <td class="text-center">
+										 
+									 </td>
+									 <td class="text-right">
+										 <h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
+										 <h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
+									 </td>
+								 </tr>
+							 
+							 </tbody>
+						 </table>
+					 <!--     
+					 <hr> -->
+					 <table class="table table-bordered table-responsive">
 						  <thead style="background:#4CAF50; color:white" >
 						  <tr>
 						  <th scope="col">SL No</th>
 						  <th scope="col">Sales Man</th>
 						  <th scope="col">Delivery Man</th>
+						  <th scope="col">Zone Name</th>
 						  <th scope="col">Order No</th>
 						  <th scope="col">Shop / (Area)</th>
-						  <th scope="col">Total TP</th>
-						  <th scope="col">Total VAT</th>
-						  <th scope="col">Total TP+VAT </th>
 						  <th scope="col">Payable</th>
 						  <th scope="col">Pay</th>
 						  <th scope="col">Due</th>
-						  <th scope="col">Order</th>
 						  <th scope="col">Delivery</th>
 						</tr>
 						  </thead>
 						  <tbody>';
-		$i = 0;
-		$total_tp = 0;
-		$total_vat = 0;
-		$total_tp_vat = 0;
-		$total_payable = 0;
-		$total_pay = 0;
-		$total_due = 0;
-		 if ($get_order) {
-			 
+				$i = 0;
+				$total_tp = 0;
+				$total_vat = 0;
+				$total_tp_vat = 0;
+				$total_payable = 0;
+				$total_pay = 0;
+				$total_due = 0;
+				 if ($get_order) {
+					 
 
-			 while ($row = $get_order->fetch_assoc()) {
-				 $order_date = strtotime($row['order_date']);
-				 if ($order_date >= $from_date &&  $order_date <= $to_date) {
-					 $i++;
-					 if ($row['due']==0) {
-						$pay =  '<span class="badge bg-green">Paid</span>';
-					 }else{
-						$pay =  $row['due'];
+					 while ($row = $get_order->fetch_assoc()) {
+						 $delivery_date = strtotime($row['delivery_date']);
+						 if ($delivery_date >= $from_date &&  $delivery_date <= $to_date) {
+							 $i++;
+							 if ($row['due']==0) {
+								$pay =  '<span class="badge bg-green">Paid</span>';
+							 }else{
+								$pay =  $row['due'];
+							 }
+							
+							 $sales_dues_tbl .= ' <tr align="left" style="color:black">
+													<td>'.$i.'</td>
+													<td>'.$row['order_employee_id'].'<br>'.$row['order_employee_name'].'</td>
+													<td>'.$row['delivery_employee_id'].'<br>'.$row['delivery_employee_name'].'</td>
+													<td>'.$row['zone_name'].'</td>
+													<td>'.$row['order_no'].'</td>
+													<td>'.$row['shop_name'].'<br>('.$row['area'].')</td>
+													<td>'.round($row['payable_amt'],2).'</td>
+													<td>'.round($row['pay'],2).'</td>
+													<td >'.round($pay,2).'</td>
+													<td>'.$row['delivery_date'].'</td>
+												</tr>';
+							$total_payable += $row['payable_amt'];
+							$total_pay += $row['pay'];
+							$total_due += $row['due'];
+						 }
+						//  end of inner if statement where date is compared
 					 }
-					
-					 $sales_dues_tbl .= ' <tr align="left" style="color:black">
-											<td>'.$i.'</td>
-											<td>'.$row['order_employee_id'].'<br>'.$row['order_employee_name'].'</td>
-											<td>'.$row['delivery_employee_id'].'<br>'.$row['delivery_employee_name'].'</td>
-											<td>'.$row['order_no'].'</td>
-											<td>'.$row['shop_name'].'<br>('.$row['area'].')</td>
-											<td>'.round($row['net_total_tp'],3) .'</td>
-											<td>'.round($row['net_total_vat'],3) .'</td>
-											<td>'.round(($row['net_total_tp']*1+$row['net_total_vat']*1),3) .'</td>
-											<td>'.round($row['payable_amt'],2).'</td>
-											<td>'.round($row['pay'],2).'</td>
-											<td >'.round($pay,2).'</td>
-											<td>'.$row['order_date'].'</td>
-											<td>'.$row['delivery_date'].'</td>
-										</tr>';
-					$total_tp += $row['net_total_tp'];
-					$total_vat += $row['net_total_vat'];
-					$total_tp_vat += ($row['net_total_tp']*1+$row['net_total_vat']*1);
-					$total_payable += $row['payable_amt'];
-					$total_pay += $row['pay'];
-					$total_due += $row['due'];
+					//  end of while loop
 				 }
-				//  end of inner if statement where date is compared
-			 }
-			//  end of while loop
-		 }
 
-		if ($i == 0) {
-			 $sales_dues_tbl .= '<tr>
-									<td colspan="13"  align="center" style="color:red">No Order Found</td>
-								</tr>';
-			 
-			}else{
-				$sales_dues_tbl .= '<tr class="bg-success">
-									<td colspan="5"  align="right" style="color:red">Total</td>
-									<td colspan=""  align="left" style="color:red">'.$total_tp.'</td>
-									<td colspan=""  align="left" style="color:red">'.$total_vat.'</td>
-									<td colspan=""  align="left" style="color:red">'.$total_tp_vat.'</td>
-									<td colspan=""  align="left" style="color:red">'.$total_payable.'</td>
-									<td colspan=""  align="left" style="color:red">'.$total_pay.'</td>
-									<td colspan="3"  align="left" style="color:red">'.$total_due.'</td>
-								</tr>';
-			}
-			$sales_dues_tbl .= '  </tbody>
-			</table>';
-		 $sales_dues_tbl .= '</div><div><a class="text-light btn-success btn" onclick="printContent(\''.$print_table.'\')" name="print" id="print_receipt">Print</a>
-                
-		 </div>';
-		 echo json_encode($sales_dues_tbl);
+				if ($i == 0) {
+					 $sales_dues_tbl .= '<tr>
+											<td colspan="10"  align="center" style="color:red">No Order Found</td>
+										</tr>';
+					 
+					}else{
+						$sales_dues_tbl .= '<tr class="bg-success">
+											<td colspan="6"  align="right" style="color:red">Total</td>
+											<td colspan=""  align="left" style="color:red">'.$total_payable.'</td>
+											<td colspan=""  align="left" style="color:red">'.$total_pay.'</td>
+											<td colspan="2"  align="left" style="color:red">'.$total_due.'</td>
+										</tr>';
+					}
+					$sales_dues_tbl .= '  </tbody>
+					</table>';
+				 $sales_dues_tbl .= '</div><div><a class="text-light btn-success btn" onclick="printContent(\''.$print_table.'\')" name="print" id="print_receipt">Print</a>
+		                
+				 </div>';
+				 echo json_encode($sales_dues_tbl);
 		 
 	 }else if ($report_type == 'empwise_dues') {
 		
-		$query = "SELECT * FROM `order_delivery` WHERE order_employee_id = '$employee_id'" ;
-		 $get_order = $dbOb->select($query);
+			$query = "SELECT * FROM `order_delivery` WHERE order_employee_id = '$employee_id'" ;
+			 $get_order = $dbOb->select($query);
 
-		 $sales_dues_tbl = '<div  id="print_table" style="color:black">
-		 <span class="text-center">
-			 <h3><b>'.strtoupper($company_profile['organization_name']).'</b></h3>
-			 <h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
-			 <h5>'.$show_date.'</h5>
-			 
-	 </span>
-	 <div class="text-center">
-		 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>SALES MAN WISE DUES</b></h4>
-	 </div>
-	 <br>
-		 <table class="table table-responsive">
-			 <tbody>
-				 <tr>
-					 <td class="text-left">
-					 <h5 style="margin:0px ; margin-top: -8px;">Employee ID : <span></span>'.$employee_id.'</span></h5>
-					 <h5 style="margin:0px ; margin-top: -8px;">Name : <span></span>'.$emp_name.'</span></h5>
-					 <h5 style="margin:0px ; margin-top: -8px;">Mobile No : <span></span>'.$emp_mobile.'</span></h5>
-					 </td>
-					 <td class="text-center">
+			 $sales_dues_tbl = '<div  id="print_table" style="color:black">
+					 <span class="text-center">
+						 <h3><b>'.strtoupper($company_profile['organization_name']).'</b></h3>
+						 <h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
+						 <h5>'.$show_date.'</h5>
 						 
-					 </td>
-					 <td class="text-right">
-						 <h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
-						 <h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
-					 </td>
-				 </tr>
-			 
-			 </tbody>
-		 </table>
-	 <!--     
-	 <hr> -->
-	 <table class="table table-bordered table-responsive">
-						  <thead style="background:#4CAF50; color:white" >
-						  <tr>
-						  <th scope="col">SL No</th>
-						  <th scope="col">Order No</th>
-						  <th scope="col">Shop / (Area)</th>
-						  <th scope="col">Delivery Man</th>
-						  <th scope="col">Payable</th>
-						  <th scope="col">Pay</th>
-						  <th scope="col">Due</th>
-						  <th scope="col">Order</th>
-						  <th scope="col">Delivery</th>
-						</tr>
-						  </thead>
-						  <tbody>';
-		$i = 0;
-		
-		$total_payable = 0;
-		$total_pay = 0;
-		$total_due = 0;
-		 if ($get_order) {
-			 
+				 </span>
+				 <div class="text-center">
+					 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>SALES MAN WISE DUES</b></h4>
+				 </div>
+				 <br>
+					 <table class="table table-responsive">
+						 <tbody>
+							 <tr>
+								 <td class="text-left">
+								 <h5 style="margin:0px ; margin-top: -8px;">Employee ID : <span></span>'.$employee_id.'</span></h5>
+								 <h5 style="margin:0px ; margin-top: -8px;">Name : <span></span>'.$emp_name.'</span></h5>
+								 <h5 style="margin:0px ; margin-top: -8px;">Mobile No : <span></span>'.$emp_mobile.'</span></h5>
+								 </td>
+								 <td class="text-center">
+									 
+								 </td>
+								 <td class="text-right">
+									 <h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
+									 <h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
+								 </td>
+							 </tr>
+						 
+						 </tbody>
+					 </table>
+				 <!--     
+				 <hr> -->
+				 <table class="table table-bordered table-responsive">
+									  <thead style="background:#4CAF50; color:white" >
+									  <tr>
+									  <th scope="col">SL No</th>
+									  <th scope="col">Order No</th>
+									  <th scope="col">Shop / (Area)</th>
+									  <th scope="col">Zone</th>
+									  <th scope="col">Delivery Man</th>
+									  <th scope="col">Payable</th>
+									  <th scope="col">Pay</th>
+									  <th scope="col">Due</th>
+									  <th scope="col">Delivery</th>
+									</tr>
+									  </thead>
+									  <tbody>';
+					$i = 0;
+					
+					$total_payable = 0;
+					$total_pay = 0;
+					$total_due = 0;
+					 if ($get_order) {
+						 
 
-			 while ($row = $get_order->fetch_assoc()) {
-				 $order_date = strtotime($row['order_date']);
-				 if ($order_date >= $from_date &&  $order_date <= $to_date && $row['due'] > 0) {
-					 $i++;
-					 if ($row['due']>0) {
-						 $color = 'red';
-					 }else{
-						 $color = 'black';
+						 while ($row = $get_order->fetch_assoc()) {
+							 $delivery_date = strtotime($row['delivery_date']);
+							 if ($delivery_date >= $from_date &&  $delivery_date <= $to_date && $row['due'] > 0) {
+								 $i++;
+								 if ($row['due']>0) {
+									 $color = 'red';
+								 }else{
+									 $color = 'black';
+								 }
+								 $sales_dues_tbl .= ' <tr align="left" style="color:black">
+														<td>'.$i.'</td>
+														<td>'.$row['order_no'].'</td>
+														<td>'.$row['shop_name'].'<br>('.$row['area'].')</td>
+														<td>'.$row['zone_name'].'</td>
+														<td>'.$row['delivery_employee_id'].'<br>'.$row['delivery_employee_name'].'</td>
+														<td>'.$row['payable_amt'].'</td>
+														<td>'.$row['pay'].'</td>
+														<td>'.$row['due'].'</td>
+														<td>'.$row['delivery_date'].'</td>
+													</tr>';
+								$total_payable += $row['payable_amt'];
+								$total_pay += $row['pay'];
+								$total_due += $row['due'];
+							 }
+							//  end of inner if statement where date is compared
+						 }
+						//  end of while loop
 					 }
-					 $sales_dues_tbl .= ' <tr align="left" style="color:black">
-											<td>'.$i.'</td>
-											<td>'.$row['order_no'].'</td>
-											<td>'.$row['shop_name'].'<br>('.$row['area'].')</td>
-											<td>'.$row['delivery_employee_id'].'<br>'.$row['delivery_employee_name'].'</td>
-											<td>'.$row['payable_amt'].'</td>
-											<td>'.$row['pay'].'</td>
-											<td>'.$row['due'].'</td>
-											<td>'.$row['order_date'].'</td>
-											<td>'.$row['delivery_date'].'</td>
-										</tr>';
-					$total_payable += $row['payable_amt'];
-					$total_pay += $row['pay'];
-					$total_due += $row['due'];
-				 }
-				//  end of inner if statement where date is compared
-			 }
-			//  end of while loop
-		 }
 
-		if ($i == 0) {
-			 $sales_dues_tbl .= '<tr>
-									<td colspan="9"  align="center" style="color:red">No Order Found</td>
-								</tr>';
-			 
-			}else{
-				$sales_dues_tbl .= '<tr class="bg-success">
-									<td colspan="4"  align="right" style="color:red">Total</td>
-									<td colspan=""  align="left" style="color:red">'.$total_payable.'</td>
-									<td colspan=""  align="left" style="color:red">'.$total_pay.'</td>
-									<td colspan="3"  align="left" style="color:red">'.$total_due.'</td>
-								</tr>';
-			}
-			$sales_dues_tbl .= '  </tbody>
-			</table>';
-		 $sales_dues_tbl .= '</div><div><a class="text-light btn-success btn" onclick="printContent(\''.$print_table.'\')" name="print" id="print_receipt">Print</a>
-                
-		 </div>';
-		 echo json_encode($sales_dues_tbl);
+					if ($i == 0) {
+						 $sales_dues_tbl .= '<tr>
+												<td colspan="9"  align="center" style="color:red">No Order Found</td>
+											</tr>';
+						 
+						}else{
+							$sales_dues_tbl .= '<tr class="bg-success">
+												<td colspan="5"  align="right" style="color:red">Total</td>
+												<td colspan=""  align="left" style="color:red">'.$total_payable.'</td>
+												<td colspan=""  align="left" style="color:red">'.$total_pay.'</td>
+												<td colspan="3"  align="left" style="color:red">'.$total_due.'</td>
+											</tr>';
+						}
+						$sales_dues_tbl .= '  </tbody>
+						</table>';
+					 $sales_dues_tbl .= '</div><div><a class="text-light btn-success btn" onclick="printContent(\''.$print_table.'\')" name="print" id="print_receipt">Print</a>
+			                
+					 </div>';
+					 echo json_encode($sales_dues_tbl);
 
 	 }else if ($report_type == 'sales_man_wise_party_coverage') {
 		
@@ -971,15 +972,21 @@ if (isset($_POST['report_type'])) {
 		 </div>';
 		 echo json_encode($sales_dues_tbl);
 
-	 }
-
-
-	 else if ($report_type == 'emp_wise_sales') {
+	 }else if ($report_type == 'sales_summery') {
 
 
 			$net_total_payable = 0 ;
-		
-			if ($employee_id_sales == 'all_employee') {
+		$zone_name = "";
+			if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                	$zone_serial = Session::get("zone_serial_no");
+                	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial'";
+                	$get_zone = $dbOb->find($query);
+                	$zone_name = $get_zone['zone_name'];
+                }
+            }else{
+            		$zone_name = "All Zone";
+            }
 				$i = 0;
 				$emp_id = '';
 				$emp_name = '';
@@ -998,7 +1005,7 @@ if (isset($_POST['report_type'])) {
 					<tbody>
 						<tr>
 							<td class="text-left">
-							
+							<h5 style="margin:0px ; margin-top: -8px;">Zone Name : <span></span>'.$zone_name.'</span></h5>
 							</td>
 							<td class="text-center">
 								
@@ -1020,24 +1027,41 @@ if (isset($_POST['report_type'])) {
 								 <th scope="col">Sales Man\'s ID</th>
 								 <th scope="col">Sales Man\'s Name</th>
 								 <th scope="col">Sale Amount (Payable)</th>
+								 <th scope="col">Paid</th>
+								 <th scope="col">Due</th>
 							   </tr>
 								 </thead>
 								 <tbody>';
-				$query = "SELECT  DISTINCT order_employee_id FROM `order_delivery` " ;
+
+	            $query = "SELECT  DISTINCT order_employee_id FROM `order_delivery`" ;
 				$get_emp = $dbOb->select($query);
 				if ($get_emp) {
 					while ($emp = $get_emp->fetch_assoc()) {
 						
 						$total_payable = 0;
+						$total_pay = 0;
+						$total_due = 0;
 						$emp_id = $emp['order_employee_id'];
-						$query = "SELECT * FROM order_delivery WHERE order_employee_id = '$emp_id'";
+
+						if (Session::get("zone_serial_no")){
+			                if (Session::get("zone_serial_no") != '-1') {
+			                	$zone_serial = Session::get("zone_serial_no");
+								$query = "SELECT * FROM order_delivery WHERE order_employee_id = '$emp_id' AND  zone_serial_no = '$zone_serial' " ;
+			                }
+			            }else{
+							$query = "SELECT * FROM order_delivery WHERE order_employee_id = '$emp_id'";
+			            }
+
+
 						$emp_name = '';
 						$get_orders = $dbOb->select($query);
 						if ($get_orders) {
 							while ($row = $get_orders->fetch_assoc()) {
-								$order_date = strtotime($row['order_date']);
-								if ($order_date >= $from_date &&  $order_date <= $to_date) {
+								$delivery_date = strtotime($row['delivery_date']);
+								if ($delivery_date >= $from_date &&  $delivery_date <= $to_date) {
 									$total_payable += $row['payable_amt'];
+									$total_pay += $row['pay'];
+									$total_due += $row['due'];
 									$emp_name = $row['order_employee_name'];
 								}
 							}
@@ -1049,6 +1073,8 @@ if (isset($_POST['report_type'])) {
 											<td>'.$emp_id.'</td>
 											<td>'.$emp_name.'</td>
 											<td>'.$total_payable.'</td>
+											<td>'.$total_pay.'</td>
+											<td>'.$total_due.'</td>
 										</tr>';
 							
 						}
@@ -1058,11 +1084,11 @@ if (isset($_POST['report_type'])) {
 
 				if ($i == 0) {
 					$sales_dues_tbl .= '<tr>
-										   <td colspan="4"  align="center" style="color:red">No Record Found</td>
+										   <td colspan="6"  align="center" style="color:red">No Record Found</td>
 									   </tr>';
 				   }else{
 					$sales_dues_tbl .= ' <tr style="color:red" class="bg-success">
-											<td align="right"  colspan="3">Total Amount</td>
+											<td align="right"  colspan="5">Total Amount</td>
 											<td>'.$net_total_payable.'</td>
 										</tr>';
 
@@ -1079,94 +1105,7 @@ if (isset($_POST['report_type'])) {
 
 			//end of all employee 
 			//  start of individual employee report
-		}else{
-			
-				$query = "SELECT * FROM employee_main_info where id_no = '$employee_id_sales'";
-				$get_emp = $dbOb->select($query);
-
-				$emp_name = '';
-				$emp_mobile = '';
-				$emp = '';
-				
-				if ($get_emp) {
-					$emp = $get_emp->fetch_assoc();
-				}
-			
-				$emp_id = $employee_id_sales;
-				$emp_name = $emp['name'];
-				$emp_mobile = $emp['mobile_no'];
-
-				$sales_dues_tbl = '<div  id="print_table" style="color:black">
-									<span class="text-center">
-										<h3><b>'.strtoupper($company_profile['organization_name']).'</b></h3>
-										<h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
-										<h5>'.$show_date.'</h5>
-										
-								</span>
-								<div class="text-center">
-									<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>SALES MAN WISE SALES SUMMERY</b></h4>
-								</div>
-								<br>
-									<table class="table table-responsive">
-										<tbody>
-											<tr>
-												<td class="text-left">
-												<h5 style="margin:0px ; margin-top: -8px;">Delivery Man ID : <span></span>'.$emp_id.'</span></h5>
-												<h5 style="margin:0px ; margin-top: -8px;">Name : <span></span>'.$emp_name.'</span></h5>
-												<h5 style="margin:0px ; margin-top: -8px;">Mobile No : <span></span>'.$emp_mobile.'</span></h5>
-												</td>
-												<td class="text-center">
-													
-												</td>
-												<td class="text-right">
-													<h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
-													<h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
-												</td>
-											</tr>
-										
-										</tbody>
-									</table>
-								<!--     
-								<hr> -->
-								<table class="table table-bordered table-responsive">
-													<thead style="background:#4CAF50; color:white" >
-													<tr>
-													<th scope="col" class="text-center">Total Sales Amount (Payable Amount)</th>
-													</tr>
-													</thead>
-													<tbody>';
-				$total_payable = 0;
-				$net_total_payable = 0 ;
-				$query = "SELECT * FROM order_delivery WHERE order_employee_id = '$emp_id'";
-				$get_orders = $dbOb->select($query);
-				if ($get_orders) {
-					while ($row = $get_orders->fetch_assoc()) {
-						$order_date = strtotime($row['order_date']);
-						if ($order_date >= $from_date &&  $order_date <= $to_date) {
-							$total_payable += $row['payable_amt'];
-						}
-					}
-				}
-				if ($total_payable > 0) {
-					
-					$sales_dues_tbl .= ' <tr align="center" style="color:black">
-											<td>'.$total_payable.'</td>
-										</tr>';
-					
-				}else{
-					$sales_dues_tbl .= '<tr>
-									<td  align="center" style="color:red">No Record Found</td>
-								</tr>';
-				}
-
-				$sales_dues_tbl .= '  </tbody>
-			</table>';
-		 $sales_dues_tbl .= '</div><div><a class="text-light btn-success btn" onclick="printContent(\''.$print_table.'\')" name="print" id="print_receipt">Print</a>
-                
-		 </div>';
-		 echo json_encode($sales_dues_tbl);
-
-		}
+		
 
 	 }
 

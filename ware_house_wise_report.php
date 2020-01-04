@@ -33,13 +33,28 @@ if(!permission_check('product_report')){
       <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Ware House<span class="required" style="color: red">*</span></label>
       <div class="col-md-4 col-sm-6 col-xs-12">
         
-        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
-          <option value="">Please Select One</option>
+            <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
+          
           <?php
+          if (Session::get("ware_house_serial_login")){
+                if (Session::get("ware_house_serial_login") != '-1') {
+                
+                ?>
+                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                <?php
+                }else{
+                  ?>
+                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                  <?php
+                }
+              }else{
 
           $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
           $get_ware_house = $dbOb->select($query);
           if ($get_ware_house) {
+            ?>
+                <option value="">Please Select One</option>
+            <?php
             while ($row = $get_ware_house->fetch_assoc()) {
 
             ?>
@@ -49,7 +64,12 @@ if(!permission_check('product_report')){
             ><?php echo $row['ware_house_name']; ?></option>
             <?php
           }
+        }else{
+          ?>
+            <option value="">Please Add Ware House First</option>
+          <?php
         }
+      }
 
         ?>
 

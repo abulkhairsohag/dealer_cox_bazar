@@ -11,6 +11,9 @@ $dbOb = new Database();
          $ware_house_serial_no = Session::get("ware_house_serial_login");
          $zone_serial_no = Session::get("zone_serial_no");
       }
+      $admin = false;
+    } else{
+        $admin = true;
     }
 
 $company = 0;
@@ -159,20 +162,20 @@ if ($delivery_complete<1) {
         $query = "SELECT * FROM delivered_order_payment_history ";
 
         }
-	$get_order_delivery = $dbOb->select($query);
+  $get_order_delivery = $dbOb->select($query);
 
-	if ($get_order_delivery) {
-		while ($row = $get_order_delivery->fetch_assoc()) {
-			if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
-				$delivery = $delivery*1 + $row['pay_amt']*1;
-			}
-		}
+  if ($get_order_delivery) {
+    while ($row = $get_order_delivery->fetch_assoc()) {
+      if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
+        $delivery = $delivery*1 + $row['pay_amt']*1;
+      }
+    }
   }
   
 
 
     
-  	// calculating cell Invoice  
+    // calculating cell Invoice  
   $cell_invoice = 0;
   
   if ($zone_serial_no) {
@@ -180,15 +183,15 @@ if ($delivery_complete<1) {
   }else{
     $query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice'";
   }
- 		$get_sell_invoice = $dbOb->select($query);
- 		if ($get_sell_invoice) {
- 			while ($row = $get_sell_invoice->fetch_assoc()) {
- 				if (strtotime($row['invoice_date']) >= $from_date && strtotime($row['invoice_date']) <= $to_date) {
-					$cell_invoice += 1* $row['pay'];
- 				}
- 			}
+    $get_sell_invoice = $dbOb->select($query);
+    if ($get_sell_invoice) {
+      while ($row = $get_sell_invoice->fetch_assoc()) {
+        if (strtotime($row['invoice_date']) >= $from_date && strtotime($row['invoice_date']) <= $to_date) {
+          $cell_invoice += 1* $row['pay'];
+        }
+      }
 
- 		}
+    }
 // die($zone_serial_no.'sohag');
 
   // calculating Bank Withdraw 
@@ -197,16 +200,16 @@ if ($delivery_complete<1) {
     }else{
       $query = "SELECT * FROM bank_withdraw";
   }
-	$bank_withdraw = 0;
-	$get_bank_withdraw = $dbOb->select($query);
+  $bank_withdraw = 0;
+  $get_bank_withdraw = $dbOb->select($query);
 
-	if ($get_bank_withdraw) {
-		while ($row = $get_bank_withdraw->fetch_assoc()) {
-			if (strtotime($row['cheque_active_date']) >= $from_date && strtotime($row['cheque_active_date']) <= $to_date) {
-				$bank_withdraw = 1*$bank_withdraw + 1*$row['amount'];
-			}
-		}
-	}
+  if ($get_bank_withdraw) {
+    while ($row = $get_bank_withdraw->fetch_assoc()) {
+      if (strtotime($row['cheque_active_date']) >= $from_date && strtotime($row['cheque_active_date']) <= $to_date) {
+        $bank_withdraw = 1*$bank_withdraw + 1*$row['amount'];
+      }
+    }
+  }
 
 
 
@@ -217,16 +220,16 @@ if ($delivery_complete<1) {
     }else{
       $query = "SELECT * FROM bank_loan";
   }
-	$bank_loan = 0;
-	$get_bank_loan = $dbOb->select($query);
+  $bank_loan = 0;
+  $get_bank_loan = $dbOb->select($query);
 
-	if ($get_bank_loan) {
-		while ($row = $get_bank_loan->fetch_assoc()) {
-			if (strtotime($row['loan_taken_date']) >= $from_date && strtotime($row['loan_taken_date']) <= $to_date) {
-				$bank_loan = 1*$bank_loan + 1*$row['total_amount'];
-			}
-		}
-	}
+  if ($get_bank_loan) {
+    while ($row = $get_bank_loan->fetch_assoc()) {
+      if (strtotime($row['loan_taken_date']) >= $from_date && strtotime($row['loan_taken_date']) <= $to_date) {
+        $bank_loan = 1*$bank_loan + 1*$row['total_amount'];
+      }
+    }
+  }
 
 
   // calculating company Comission 
@@ -237,31 +240,31 @@ if ($delivery_complete<1) {
       $query = "SELECT * FROM company_commission";
     
   }
-	$company_commission = 0;
-	$get_company_comission = $dbOb->select($query);
+  $company_commission = 0;
+  $get_company_comission = $dbOb->select($query);
 
-	if ($get_company_comission) {
-		while ($row = $get_company_comission->fetch_assoc()) {
-			
-			if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
+  if ($get_company_comission) {
+    while ($row = $get_company_comission->fetch_assoc()) {
+      
+      if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
 
-				if ($row['target_product'] <= $row['target_sell_amount']) {
-					$target = $row['target_product'];
-					$target_sell_amount = $row['target_sell_amount'];
+        if ($row['target_product'] <= $row['target_sell_amount']) {
+          $target = $row['target_product'];
+          $target_sell_amount = $row['target_sell_amount'];
 
-						$extra_sell = $target_sell_amount - $target ;
-						$comission_persent = $row['comission_persent'];
-						$comission_amount = $extra_sell * $comission_persent / 100 ;
-						$company_commission = 1*$company_commission + 1*$comission_amount;
+            $extra_sell = $target_sell_amount - $target ;
+            $comission_persent = $row['comission_persent'];
+            $comission_amount = $extra_sell * $comission_persent / 100 ;
+            $company_commission = 1*$company_commission + 1*$comission_amount;
 
 
-				}
+        }
 
-			}
-		}
-	}
+      }
+    }
+  }
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   // calculating company Products Return
    if ($zone_serial_no) {
@@ -271,16 +274,16 @@ if ($delivery_complete<1) {
       $query = "SELECT * FROM company_products_return";
     
   }
-	$company_products_return = 0;
-	$get_company_products_return = $dbOb->select($query);
+  $company_products_return = 0;
+  $get_company_products_return = $dbOb->select($query);
 
-	if ($get_company_products_return) {
-		while ($row = $get_company_products_return->fetch_assoc()) {
-			if (strtotime($row['return_date']) >= $from_date && strtotime($row['return_date']) <= $to_date) {
-				$company_products_return = 1*$company_products_return + 1*$row['total_price'];
-			}
-		}
-	}
+  if ($get_company_products_return) {
+    while ($row = $get_company_products_return->fetch_assoc()) {
+      if (strtotime($row['return_date']) >= $from_date && strtotime($row['return_date']) <= $to_date) {
+        $company_products_return = 1*$company_products_return + 1*$row['total_price'];
+      }
+    }
+  }
 
    $total_credit = 1*$delivery + 1*$cell_invoice +1*$bank_withdraw +1*$bank_loan +1*$company_commission +1*$company_products_return;
 
@@ -297,20 +300,20 @@ if ($delivery_complete<1) {
       $query = "SELECT * FROM employee_payments";
     
   }
-	$salary_payment = 0;
-	$get_salary_payment = $dbOb->select($query);
+  $salary_payment = 0;
+  $get_salary_payment = $dbOb->select($query);
 
-	if ($get_salary_payment) {
-		while ($row = $get_salary_payment->fetch_assoc()) {
-			if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
-				$salary_payment = 1*$salary_payment + 1*$row['salary_paid'];
-			}
-		}
-	}
+  if ($get_salary_payment) {
+    while ($row = $get_salary_payment->fetch_assoc()) {
+      if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
+        $salary_payment = 1*$salary_payment + 1*$row['salary_paid'];
+      }
+    }
+  }
 
 
 
-   // now calculating bank Deposite	
+   // now calculating bank Deposite 
     if ($zone_serial_no) {
 
       $query = "SELECT * FROM bank_deposite WHERE zone_serial_no = '$zone_serial_no'";
@@ -318,16 +321,16 @@ if ($delivery_complete<1) {
       $query = "SELECT * FROM bank_deposite";
     
   }
-	$bank_deposite = 0;
-	$get_bank_deposite = $dbOb->select($query);
+  $bank_deposite = 0;
+  $get_bank_deposite = $dbOb->select($query);
 
-	if ($get_bank_deposite) {
-		while ($row = $get_bank_deposite->fetch_assoc()) {
-			if (strtotime($row['deposite_date']) >= $from_date && strtotime($row['deposite_date']) <= $to_date) {
-				$bank_deposite = 1*$bank_deposite + 1*$row['amount'];
-			}
-		}
-	}
+  if ($get_bank_deposite) {
+    while ($row = $get_bank_deposite->fetch_assoc()) {
+      if (strtotime($row['deposite_date']) >= $from_date && strtotime($row['deposite_date']) <= $to_date) {
+        $bank_deposite = 1*$bank_deposite + 1*$row['amount'];
+      }
+    }
+  }
 
 
 
@@ -339,16 +342,16 @@ if ($delivery_complete<1) {
     }else{
       $query = "SELECT * FROM bank_loan_pay";
   }
-	$loan_pay = 0;
-	$get_loan_pay = $dbOb->select($query);
+  $loan_pay = 0;
+  $get_loan_pay = $dbOb->select($query);
 
-	if ($get_loan_pay) {
-		while ($row = $get_loan_pay->fetch_assoc()) {
-			if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
-				$loan_pay = 1*$loan_pay + 1*$row['pay_amt'];
-			}
-		}
-	}
+  if ($get_loan_pay) {
+    while ($row = $get_loan_pay->fetch_assoc()) {
+      if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
+        $loan_pay = 1*$loan_pay + 1*$row['pay_amt'];
+      }
+    }
+  }
 
 
   // calculating BUY Invoice  
@@ -359,16 +362,16 @@ if ($delivery_complete<1) {
       $query = "SELECT * FROM invoice_details WHERE invoice_option = 'Buy Invoice'";
     
   }
-	$buy_invoice = 0;
-	$get_buy_invoice = $dbOb->select($query);
+  $buy_invoice = 0;
+  $get_buy_invoice = $dbOb->select($query);
 
-	if ($get_buy_invoice) {
-		while ($row = $get_buy_invoice->fetch_assoc()) {
-			if (strtotime($row['invoice_date']) >= $from_date && strtotime($row['invoice_date']) <= $to_date) {
-				$buy_invoice = 1*$buy_invoice + 1*$row['pay'];
-			}
-		}
-	}
+  if ($get_buy_invoice) {
+    while ($row = $get_buy_invoice->fetch_assoc()) {
+      if (strtotime($row['invoice_date']) >= $from_date && strtotime($row['invoice_date']) <= $to_date) {
+        $buy_invoice = 1*$buy_invoice + 1*$row['pay'];
+      }
+    }
+  }
 
 
 
@@ -381,20 +384,20 @@ if ($delivery_complete<1) {
       $query = "SELECT * FROM product_stock WHERE quantity > 0";
     
   }
-	$products_buy = 0;
-	$get_products_buy = $dbOb->select($query);
+  $products_buy = 0;
+  $get_products_buy = $dbOb->select($query);
 
-	if ($get_products_buy) {
-		while ($row = $get_products_buy->fetch_assoc()) {
-			if (strtotime($row['stock_date']) >= $from_date && strtotime($row['stock_date']) <= $to_date) {
-				$quantity = $row['quantity'];
-				$company_price = $row['company_price'];
-				$price = $quantity * $company_price;
-				$products_buy = 1*$products_buy + 1*$price;
+  if ($get_products_buy) {
+    while ($row = $get_products_buy->fetch_assoc()) {
+      if (strtotime($row['stock_date']) >= $from_date && strtotime($row['stock_date']) <= $to_date) {
+        $quantity = $row['quantity'];
+        $company_price = $row['company_price'];
+        $price = $quantity * $company_price;
+        $products_buy = 1*$products_buy + 1*$price;
 
-			}
-		}
-	}
+      }
+    }
+  }
 
 
 
@@ -407,16 +410,16 @@ if ($delivery_complete<1) {
       $query = "SELECT * FROM market_products_return ";
     
   }
-	$market_return = 0;
-	$get_market_return = $dbOb->select($query);
+  $market_return = 0;
+  $get_market_return = $dbOb->select($query);
 
-	if ($get_market_return) {
-		while ($row = $get_market_return->fetch_assoc()) {
-			if (strtotime($row['return_date']) >= $from_date && strtotime($row['return_date']) <= $to_date) {
-				$market_return = 1*$market_return + 1*$row['total_price'];
-			}
-		}
-	}
+  if ($get_market_return) {
+    while ($row = $get_market_return->fetch_assoc()) {
+      if (strtotime($row['return_date']) >= $from_date && strtotime($row['return_date']) <= $to_date) {
+        $market_return = 1*$market_return + 1*$row['total_price'];
+      }
+    }
+  }
 
 
 
@@ -428,27 +431,27 @@ if ($delivery_complete<1) {
       $query = "SELECT * FROM employee_commission";
     
   }
-	$employee_commission = 0;
-	$get_employee_commission = $dbOb->select($query);
+  $employee_commission = 0;
+  $get_employee_commission = $dbOb->select($query);
 
-	if ($get_employee_commission) {
-		while ($row = $get_employee_commission->fetch_assoc()) {
-			
-			if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
+  if ($get_employee_commission) {
+    while ($row = $get_employee_commission->fetch_assoc()) {
+      
+      if (strtotime($row['date']) >= $from_date && strtotime($row['date']) <= $to_date) {
 
-				if ($row['sell_target'] <= $row['total_sell_amount']) {
-					$target = $row['total_sell_amount'];
-					$comission_persent = $row['comission_persent'];
-					$extra_sell = $row['total_sell_amount'] -  $row['sell_target'] ;
+        if ($row['sell_target'] <= $row['total_sell_amount']) {
+          $target = $row['total_sell_amount'];
+          $comission_persent = $row['comission_persent'];
+          $extra_sell = $row['total_sell_amount'] -  $row['sell_target'] ;
 
-					$comission = 1*$extra_sell * 1*$comission_persent / 100 ;
+          $comission = 1*$extra_sell * 1*$comission_persent / 100 ;
 
-					$employee_commission = 1*$employee_commission + 1*$comission;
-				}
+          $employee_commission = 1*$employee_commission + 1*$comission;
+        }
 
-			}
-		}
-	}
+      }
+    }
+  }
 
 
     $total_debit =  1*$salary_payment + 1*$bank_deposite + 1*$loan_pay + 1*$buy_invoice + 1*$products_buy+ 1*$market_return + 1*$employee_commission;
@@ -468,13 +471,14 @@ if ($delivery_complete<1) {
         <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="x_panel">
             <div class="x_title">
-              <h2>Summery</h2>
+              <h2>Summary</h2>
               <div class="clearfix"></div>
             </div>
             <div class="x_content">
               <div class="dashboard-widget-content">
 
                 <!-- summery section started  -->
+                <?php if($admin):?>
                 <div class="row top_tiles">
                   <div class="animated flipInY col-lg-4 col-md-4 col-sm-3 col-xs-12">
                     <div class="tile-stats" style="background: #995c00">
@@ -496,22 +500,24 @@ if ($delivery_complete<1) {
                   </div>
                   
                 </div>
-
+    <?php endif;?>
 
                 <div class="row top_tiles">
+                    <?php if($admin) :?>
                   <div class="animated flipInY col-lg-4 col-md-4 col-sm-3 col-xs-12" style="color: white">
                     <div class="tile-stats" style="background: #2A3F54">
                       <div class="count" ><?php echo $delivery_man ?></div>
                       <h4 align="center" >Delivery <br> Man</h4>
                     </div>
                   </div>
-                  <div class="animated flipInY col-lg-4 col-md-4 col-sm-3 col-xs-12" style="color: white">
+                  <?php endif; ?>
+                  <div class="animated flipInY <?php echo ($admin? 'col-lg-4 col-md-4 col-sm-3' : 'col-lg-6 col-md-6 col-sm-6') ?> col-xs-12" style="color: white">
                     <div class="tile-stats" style="background:#669999">
                       <div class="count"><?php echo $delivery_pending ?></div>
                       <h4 align="center"><br>Today Delivery <br> Pending</h4>
                     </div>
                   </div>
-                  <div class="animated flipInY col-lg-4 col-md-4 col-sm-3 col-xs-12" style="color: white">
+                  <div class="animated flipInY <?php echo ($admin? 'col-lg-4 col-md-4 col-sm-3' : 'col-lg-6 col-md-6 col-sm-6') ?> col-xs-12" style="color: white">
                     <div class="tile-stats" style="background: #b30047">
                       <div class="count"><?php echo $delivery_complete; ?></div>
                       <h4 align="center"><br>Today Delivery <br> Complete</h4>
@@ -589,38 +595,10 @@ if ($delivery_complete<1) {
             if ($get_product) {
              ?>
 
-                  <h4 style="background: #34495E; color: white; padding: 10px;text-align: center;">Product Quantity</h4>
+                 
                 
 
-              <div class="table-responsive">
-                <table class="table table-striped mb-none">
-                  <thead style="background: green;color: white">
-
-                    <tr>
-                      <th>Product Name</th>
-                      <th>Quantity</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php 
-                    while ($row = $get_product->fetch_assoc()) {
-                      if ($row['quantity']<='24' and $row['quantity']>'12' ) {
-                        $color = "#993300";
-                      }else{
-                        $color = "#ff471a";
-                      }
-                      ?>
-                      <tr style="color: <?php echo $color ?>">
-                        <td><?php echo $row['products_name'] ?></td>
-                        <td><?php echo $row['quantity'] ?></td>
-                      </tr>
-                      
-                      <?php
-                    }
-                    ?>
-                  </tbody>
-                </table>
-              </div>
+              
             <?php
           };
           ?>
@@ -638,7 +616,7 @@ if ($delivery_complete<1) {
                       <thead style="background: green;color: white">
                         <tr>
                           <th>Employee Name</th>
-                          <th>Area</th>
+                          <!--<th>Area</th>-->
 
                         </tr>
                       </thead>
@@ -653,7 +631,7 @@ if ($delivery_complete<1) {
                               ?>
                               <tr>
                                 <td><?php echo $row['name']; ?></td>
-                                <td><?php echo $row['area']; ?></td>
+                                <!--<td><?php echo $row['area']; ?></td>-->
 
                               </tr>
                               <?php
@@ -681,7 +659,7 @@ if ($delivery_complete<1) {
                       <thead style="background: green;color: white">
                         <tr>
                           <th>Employee Name</th>
-                          <th>Area</th>
+                          <!--<th>Area</th>-->
 
                         </tr>
                       </thead>
@@ -696,7 +674,7 @@ if ($delivery_complete<1) {
                               ?>
                               <tr>
                                 <td><?php echo $row['name']; ?></td>
-                                <td><?php echo $row['area']; ?></td>
+                                <!--<td><?php echo $row['area']; ?></td>-->
 
                               </tr>
                               <?php

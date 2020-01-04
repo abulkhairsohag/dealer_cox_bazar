@@ -220,14 +220,14 @@ if ($get_profile) {
 									<div class="input-group-prepend">
 										<span class="input-group-text"><i class="fas fa-user"></i></span>
 									</div>
-									<input type="text" name="username" class="form-control" placeholder="username" value="admin">
+									<input type="text" name="username" class="form-control" placeholder="username" value="">
 
 								</div>
 								<div class="input-group form-group">
 									<div class="input-group-prepend">
 										<span class="input-group-text"><i class="fas fa-key"></i></span>
 									</div>
-									<input type="password" name="password" class="form-control" placeholder="password" value="admin">
+									<input type="password" name="password" class="form-control" placeholder="password" value="">
 								</div>
 								<div class="form-group pb-5">
 									<input type="submit" name="submit" value="Login" class="btn float-right login_btn">

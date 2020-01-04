@@ -2,7 +2,7 @@
 
 
 <?php 
-if(!permission_check('product')){
+if(!permission_check('stock_list')){
   ?>
   <script>
     window.location.href = '403.php';
@@ -22,8 +22,6 @@ if(!permission_check('product')){
         <div class="x_title">
           <h2>Product List</h2>
           <div class="row float-right" align="right">
-         
-         
         </div>
         <div class="clearfix"></div>
       </div>
@@ -65,7 +63,15 @@ if(!permission_check('product')){
                     }
                 }
             }
-            $query = "SELECT * FROM product_stock WHERE quantity > 0 ORDER BY serial_no DESC";
+
+            if (Session::get("ware_house_serial_login")){
+              if (Session::get("ware_house_serial_login") != '-1') {
+                $ware_house_serial = Session::get("ware_house_serial_login");
+                $query = "SELECT * FROM product_stock WHERE quantity > 0 AND ware_house_serial_no = '$ware_house_serial' ORDER BY serial_no DESC";
+              }
+            }else{
+              $query = "SELECT * FROM product_stock WHERE quantity > 0 ORDER BY serial_no DESC";
+            }
             $get_products = $dbOb->select($query);
             if ($get_products) {
               $i=0;
@@ -90,10 +96,8 @@ if(!permission_check('product')){
                   <td><?php echo $row['stock_date']; ?></td>
 
                   <td align="center">
-
                    <?php 
                     if (in_array($row['serial_no'], $stock_serial_no)) {
-                        
                     
                     ?>
                     <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#stock_data_modal" style="margin:2px">Edit</a>
@@ -122,7 +126,6 @@ if(!permission_check('product')){
       <div class="modal-header" style="background: #006666">
         <h3 class="modal-title"  style="color: white">Update Stock Information</h3>
         <div style="float:right;">
-
         </div>
       </div>
       <div class="modal-body">
@@ -166,52 +169,52 @@ if(!permission_check('product')){
                   </div>
 
                  
-  <div class="form-group row">
-    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
-    <div class="col-md-6 col-6">
-        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
-          
-          <?php
-          if (Session::get("ware_house_serial_login")){
-                if (Session::get("ware_house_serial_login") != '-1') {
-                
-                ?>
-                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
-                <?php
-                }else{
-                  ?>
-                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
-                  <?php
-                }
-              }else{
+                  <div class="form-group row">
+                    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+                    <div class="col-md-6 col-6">
+                        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
+                          
+                          <?php
+                          if (Session::get("ware_house_serial_login")){
+                                if (Session::get("ware_house_serial_login") != '-1') {
+                                
+                                ?>
+                                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                                <?php
+                                }else{
+                                  ?>
+                                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                                  <?php
+                                }
+                              }else{
 
-          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-          $get_ware_house = $dbOb->select($query);
-          if ($get_ware_house) {
-            ?>
-                <option value="">Please Select One</option>
-            <?php
-            while ($row = $get_ware_house->fetch_assoc()) {
+                          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+                          $get_ware_house = $dbOb->select($query);
+                          if ($get_ware_house) {
+                            ?>
+                                <option value="">Please Select One</option>
+                            <?php
+                            while ($row = $get_ware_house->fetch_assoc()) {
 
-            ?>
-            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
-              echo "selected";
-            } ?>
-            ><?php echo $row['ware_house_name']; ?></option>
-            <?php
-          }
-        }else{
-          ?>
-            <option value="">Please Add Ware House First</option>
-          <?php
-        }
-      }
+                            ?>
+                            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+                              echo "selected";
+                            } ?>
+                            ><?php echo $row['ware_house_name']; ?></option>
+                            <?php
+                          }
+                        }else{
+                          ?>
+                            <option value="">Please Add Ware House First</option>
+                          <?php
+                        }
+                      }
 
-        ?>
+                        ?>
 
-    </select>
-    </div>
-  </div>
+                    </select>
+                    </div>
+                  </div>
 
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="stock_date">Stock Date
@@ -239,8 +242,6 @@ if(!permission_check('product')){
                     </div>
                   </div>
 
-
-
                 </form>
               </div>
             </div>
@@ -254,25 +255,15 @@ if(!permission_check('product')){
   </div>
 </div> <!-- End of modal for  Adding and Updating data-->
 
-
-
-    
-
-
 </div>
 </div>
 <?php include_once('include/footer.php'); ?>
 
 <script>
   $(document).ready(function(){
-    
-
 
     $(document).on('click','.edit_data',function(){
-
-    
       var serial_no_edit = $(this).attr("id");
-
       $.ajax({
         url:"ajax_edit_stock.php",
         data:{serial_no_edit:serial_no_edit},
@@ -288,9 +279,7 @@ if(!permission_check('product')){
           $("#serial_no_edit").val(serial_no_edit);
         }
       });
-
     });
-
 
       // now we are going to update and insert data 
       $(document).on('submit','#form_stock_data',function(e){
@@ -321,8 +310,6 @@ if(!permission_check('product')){
         });
     }); // end of insert and update 
   
-
-
   }); // end of document ready function 
 
 // the following function is defined for showing data into the table
@@ -336,12 +323,9 @@ function get_data_table(){
       sohag.destroy();
       $("#data_table_body").html(data_tbl);
       init_DataTables();
-
     }
   });
 }
-
 </script>
-
 </body>
 </html>

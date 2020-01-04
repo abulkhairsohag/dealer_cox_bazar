@@ -18,13 +18,22 @@ if (isset($_POST['from_date'])) {
 	$to_date = strtotime($_POST['to_date']);
 	$zone_serial_no = $_POST['zone_serial_no'];
 	// die($zone_serial_no);
-
-	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
-	$get_zone = $dbOb->select($query);
 	$ware_house_serial_no = "";
-	if ($get_zone) {
-		$ware_house_serial_no = $get_zone->fetch_assoc()['ware_house_serial_no'];
+
+	if ($zone_serial_no == -1) {
+		$zone_name = "All Zone";
+	}else{
+		$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+		$get_zone = $dbOb->select($query);
+		if ($get_zone) {
+			$zone = $get_zone->fetch_assoc();
+			$zone_name = $zone['zone_name'];
+			$ware_house_serial_no = $zone['ware_house_serial_no'];
+		}
 	}
+	
+
+	
 
 	$total_debit = 0;
 	$total_credit = 0;
@@ -62,7 +71,12 @@ if (isset($_POST['from_date'])) {
 
 	// calculating delivery 
 	$delivery = 0;
-	$query = "SELECT * FROM delivered_order_payment_history WHERE zone_serial_no = '$zone_serial_no'";
+	if ($zone_serial_no == -1) {
+
+		$query = "SELECT * FROM delivered_order_payment_history ";
+	}else{
+		$query = "SELECT * FROM delivered_order_payment_history WHERE zone_serial_no = '$zone_serial_no'";
+	}
 	$get_order_delivery = $dbOb->select($query);
 
 	if ($get_order_delivery) {
@@ -76,8 +90,11 @@ if (isset($_POST['from_date'])) {
 
 	// calculating cell Invoice  
 	$cell_invoice = 0;
-
-	$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice' AND zone_serial_no = '$zone_serial_no'";
+	if ($zone_serial_no == -1) {
+		$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice'";
+	}else{
+		$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice' AND zone_serial_no = '$zone_serial_no'";
+	}
  		$get_sell_invoice = $dbOb->select($query);
  		if ($get_sell_invoice) {
  			while ($row = $get_sell_invoice->fetch_assoc()) {
@@ -90,8 +107,12 @@ if (isset($_POST['from_date'])) {
 // die($zone_serial_no.'sohag');
 
 	// calculating Bank Withdraw 
+	if ($zone_serial_no == -1) {
+		$query = "SELECT * FROM bank_withdraw";
+	}else{
+		$query = "SELECT * FROM bank_withdraw WHERE zone_serial_no = '$zone_serial_no'";
+	}
 	$bank_withdraw = 0;
-	$query = "SELECT * FROM bank_withdraw WHERE zone_serial_no = '$zone_serial_no'";
 	$get_bank_withdraw = $dbOb->select($query);
 
 	if ($get_bank_withdraw) {
@@ -106,8 +127,12 @@ if (isset($_POST['from_date'])) {
 
 
 	// calculating Bank Loan 
+	if ($zone_serial_no == -1) {
+		$query = "SELECT * FROM bank_loan";
+	}else{
+		$query = "SELECT * FROM bank_loan WHERE zone_serial_no = '$zone_serial_no'";
+	}
 	$bank_loan = 0;
-	$query = "SELECT * FROM bank_loan WHERE zone_serial_no = '$zone_serial_no'";
 	$get_bank_loan = $dbOb->select($query);
 
 	if ($get_bank_loan) {
@@ -120,8 +145,13 @@ if (isset($_POST['from_date'])) {
 
 
 	// calculating company Comission 
+	if ($zone_serial_no == -1) {
+
+		$query = "SELECT * FROM company_commission";
+	}else{
+		$query = "SELECT * FROM company_commission WHERE zone_serial_no = '$zone_serial_no'";
+	}
 	$company_commission = 0;
-	$query = "SELECT * FROM company_commission WHERE zone_serial_no = '$zone_serial_no'";
 	$get_company_comission = $dbOb->select($query);
 
 	if ($get_company_comission) {
@@ -148,8 +178,13 @@ if (isset($_POST['from_date'])) {
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	// calculating company Products Return
+	
 	$company_products_return = 0;
-	$query = "SELECT * FROM company_products_return WHERE ware_house_serial_no = '$ware_house_serial_no'";
+	if ($zone_serial_no == -1) {
+		$query = "SELECT * FROM company_products_return ";
+	}else{
+		$query = "SELECT * FROM company_products_return WHERE ware_house_serial_no = '$ware_house_serial_no'";
+	}
 	$get_company_products_return = $dbOb->select($query);
 
 	if ($get_company_products_return) {
@@ -168,8 +203,12 @@ if (isset($_POST['from_date'])) {
 
 
    // now calculating Salary Payment
+   if ($zone_serial_no == -1) {
+	   $query = "SELECT * FROM employee_payments ";
+	}else{
+		$query = "SELECT * FROM employee_payments WHERE zone_serial_no = '$zone_serial_no'";
+	}
 	$salary_payment = 0;
-	$query = "SELECT * FROM employee_payments WHERE zone_serial_no = '$zone_serial_no'";
 	$get_salary_payment = $dbOb->select($query);
 
 	if ($get_salary_payment) {
@@ -184,7 +223,11 @@ if (isset($_POST['from_date'])) {
 
    // now calculating bank Deposite	
 	$bank_deposite = 0;
-	$query = "SELECT * FROM bank_deposite WHERE zone_serial_no = '$zone_serial_no'";
+	if ($zone_serial_no == -1) {
+		$query = "SELECT * FROM bank_deposite";
+	}else{
+		$query = "SELECT * FROM bank_deposite WHERE zone_serial_no = '$zone_serial_no'";
+	}
 	$get_bank_deposite = $dbOb->select($query);
 
 	if ($get_bank_deposite) {
@@ -200,8 +243,12 @@ if (isset($_POST['from_date'])) {
 
 
    // now calculating Loan Pay
+   if ($zone_serial_no == -1) {
+	   $query = "SELECT * FROM bank_loan_pay";
+	}else{
+		$query = "SELECT * FROM bank_loan_pay WHERE zone_serial_no = '$zone_serial_no'";
+	}
 	$loan_pay = 0;
-	$query = "SELECT * FROM bank_loan_pay WHERE zone_serial_no = '$zone_serial_no'";
 	$get_loan_pay = $dbOb->select($query);
 
 	if ($get_loan_pay) {
@@ -214,8 +261,12 @@ if (isset($_POST['from_date'])) {
 
 
 	// calculating BUY Invoice  
+	if ($zone_serial_no == -1) {
+		$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Buy Invoice'";
+	}else{
+		$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Buy Invoice' AND zone_serial_no = '$zone_serial_no'";
+	}
 	$buy_invoice = 0;
-	$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Buy Invoice' AND zone_serial_no = '$zone_serial_no'";
 	$get_buy_invoice = $dbOb->select($query);
 
 	if ($get_buy_invoice) {
@@ -230,8 +281,15 @@ if (isset($_POST['from_date'])) {
 
 
 	// calculating product buy 
+
 	$products_buy = 0;
-	$query = "SELECT * FROM product_stock WHERE quantity > 0 AND ware_house_serial_no = '$ware_house_serial_no'";
+	if ($zone_serial_no == -1) {
+		# code...
+		$query = "SELECT * FROM product_stock WHERE quantity > 0 ";
+	}else{
+
+		$query = "SELECT * FROM product_stock WHERE quantity > 0 AND ware_house_serial_no = '$ware_house_serial_no'";
+	}
 	$get_products_buy = $dbOb->select($query);
 
 	if ($get_products_buy) {
@@ -250,8 +308,12 @@ if (isset($_POST['from_date'])) {
 
 
 	// calculating Market Return Product 
+	if ($zone_serial_no == -1) {
+		$query = "SELECT * FROM market_products_return";
+	}else{
+		$query = "SELECT * FROM market_products_return WHERE zone_serial_no = '$zone_serial_no'";
+	}
 	$market_return = 0;
-	$query = "SELECT * FROM market_products_return WHERE zone_serial_no = '$zone_serial_no'";
 	$get_market_return = $dbOb->select($query);
 
 	if ($get_market_return) {
@@ -265,8 +327,14 @@ if (isset($_POST['from_date'])) {
 
 
 	// calculating EMPLOYEE Comission 
+	if ($zone_serial_no == -1) {
+
+		$query = "SELECT * FROM employee_commission";
+	}else{
+		
+		$query = "SELECT * FROM employee_commission WHERE zone_serial_no = '$zone_serial_no'";
+	}
 	$employee_commission = 0;
-	$query = "SELECT * FROM employee_commission WHERE zone_serial_no = '$zone_serial_no'";
 	$get_employee_commission = $dbOb->select($query);
 
 	if ($get_employee_commission) {
@@ -293,7 +361,7 @@ if (isset($_POST['from_date'])) {
 
     $cash_balance = 1*$total_credit - 1*$total_debit;
 
-	echo json_encode(['delivery'=>number_format($delivery,2),'own_shop_sell'=>number_format($own_shop_sell,2),'cell_invoice'=>number_format($cell_invoice,2),'bank_withdraw'=>number_format($bank_withdraw,2),'bank_loan'=>number_format($bank_loan,2),'company_commission'=>number_format($company_commission,2),'company_products_return'=>number_format($company_products_return,2),'total_debit'=>number_format($total_debit,2),'salary_payment'=>number_format($salary_payment,2),'bank_deposite'=>number_format($bank_deposite,2),'loan_pay'=>number_format($loan_pay,2),'buy_invoice'=>number_format($buy_invoice,2),'products_buy'=>number_format($products_buy,2),'market_return'=>number_format($market_return,2),'employee_commission'=>number_format($employee_commission,2),'total_credit'=>number_format($total_credit,2),'cash_balance'=>number_format($cash_balance,2),'show_date'=>$show_date,'printing_date'=>$printing_date,'printing_time'=>$printing_time,'print_table'=>$print_table,'organization_name'=>$organization_name,'organization_address'=>$organization_address,'organization_email'=>$organization_email,'organization_mobile_no'=>$organization_mobile_no]);
+	echo json_encode(['delivery'=>number_format($delivery,2),'own_shop_sell'=>number_format($own_shop_sell,2),'cell_invoice'=>number_format($cell_invoice,2),'bank_withdraw'=>number_format($bank_withdraw,2),'bank_loan'=>number_format($bank_loan,2),'company_commission'=>number_format($company_commission,2),'company_products_return'=>number_format($company_products_return,2),'total_debit'=>number_format($total_debit,2),'salary_payment'=>number_format($salary_payment,2),'bank_deposite'=>number_format($bank_deposite,2),'loan_pay'=>number_format($loan_pay,2),'buy_invoice'=>number_format($buy_invoice,2),'products_buy'=>number_format($products_buy,2),'market_return'=>number_format($market_return,2),'employee_commission'=>number_format($employee_commission,2),'total_credit'=>number_format($total_credit,2),'cash_balance'=>number_format($cash_balance,2),'show_date'=>$show_date,'printing_date'=>$printing_date,'printing_time'=>$printing_time,'print_table'=>$print_table,'organization_name'=>$organization_name,'organization_address'=>$organization_address,'organization_email'=>$organization_email,'organization_mobile_no'=>$organization_mobile_no,'zone_name'=>$zone_name]);
 } // end of if isset......
 
 ?>

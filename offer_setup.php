@@ -1,8 +1,8 @@
 <?php include_once 'include/header.php';?>
 
 <?php
-if (!permission_check('company')) {
-    ?>
+if (!permission_check('offer_setup')) {
+  ?>
   <script>
     window.location.href = '403.php';
   </script>
@@ -24,239 +24,235 @@ if (!permission_check('company')) {
 
             <?php
 
-if (permission_check('add_new_company_button')) {
-    ?>
-             <a href="" class="btn btn-primary" id="add_data" data-toggle="modal" data-target="#add_update_modal"> <span class="badge"><i class="fa fa-plus"> </i></span> Add New Offer</a>
-             <?php
-}
-?>
-         </div>
-         <div class="clearfix"></div>
-       </div>
-       <div class="x_content">
-
-        <table id="datatable-buttons" class="table table-striped table-bordered">
-          <thead>
-            <tr>
-              <th  style="text-align: center;">Sl No.</th>
-              <th  style="text-align: center;">Product ID</th>
-              <th  style="text-align: center;">Name</th>
-              <th  style="text-align: center;">With Packet</th>
-              <th  style="text-align: center;">Offer Qty</th>
-              <th  style="text-align: center;">Starts</th>
-              <th  style="text-align: center;">Ends</th>
-              <th  style="text-align: center;">Status</th></th>
-              <th style="text-align: center;">Action</th>
-            </tr>
-          </thead>
-
-
-          <tbody id="tbl_body">
-            <?php
-include_once "class/Database.php";
-$dbOb = new Database();
-$query = "SELECT * FROM offers ORDER BY serial_no DESC";
-$get_offers = $dbOb->select($query);
-if ($get_offers) {
-    $i = 0;
-    while ($row = $get_offers->fetch_assoc()) {
-        $products_id = $row['products_id'];
-        $query = "SELECT * FROM products WHERE products_id_no = '$products_id'";
-        $get_prod_name = $dbOb->select($query);
-        $products_name = '';
-        if ($get_prod_name) {
-            $products_name = $get_prod_name->fetch_assoc()['products_name'];
-        }
-        if ($row['status'] == 1) {
-            $badge = " bg-green";
-            $status = "Active";
-        }else if($row['status'] == 0){
-            $badge = " bg-red";
-            $status = "Inactive";
-        }else{
-            $badge = " bg-orange";
-            $status = "Expired";
-        }
-        $today = date('d-m-Y');
-        $serial_no = $row['serial_no'];
-        if (strtotime($row['to_date']) < strtotime($today)) {
-            $query = "UPDATE offers set status = '3' where serial_no = '$serial_no'";
-            $update = $dbOb->update($query);
-            $badge = " bg-orange";
-            $status = "Expired";
-
-        }
-        $i++;
-        ?>
-                <tr>
-                  <td><?php echo $i; ?></td>
-                  <td><?php echo $row['products_id'] ?></td>
-                  <td><?php echo $products_name ?></td>
-                  <td><?php echo $row['packet_qty'] ?></td>
-                  <td><?php echo $row['product_qty']; ?></td>
-                  <td><?php echo $row['from_date'] ?></td>
-                  <td><?php echo $row['to_date'] ?></td>
-                  <td> <span class="<?php echo $badge?>"> <?php echo $status; ?> </span></td>
-                  <td align="center">
-
-
-                   <?php
-if (permission_check('company_edit_button')) {
+            if (permission_check('add_new_offer')) {
+              ?>
+              <a href="" class="btn btn-primary" id="add_data" data-toggle="modal" data-target="#add_update_modal"> <span class="badge"><i class="fa fa-plus"> </i></span> Add New Offer</a>
+              <?php
+            }
             ?>
-                     <a  class="badge bg-blue edit_data" id="<?php echo ($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a>
-                     <?php
-}
-
-        ?>
-                   <?php
-
-        if (permission_check('company_delete_button')) {
-            ?>
-                     <a  class="badge  bg-red delete_data" id="<?php echo ($row['serial_no']) ?>"  style="margin:2px"> Delete</a>
-
-                     <?php
-}
-
-        ?>
-                 </td>
-               </tr>
-
-               <?php
-}
-}
-?>
-
-
-         </tbody>
-       </table>
-     </div>
-   </div>
- </div>
-
-
-
-
- <!-- Modal For Adding and Updating data  -->
- <div class="modal fade" id="add_update_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg " role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="background: #006666">
-        <h3 class="modal-title" id="ModalLabel" style="color: white"></h3>
-        <div style="float:right;">
-
+          </div>
+          <div class="clearfix"></div>
         </div>
+        <div class="x_content">
+
+          <table id="datatable-buttons" class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th  style="text-align: center;">Sl No.</th>
+                <th  style="text-align: center;">Product ID</th>
+                <th  style="text-align: center;">Name</th>
+                <th  style="text-align: center;">With Packet</th>
+                <th  style="text-align: center;">Offer Qty</th>
+                <th  style="text-align: center;">Starts</th>
+                <th  style="text-align: center;">Ends</th>
+                <th  style="text-align: center;">Status</th></th>
+                <th style="text-align: center;">Action</th>
+              </tr>
+            </thead>
+
+
+            <tbody id="tbl_body">
+              <?php
+              include_once "class/Database.php";
+              $dbOb = new Database();
+              $query = "SELECT * FROM offers ORDER BY serial_no DESC";
+              $get_offers = $dbOb->select($query);
+              if ($get_offers) {
+                $i = 0;
+                while ($row = $get_offers->fetch_assoc()) {
+                  $products_id = $row['products_id'];
+                  $query = "SELECT * FROM products WHERE products_id_no = '$products_id'";
+                  $get_prod_name = $dbOb->select($query);
+                  $products_name = '';
+                  if ($get_prod_name) {
+                    $products_name = $get_prod_name->fetch_assoc()['products_name'];
+                  }
+                  if ($row['status'] == 1) {
+                    $badge = " bg-green";
+                    $status = "Active";
+                  }else if($row['status'] == 0){
+                    $badge = " bg-red";
+                    $status = "Inactive";
+                  }else{
+                    $badge = " bg-orange";
+                    $status = "Expired";
+                  }
+                  $today = date('d-m-Y');
+                  $serial_no = $row['serial_no'];
+                  if (strtotime($row['to_date']) < strtotime($today)) {
+                    $query = "UPDATE offers set status = '3' where serial_no = '$serial_no'";
+                    $update = $dbOb->update($query);
+                    $badge = " bg-orange";
+                    $status = "Expired";
+
+                  }
+                  $i++;
+                  ?>
+                  <tr>
+                    <td><?php echo $i; ?></td>
+                    <td><?php echo $row['products_id'] ?></td>
+                    <td><?php echo $products_name ?></td>
+                    <td><?php echo $row['packet_qty'] ?></td>
+                    <td><?php echo $row['product_qty']; ?></td>
+                    <td><?php echo $row['from_date'] ?></td>
+                    <td><?php echo $row['to_date'] ?></td>
+                    <td> <span class="<?php echo $badge?>"> <?php echo $status; ?> </span></td>
+                    <td align="center">
+
+
+                     <?php
+                     if (permission_check('offer_edit_button')) {
+                      ?>
+                      <a  class="badge bg-blue edit_data" id="<?php echo ($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a>
+                      <?php
+                    }
+                    if (permission_check('offer_delete_button')) {
+                      ?>
+                      <a  class="badge  bg-red delete_data" id="<?php echo ($row['serial_no']) ?>"  style="margin:2px"> Delete</a>
+
+                      <?php
+                    }
+
+                    ?>
+                  </td>
+                </tr>
+
+                <?php
+              }
+            }
+            ?>
+
+
+          </tbody>
+        </table>
       </div>
-      <div class="modal-body">
-
-        <div class="row">
-          <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel" style="background: #f2ffe6">
-
-              <div class="x_content" style="background: #f2ffe6">
-                <br />
-                <!-- Form starts from here -->
-                <form id="form_edit_data" method="POST" action="" data-parsley-validate class="form-horizontal form-label-left">
+    </div>
+  </div>
 
 
 
-                                        <div class="form-group">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Select Product <span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <select required="" id="products_id" name="products_id" class="form-control col-md-7 col-xs-12" >
-                        <option value="">Select a Product</option>
-                        <?php
-                        $query = "SELECT * FROM products";
-                        $get_products = $dbOb->select($query);
-                        if ($get_products) {
+
+  <!-- Modal For Adding and Updating data  -->
+  <div class="modal fade" id="add_update_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background: #006666">
+          <h3 class="modal-title" id="ModalLabel" style="color: white"></h3>
+          <div style="float:right;">
+
+          </div>
+        </div>
+        <div class="modal-body">
+
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel" style="background: #f2ffe6">
+
+                <div class="x_content" style="background: #f2ffe6">
+                  <br />
+                  <!-- Form starts from here -->
+                  <form id="form_edit_data" method="POST" action="" data-parsley-validate class="form-horizontal form-label-left">
+
+
+
+                    <div class="form-group">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Select Product <span class="required" style="color: red">*</span></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <select required="" id="products_id" name="products_id" class="form-control col-md-7 col-xs-12" >
+                          <option value="">Select a Product</option>
+                          <?php
+                          $query = "SELECT * FROM products";
+                          $get_products = $dbOb->select($query);
+                          if ($get_products) {
                             while ($row = $get_products->fetch_assoc()) {
-                                ?>
-                                                    <option value="<?php echo $row['products_id_no'] ?>"> <?php echo $row['products_id_no'] . ', ' . $row['products_name'] ?> </option>
+                              ?>
+                              <option value="<?php echo $row['products_id_no'] ?>"> <?php echo $row['products_id_no'] . ', ' . $row['products_name'] ?> </option>
 
-                                                    <?php
-                        }
-                        }
-                        ?>
-                      </select>
+                              <?php
+                            }
+                          }
+                          ?>
+                        </select>
+                      </div>
                     </div>
-                  </div>
 
-                 
-                  <div class="form-group" id="quantity_div">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Offer With Packet<span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input  type="number" min="1" step="1" required="" id="packet_qty" name="packet_qty" class="form-control col-md-7 col-xs-12" placeholder="QTY Of Packet">
+                    
+                    <div class="form-group" id="quantity_div">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Offer With Packet<span class="required" style="color: red">*</span></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input  type="number" min="1" step="1" required="" id="packet_qty" name="packet_qty" class="form-control col-md-7 col-xs-12" placeholder="QTY Of Packet">
+                      </div>
                     </div>
-                  </div>
 
 
-                  <div class="form-group" id="quantity_div">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Offer Quantity(PCs)<span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input  type="number" min="1" step="1" required="" id="product_qty" name="product_qty" class="form-control col-md-7 col-xs-12" placeholder="Product QTY">
+                    <div class="form-group" id="quantity_div">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Offer Quantity(PCs)<span class="required" style="color: red">*</span></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input  type="number" min="1" step="1" required="" id="product_qty" name="product_qty" class="form-control col-md-7 col-xs-12" placeholder="Product QTY">
+                      </div>
                     </div>
-                  </div>
 
-              
-                  <div class="form-group" id="">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Offer Starts From<span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
+                    
+                    <div class="form-group" id="">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Offer Starts From<span class="required" style="color: red">*</span></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
 
-                    <input type="text" class="form-control datepicker " id='from_date' name="from_date" value="" required="" readonly="" placeholder="Select Start Date">
+                        <input type="text" class="form-control datepicker " id='from_date' name="from_date" value="" required="" readonly="" placeholder="Select Start Date">
+                      </div>
                     </div>
-                  </div>
-              
-                  <div class="form-group" id="">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Offer Ends AT<span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
+                    
+                    <div class="form-group" id="">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Offer Ends AT<span class="required" style="color: red">*</span></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
 
-                   <input type="text" class="form-control date" id='to_date' name="to_date" value="<?php echo $today  ?>" required="" readonly="" placeholder="Select Start Date">
-                    </div>
-                  </div>
-              
-                  <div class="form-group" id="">
+                       <input type="text" class="form-control date" id='to_date' name="to_date" value="<?php echo $today  ?>" required="" readonly="" placeholder="Select Start Date">
+                     </div>
+                   </div>
+                   
+                   <div class="form-group" id="">
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Active Status<span class="required" style="color: red">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
 
-                         <select required="" id="status" name="status" class="form-control col-md-7 col-xs-12" >
-                         <option value="1">Active</option>
-                         <option value="0">Inactive</option>
-                         </select>
-        
-                    </div>
-                  </div>
+                     <select required="" id="status" name="status" class="form-control col-md-7 col-xs-12" >
+                       <option value="1">Active</option>
+                       <option value="0">Inactive</option>
+                     </select>
+                     
+                   </div>
+                 </div>
 
-                  
-
-
-
-
-                      <div style="display: none;">
-                        <input type="number" id="edit_id" name="edit_id">
-                      </div>
+                 
 
 
 
-                      <div class="ln_solid"></div>
-                      <div class="form-group">
-                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                          <button type="reset" class="btn btn-primary" >Reset</button>
-                          <button type="submit" class="btn btn-success" id="submit_button"></button>
-                        </div>
-                      </div>
+
+                 <div style="display: none;">
+                  <input type="number" id="edit_id" name="edit_id">
+                </div>
 
 
-                    </form>
+
+                <div class="ln_solid"></div>
+                <div class="form-group">
+                  <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                    <button type="reset" class="btn btn-primary" >Reset</button>
+                    <button type="submit" class="btn btn-success" id="submit_button"></button>
                   </div>
                 </div>
-              </div>
+
+
+              </form>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
-    </div> <!-- End of modal for  Adding and Updating data-->
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div> <!-- End of modal for  Adding and Updating data-->
 
 
 
@@ -264,7 +260,7 @@ if (permission_check('company_edit_button')) {
 
 
 
-  <!-- /page content -->
+<!-- /page content -->
 
 </div>
 </div>

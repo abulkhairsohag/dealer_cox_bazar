@@ -2,13 +2,13 @@
 
 
 <?php 
-// if(!permission_check('customer_info')){
+if(!permission_check('ware_house_info')){
   ?>
-  <!-- <script>
+  <script>
     window.location.href = '403.php';
-  </script> -->
+  </script>
   <?php 
-// }
+}
 ?>
 
 <div class="right_col" role="main">
@@ -23,7 +23,7 @@
           <h2>Ware House List</h2>
           <div class="row float-right" align="right">
             <?php 
-              if (permission_check('add_customer_button')) {
+              if (permission_check('add_new_ware_house')) {
               ?>
               <a href="" class="btn btn-primary" id="add_data" data-toggle="modal" data-target="#add_update_modal"> <span class="badge"><i class="fa fa-plus"> </i></span> Add New Ware House</a>
 
@@ -65,11 +65,16 @@
                     <td><?php echo $row['address']; ?></td>
                     <td align="center">
 
-                     
+                     <?php 
+                      if (permission_check('ware_house_edit_button')) {
+                      ?>
                         <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a> 
-                      
+                      <?php 
+                      }
+                         if (permission_check('ware_house_delete_button')) {
+                      ?>
                          <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
-                     
+                         <?php } ?>
                     </td>
                   </tr>
 

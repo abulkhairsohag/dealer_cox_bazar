@@ -29,7 +29,7 @@ if(!permission_check('employee_report')){
 
         <select name="report_type" id="report_type" class="form-control">
           <option value="">Please Select One</option>
-          <option value="emp_wise_sales">Sales Man Wise Sale Summery</option>
+          <option value="sales_summery">All Sales Man's Sale Summery</option>
           <option value="sales_and_dues">All Sales Man's Sales & Dues</option>
           <option value="empwise_dues">Sales Man Wise Dues</option>
           <option value="sales_man_wise_party_coverage">Sales Man Wise Party Coverage</option>

@@ -1,6 +1,6 @@
-<?php include_once('include/header.php'); ?>
-
 <?php 
+include_once('include/header.php'); 
+
 if(!permission_check('product_wise_stock_report')){
   ?>
   <script>
@@ -8,14 +8,14 @@ if(!permission_check('product_wise_stock_report')){
   </script>
   <?php 
 }
- ?>
+?>
 
 <div class="right_col" role="main">
   <div class="row">
 
     <!-- page content -->
 
-<!-- This div is for selecting Company Name -->
+    <!-- This div is for selecting Company Name -->
     <div class="col-md-12 col-sm-12 col-xs-12">
       <div class="x_panel">
         <div class="x_content">
@@ -39,27 +39,25 @@ if(!permission_check('product_wise_stock_report')){
                   $id = $row['products_id_no'];
                   $query_product_info = "SELECT * FROM products WHERE products_id_no = '$id'";
                   $get_product_info  = $dbOb->find($query_product_info);
-                   ?>
+                  ?>
 
-                   <option value="<?php echo $row['products_id_no'] ?>"> <?php echo $get_product_info['products_name'].', '.$get_product_info['company']; ?> </option>
+                  <option value="<?php echo $row['products_id_no'] ?>"> <?php echo $get_product_info['products_name'].', '.$get_product_info['company']; ?> </option>
 
-                   <?php
-                 }
-               }
-               ?>
-
-             </select>
-           </div>
-         </div>
-       </form>
-     </div>
-   </div>
- </div>
+                  <?php
+                }
+              }
+              ?>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <!-- end of  div for selecting Company Name -->
 
-
 <!-- The following div is for showing data into data table  -->
- <div class="col-md-12 col-sm-12 col-xs-12">
+<div class="col-md-12 col-sm-12 col-xs-12">
   <div class="x_panel">
     <div class="x_title">
       <h2 style="color: black">Stock And Return Report</h2>
@@ -83,16 +81,12 @@ if(!permission_check('product_wise_stock_report')){
         </thead>
 
         <tbody id="data_table_body">
-          
 
         </tbody>
       </table>
     </div>
   </div>
 </div>
-
-
-
 
 <!-- /page content -->
 
@@ -102,10 +96,8 @@ if(!permission_check('product_wise_stock_report')){
 
 <script>
   $(document).ready(function(){
-
     $(document).on('change','#products_id_no',function(){
       var products_id_no = $(this).val();
-
       $.ajax({
         url:"ajax_productwise_stock_report.php",
         data:{'products_id_no':products_id_no},
@@ -115,17 +107,10 @@ if(!permission_check('product_wise_stock_report')){
           sohag.destroy();
           $("#data_table_body").html(data_tbl);
           init_DataTables();  
-
         }
       });
-      
     });
-
   }); // end of document ready function 
-
-
-
 </script>
-
 </body>
 </html>

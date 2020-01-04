@@ -9,18 +9,11 @@ $user_name = Session::get("username");
 $password  = Session::get("password");
 error_reporting(1);
 include_once ('helper/helper.php');
-?>
-
-
-
-<?php 
 include_once("class/Database.php");
 $dbOb = new Database();
 
 // the following section is for inserting and updating data 
 if (isset($_POST['submit'])) {
-
-
 
 	$products_id = validation($_POST["products_id"]);
 	$quantity = validation($_POST["quantity"]);
@@ -28,7 +21,6 @@ if (isset($_POST['submit'])) {
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$ware_house_name = $dbOb->find($query)['ware_house_name'];
 	$stock_date = validation($_POST["stock_date"]);
-
 
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$ware_house_name = $dbOb->find($query)['ware_house_name'];
@@ -41,26 +33,23 @@ if (isset($_POST['submit'])) {
 		die(json_encode(['message'=>$message,'type'=>$type]));
 	}
 
+	$query = "INSERT INTO offered_products  (products_id, available_qty) VALUES  ('$products_id','$quantity')";
+	$insert = $dbOb->insert($query);
+	if ($insert) {
+		$query = "INSERT INTO offered_products_stock (products_id,quantity,stock_date,ware_house_serial_no,ware_house_name)
+		VALUES ('$products_id','$quantity','$stock_date','$ware_house_serial_no','$ware_house_name')";
+		$insert_stock = $dbOb->insert($query);
 
-		$query = "INSERT INTO offered_products  (products_id, available_qty) VALUES  ('$products_id','$quantity')";
-		$insert = $dbOb->insert($query);
-		if ($insert) {
-			$query = "INSERT INTO offered_products_stock (products_id,quantity,stock_date,ware_house_serial_no,ware_house_name)
-			VALUES ('$products_id','$quantity','$stock_date','$ware_house_serial_no','$ware_house_name')";
-			$insert_stock = $dbOb->insert($query);
-
-			$message = "Congratulations! Information Is Successfully Saved.";
-			$type = 'success';
-			echo json_encode(['message'=>$message,'type'=>$type]);
-		}else{
-			$message = "Sorry! Information Is Not Saved.";
-			$type = 'warning';
-			echo json_encode(['message'=>$message,'type'=>$type]);
-		}
-		
+		$message = "Congratulations! Information Is Successfully Saved.";
+		$type = 'success';
+		echo json_encode(['message'=>$message,'type'=>$type]);
+	}else{
+		$message = "Sorry! Information Is Not Saved.";
+		$type = 'warning';
+		echo json_encode(['message'=>$message,'type'=>$type]);
+	}
 
 	die();
-
 }
 // the following block of code is for deleting data 
 if (isset($_POST['serial_no_delete'])) {
@@ -88,17 +77,11 @@ if (isset($_POST['serial_no_delete'])) {
 	}
 }
 
-
-
-
 // in the following section we are going to get data for addin new quantity of product
 if (isset($_POST['get_products_id_no_stock'])) {
 	$products_id_no_stock = validation($_POST['get_products_id_no_stock']);
 	$query = "SELECT * FROM `offered_products` WHERE products_id = '$products_id_no_stock'";
 	$get_products_info = $dbOb->find($query);
-	
-
-
 
 	echo json_encode($get_products_info);
 	die();
@@ -139,66 +122,54 @@ if (isset($_POST['submit_stock'])) {
 		$type = 'warning';
 		echo json_encode(['message'=>$message,'type'=>$type]);
 	}
-	
-
 }
 // updating original price 
 
-
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
-             $query = "SELECT * FROM offered_products ORDER BY serial_no DESC";
-            $get_products = $dbOb->select($query);
-            if ($get_products) {
-              $i = 0;
-              while ($row = $get_products->fetch_assoc()) {
-                $i++;
-                $products_id = $row['products_id'];
-                $query= "SELECT * FROM products WHERE products_id_no = '$products_id' ";
-                $get_product_details = $dbOb->select($query);
-                 $product_details = '';
-                if ($get_product_details) {
-                  $product_details = $get_product_details->fetch_assoc();
-                }
-                ?>
-                <tr>
-                  <td><?php echo $i; ?></td>
-                  <td><?php echo strtoupper($product_details['company']); ?></td>
-                  <td><?php echo $row['products_id']; ?></td>
-                  <td><?php echo $product_details['products_name']; ?></td>
-                  <td><?php echo $product_details['category']; ?></td>
-                  
-                  <td><?php echo $product_details['pack_size']; ?></td>
-                  <td><?php echo $row['available_qty']; ?></td>
-                
+	$query = "SELECT * FROM offered_products ORDER BY serial_no DESC";
+	$get_products = $dbOb->select($query);
+	if ($get_products) {
+		$i = 0;
+		while ($row = $get_products->fetch_assoc()) {
+			$i++;
+			$products_id = $row['products_id'];
+			$query= "SELECT * FROM products WHERE products_id_no = '$products_id' ";
+			$get_product_details = $dbOb->select($query);
+			$product_details = '';
+			if ($get_product_details) {
+				$product_details = $get_product_details->fetch_assoc();
+			}
+			?>
+			<tr>
+				<td><?php echo $i; ?></td>
+				<td><?php echo strtoupper($product_details['company']); ?></td>
+				<td><?php echo $row['products_id']; ?></td>
+				<td><?php echo $product_details['products_name']; ?></td>
+				<td><?php echo $product_details['category']; ?></td>
 
-                  <td align="center">
+				<td><?php echo $product_details['pack_size']; ?></td>
+				<td><?php echo $row['available_qty']; ?></td>
 
-             
+				<td align="center">
 
-                  <?php
-                  if (permission_check('product_stock_button')) {
-                    ?>
+					<?php
+					if (permission_check('offer_stock_this_product_button')) {
+						?>
 
-                    <a class="badge bg-green stock_data" id="<?php echo ($row['products_id']) ?>"   data-toggle="modal" data-target="#stock_data_modal">Stock This Product </a>
-                  <?php }?>
+						<a class="badge bg-green stock_data" id="<?php echo ($row['products_id']) ?>"   data-toggle="modal" data-target="#stock_data_modal">Stock This Product </a>
+						<?php 
+					}
+					if (permission_check('offer_product_delete_button')) {
+						?>
 
-
-                  <?php
-                  if (permission_check('product_delete_button')) {
-                    ?>
-
-                    <a  class="badge  bg-red delete_data" id="<?php echo ($row['products_id']) ?>"  style="margin:2px"> Delete</a>
-                  <?php } ?>
-
-
-                </td>
-
-              </tr>
-
-              <?php
-            }
-          }
+						<a  class="badge  bg-red delete_data" id="<?php echo ($row['products_id']) ?>"  style="margin:2px"> Delete</a>
+					<?php } ?>
+				</td>
+			</tr>
+			<?php
+		}
+	}
 }
 
 ?>

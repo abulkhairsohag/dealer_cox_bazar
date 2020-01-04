@@ -20,8 +20,15 @@ if (isset($_POST['from_date'])) {
  	$to_date_show = validation($_POST['to_date']);
 	 $report_type = validation($_POST['report_type']);
 	//  die($report_type);
-	$pr_id  = validation($_POST['product_id']);
+	// $pr_id  = validation($_POST['product_id']);
 	$area  = validation($_POST['area']);
+	// die
+	$zone_serial_no  = validation($_POST['zone_serial_no']);
+	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+	$get_zone = $dbOb->select($query);
+	if ($get_zone) {
+		$zone_name=$get_zone->fetch_assoc()['zone_name'];
+	}
 	
 
 	
@@ -810,7 +817,7 @@ if (isset($_POST['from_date'])) {
 			exit();
 
 	}elseif ($report_type == 'dues') {
-		$query = "SELECT DISTINCT cust_id FROM `order_delivery`";
+		$query = "SELECT DISTINCT cust_id FROM `order_delivery` WHERE area= '$area'";
 		$get_cus =  $dbOb->select($query);
 
 		if ($get_cus) {
@@ -830,12 +837,13 @@ if (isset($_POST['from_date'])) {
 			
 				</span>
 				<div class="text-center">
-					<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>WARE HOUSE WISE DUES SUMMERY</b></h4>
+					<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>AREA WISE DUES SUMMERY</b></h4>
 				</div>		<table class="table table-responsive">
 						<tbody>
 							<tr>
 								<td class="text-left">
-									<h4>Ware House Name: <b>'.$ware_house_name.'</b></h4>
+									<h4>Zone Name: <b>'.$zone_name.'</b></h4>
+									<h4>Area Name: <b>'.$area.'</b></h4>
 								</td>
 								<td class="text-center">
 									
@@ -873,11 +881,11 @@ if (isset($_POST['from_date'])) {
 		$i=0;
 
 		foreach ($cust_ids as $key => $cust_id) {
-			$query = "SELECT * FROM order_delivery WHERE cust_id = '$cust_id' AND ware_house_serial_no = '$ware_house_serial_no' order by area";
+			$query = "SELECT * FROM order_delivery WHERE cust_id = '$cust_id' AND area = '$area'";
 			$get_order = $dbOb->select($query);
 			if ($get_order) {
 				while ($row = $get_order->fetch_assoc()) {
-					$order_date = strtotime($row['order_date']);
+					// $order_date = strtotime($row['order_date']);
 					if ($row['due'] > 0) {
 						$count++;
 						$shop_name = $row['shop_name'];
@@ -1013,12 +1021,13 @@ if (isset($_POST['from_date'])) {
 			
 				</span>
 				<div class="text-center">
-					<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>ORDER WISE DUES STATEMENT OF WARE HOUSE</b></h4>
+					<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>ORDER WISE DUES STATEMENT OF AREA</b></h4>
 				</div>		<table class="table table-responsive">
 						<tbody>
 							<tr>
 								<td class="text-left">
-									<h4>Ware House Name: <b>'.$ware_house_name.'</b></h4>
+									<h4>Zone Name: <b>'.$zone_name.'</b></h4>
+									<h4>Area Name: <b>'.$area.'</b></h4>
 								</td>
 								<td class="text-center">
 									
@@ -1057,7 +1066,7 @@ if (isset($_POST['from_date'])) {
 		$grand_total_paid = 0;
 		$i=0;
 
-			$query = "SELECT * FROM order_delivery WHERE ware_house_serial_no = '$ware_house_serial_no' ORDER BY area";
+			$query = "SELECT * FROM order_delivery WHERE area = '$area'";
 			$get_order = $dbOb->select($query);
 			if ($get_order) {
 				while ($row = $get_order->fetch_assoc()) {
@@ -1108,7 +1117,7 @@ if (isset($_POST['from_date'])) {
 
 	}elseif ($report_type == 'all sales') {
 	
-	$query = "SELECT DISTINCT cust_id FROM `order_delivery`";
+	$query = "SELECT DISTINCT cust_id FROM `order_delivery` WHERE area = '$area'";
 		$get_cus =  $dbOb->select($query);
 
 		if ($get_cus) {
@@ -1128,12 +1137,13 @@ if (isset($_POST['from_date'])) {
 			
 				</span>
 				<div class="text-center">
-					<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>Ware House Wise All Sales Summery</b></h4>
+					<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>AREA WISE ALL SALES SUMMERY</b></h4>
 				</div>		<table class="table table-responsive">
 						<tbody>
 							<tr>
 								<td class="text-left">
-									<h4>Ware House Name: <b>'.$ware_house_name.'</b></h4>
+									<h4>Zone Name: <b>'.$zone_name.'</b></h4>
+									<h4>Area Name: <b>'.$area.'</b></h4>
 								</td>
 								<td class="text-center">
 									
@@ -1177,7 +1187,7 @@ if (isset($_POST['from_date'])) {
 		$i=0;
 
 		foreach ($cust_ids as $key => $cust_id) {
-			$query = "SELECT * FROM order_delivery WHERE cust_id = '$cust_id' AND ware_house_serial_no = '$ware_house_serial_no' order by area";
+			$query = "SELECT * FROM order_delivery WHERE cust_id = '$cust_id' AND area = '$area'";
 			$get_order = $dbOb->select($query);
 			if ($get_order) {
 				while ($row = $get_order->fetch_assoc()) {

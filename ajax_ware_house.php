@@ -97,12 +97,18 @@ if (isset($_POST["sohag"])) {
                     <td><?php echo $row['ware_house_name']; ?></td>
                     <td><?php echo $row['address']; ?></td>
                     <td align="center">
+     <td align="center">
 
-                     
+                     <?php 
+                      if (permission_check('ware_house_edit_button')) {
+                      ?>
                         <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a> 
-                      
+                      <?php 
+                      }
+                         if (permission_check('ware_house_delete_button')) {
+                      ?>
                          <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
-                     
+                         <?php } ?>
                     </td>
                   </tr>
 

@@ -1,7 +1,4 @@
-<?php include_once('include/header.php'); ?>
-
-
-<?php 
+<?php include_once('include/header.php'); 
 if(!permission_check('company_product_return')){
   ?>
   <script>

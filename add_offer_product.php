@@ -1,8 +1,6 @@
-<?php include_once 'include/header.php';?>
-
-
-<?php
-if (!permission_check('add_product')) {
+<?php 
+include_once 'include/header.php';
+if (!permission_check('add_offer_product')) {
   ?>
   <script>
     window.location.href = '403.php';
@@ -22,7 +20,7 @@ if (!permission_check('add_product')) {
           <h2>Offer Product List</h2>
           <div class="row float-right" align="right">
            <?php
-           if (permission_check('add_product')) {
+           if (permission_check('add_offer_product_button')) {
             ?>
             <a href="" class="btn btn-primary" id="add_data" data-toggle="modal" data-target="#add_update_modal"> <span class="badge"><i class="fa fa-plus"> </i></span> Add New Offer Product</a>
           <?php }?>
@@ -62,7 +60,7 @@ if (!permission_check('add_product')) {
                 $products_id = $row['products_id'];
                 $query= "SELECT * FROM products WHERE products_id_no = '$products_id' ";
                 $get_product_details = $dbOb->select($query);
-                 $product_details = '';
+                $product_details = '';
                 if ($get_product_details) {
                   $product_details = $get_product_details->fetch_assoc();
                 }
@@ -77,157 +75,144 @@ if (!permission_check('add_product')) {
                   <td><?php echo $product_details['pack_size']; ?></td>
                   <td><?php echo $row['available_qty']; ?></td>
                   <td><?php echo $row['ware_house_name']; ?></td>
-                
 
                   <td align="center">
 
-             
+                    <?php
+                    if (permission_check('offer_stock_this_product_button')) {
+                      ?>
 
-                  <?php
-                  if (permission_check('product_stock_button')) {
-                    ?>
+                      <a class="badge bg-green stock_data" id="<?php echo ($row['products_id']) ?>"   data-toggle="modal" data-target="#stock_data_modal">Stock This Product </a>
+                    <?php }
+                    if (permission_check('offer_product_delete_button')) {
+                      ?>
 
-                    <a class="badge bg-green stock_data" id="<?php echo ($row['products_id']) ?>"   data-toggle="modal" data-target="#stock_data_modal">Stock This Product </a>
-                  <?php }?>
+                      <a  class="badge  bg-red delete_data" id="<?php echo ($row['products_id']) ?>"  style="margin:2px"> Delete</a>
+                    <?php } ?>
 
+                  </td>
 
-                  <?php
-                  if (permission_check('product_delete_button')) {
-                    ?>
+                </tr>
 
-                    <a  class="badge  bg-red delete_data" id="<?php echo ($row['products_id']) ?>"  style="margin:2px"> Delete</a>
-                  <?php } ?>
-
-
-                </td>
-
-              </tr>
-
-              <?php
-            }
-          }
-          ?>
-
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-
-
-
-<!-- Modal For Adding and Updating data  -->
-<div class="modal fade" id="add_update_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg " role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="background: #006666">
-        <h3 class="modal-title" id="ModalLabelAdd" style="color: white"></h3>
-        <div style="float:right;">
-
-        </div>
-      </div>
-      <div class="modal-body">
-
-        <div class="row">
-          <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel" style="background: #f2ffe6">
-
-              <div class="x_content" style="background: #f2ffe6">
-                <br />
-                <!-- Form starts From here  -->
-                <form id="form_edit_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
-
-
-                  <div class="form-group">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Select Product <span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <select required="" id="products_id" name="products_id" class="form-control col-md-7 col-xs-12" >ware_house_serial_no
-                        <option value="">Select a Product</option>
-                        <?php
-                        $query = "SELECT * FROM products";
-                        $get_products = $dbOb->select($query);
-                        if ($get_products) {
-                          while ($row = $get_products->fetch_assoc()) {
-                            ?>
-                            <option value="<?php echo $row['products_id_no'] ?>"> <?php echo $row['products_id_no'].', '.$row['products_name'] ?> </option>
-
-                            <?php
-                          }
-                        }
-                        ?>
-                      </select>
-                    </div>
-                  </div>
-
-
-
-                  <div class="form-group" id="quantity_div">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity<span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input  type="number" min="0" step="1" required="" id="quantity" name="quantity" class="form-control col-md-7 col-xs-12" placeholder="Product QTY Not Packet QTY">
-                    </div>
-                  </div>
-
-                  <div class="form-group row">
-    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
-    <div class="col-md-6 col-6">
-        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no col-md-7 col-xs-12 ">
-          
-          <?php
-          if (Session::get("ware_house_serial_login")){
-                if (Session::get("ware_house_serial_login") != '-1') {
-                
-                ?>
-                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
                 <?php
-                }else{
-                  ?>
-                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
-                  <?php
-                }
-              }else{
-
-          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-          $get_ware_house = $dbOb->select($query);
-          if ($get_ware_house) {
+              }
+            }
             ?>
-                <option value="">Please Select One</option>
-            <?php
-            while ($row = $get_ware_house->fetch_assoc()) {
 
-            ?>
-            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
-              echo "selected";
-            } ?>
-            ><?php echo $row['ware_house_name']; ?></option>
-            <?php
-          }
-        }else{
-          ?>
-            <option value="">Please Add Ware House First</option>
-          <?php
-        }
-      }
-
-        ?>
-
-    </select>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
 
-                  <div class="form-group" id="">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Stock Date<span class="required" style="color: red">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                       
-         <input type="text" class="form-control datepicker " id='from_date' name="from_date" value="" required="" readonly="">
+
+
+  <!-- Modal For Adding and Updating data  -->
+  <div class="modal fade" id="add_update_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background: #006666">
+          <h3 class="modal-title" id="ModalLabelAdd" style="color: white"></h3>
+          <div style="float:right;">
+
+          </div>
+        </div>
+        <div class="modal-body">
+
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel" style="background: #f2ffe6">
+
+                <div class="x_content" style="background: #f2ffe6">
+                  <br />
+                  <!-- Form starts From here  -->
+                  <form id="form_edit_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
+
+                    <div class="form-group">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Select Product <span class="required" style="color: red">*</span></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <select required="" id="products_id" name="products_id" class="form-control col-md-7 col-xs-12" >ware_house_serial_no
+                          <option value="">Select a Product</option>
+                          <?php
+                          $query = "SELECT * FROM products";
+                          $get_products = $dbOb->select($query);
+                          if ($get_products) {
+                            while ($row = $get_products->fetch_assoc()) {
+                              ?>
+                              <option value="<?php echo $row['products_id_no'] ?>"> <?php echo $row['products_id_no'].', '.$row['products_name'] ?> </option>
+
+                              <?php
+                            }
+                          }
+                          ?>
+                        </select>
+                      </div>
                     </div>
-                  </div>
 
-               
+                    <div class="form-group" id="quantity_div">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity<span class="required" style="color: red">*</span></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input  type="number" min="0" step="1" required="" id="quantity" name="quantity" class="form-control col-md-7 col-xs-12" placeholder="Product QTY Not Packet QTY">
+                      </div>
+                    </div>
 
-                  <div style="display: none;">
+                    <div class="form-group row">
+                      <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+                      <div class="col-md-6 col-6">
+                        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no col-md-7 col-xs-12 ">
+
+                          <?php
+                          if (Session::get("ware_house_serial_login")){
+                            if (Session::get("ware_house_serial_login") != '-1') {
+                              ?>
+                              <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                              <?php
+                            }else{
+                              ?>
+                              <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                              <?php
+                            }
+                          }else{
+
+                            $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+                            $get_ware_house = $dbOb->select($query);
+                            if ($get_ware_house) {
+                              ?>
+                              <option value="">Please Select One</option>
+                              <?php
+                              while ($row = $get_ware_house->fetch_assoc()) {
+
+                                ?>
+                                <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+                                  echo "selected";
+                                } ?>
+                                ><?php echo $row['ware_house_name']; ?></option>
+                                <?php
+                              }
+                            }else{
+                              ?>
+                              <option value="">Please Add Ware House First</option>
+                              <?php
+                            }
+                          }
+
+                          ?>
+
+                        </select>
+                      </div>
+                    </div>
+
+
+                    <div class="form-group" id="">
+                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Stock Date<span class="required" style="color: red">*</span></label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+
+                       <input type="text" class="form-control datepicker " id='from_date' name="from_date" value="" required="" readonly="">
+                     </div>
+                   </div>
+
+                   <div style="display: none;">
                     <input type="number" id="edit_id" name="edit_id">
                   </div>
 
@@ -253,8 +238,6 @@ if (!permission_check('add_product')) {
   </div>
 </div> <!-- End of modal for  Adding and Updating data-->
 
-
-
 <!-- /page content -->
 
 </div>
@@ -264,20 +247,14 @@ if (!permission_check('add_product')) {
 <script>
   $(document).ready(function(){
 
-  
-
- 
-
     $(document).on('click','#add_data',function(){
       $("#ModalLabelAdd").html("Add Offer Product");
       $("#submit_button").html("Save");
-
       $("#products_id").val("");
       $("#quantity").val("");
       $("#ware_house_serial_no").val("");
       $("#stock_date").val("");
       $("#edit_id").val("");
-
     });
 
       // now we are going to update and insert data
@@ -308,8 +285,6 @@ if (!permission_check('add_product')) {
           }
         });
     }); // end of insert and update
-
-
 
       // this time we are adding new stock
       $(document).on('submit','#form_stock_data',function(event){
@@ -370,10 +345,8 @@ if (!permission_check('add_product')) {
               get_data_table();
             }
           });
-
         }
       });
-
   }); // end of delete
 
     //getting and setting data for adding stock.
@@ -404,8 +377,6 @@ if (!permission_check('add_product')) {
     $("#total_quantity").val(total_quantity);
   });
 
-
-
   }); // end of document ready function
 
 // the following function is defined for showing data into the table
@@ -427,7 +398,6 @@ function get_data_table(){
 function readURL(input) {
   if (input.files && input.files[0]) {
     var reader = new FileReader();
-
     reader.onload = function (e) {
       $("#photo_div").removeClass();
       $("#photo_div").addClass("col-md-4 col-sm-4 col-xs-8");
@@ -438,14 +408,11 @@ function readURL(input) {
       .attr('src', e.target.result)
       .width(128)
       .height(120);
-
     };
-
     reader.readAsDataURL(input.files[0]);
   }
 }
 
 </script>
-
 </body>
 </html>

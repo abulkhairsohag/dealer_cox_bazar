@@ -53,36 +53,36 @@ if (isset($_POST['from_date'])) {
 			<h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
 			<h5>'.$show_date.'</h5>
 			
-	</span>
-	<div class="text-center">
-		<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>RECEIVE FROM CUSTOMER</b></h4>
-	</div>
-	<br>
-		<table class="table table-responsive">
-			<tbody>
-				<tr>
-					<td>
+				</span>
+				<div class="text-center">
+					<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>RECEIVE FROM CUSTOMER</b></h4>
+				</div>
+				<br>
+					<table class="table table-responsive">
+						<tbody>
+							<tr>
+								<td>
+									
+								</td>
+								<td class="text-center">
+									
+								</td>
+								<td class="text-right">
+									<h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
+									<h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
+								</td>
+							</tr>
 						
-					</td>
-					<td class="text-center">
-						
-					</td>
-					<td class="text-right">
-						<h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
-						<h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
-					</td>
-				</tr>
-			
-			</tbody>
-		</table>
-	<!--     
-	<hr> -->';
-
+						</tbody>
+					</table>
+				<!--     
+				<hr> -->';
 
  		$receive_from_cust_tbl .= '<table class="table table-bordered table-responsive">
 						  <thead style="background:#4CAF50; color:white" >
 						    <tr>
 						      <th scope="col">SL<br>No</th>
+						      <th scope="col">Zone</th>
 						      <th scope="col">Area</th>
 						      <th scope="col">Customer Name</th>
 						      <th scope="col">Shop Name</th>
@@ -103,29 +103,71 @@ if (isset($_POST['from_date'])) {
 					if ($get_order) {
 						$order = $get_order->fetch_assoc();
 					}
-					if ($row['pay_amt'] > 0) {
-						$receive_from_cust_tbl .= '<tr style="color:black" align="left">
-							  <td>'.++$i.'</td>
-							  <td>'.$order['area'].'</td>
-							  <td>'.$order['customer_name'].'</td>
-							  <td>'.$order['shop_name'].'</td>
-							  <td>'.$order['mobile_no'].'</td>
-							  <td>'.$row['pay_amt'].'</td>
-							  <td>'.$row['date'].'</td>
-							 
-							</tr>';
-					$total_delivery = $total_delivery*1 + $row['pay_amt']*1;
-					}
+					   if (Session::get("zone_serial_no")){
+							if (Session::get("zone_serial_no") != '-1') {
+								$zone_serial = Session::get("zone_serial_no");
+								$query = "SELECT * FROM area_zone WHERE zone_serial_no = '$zone_serial'";
+								$get_area_zone = $dbOb->select($query);
+								if ($get_area_zone) {
+									while ($area_zone = $get_area_zone->fetch_assoc()) {
+										if ($area_zone['area_name'] == $order['area']) {
+											if ($row['pay_amt'] > 0) {
+												$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial'";
+												$get_zone_name = $dbOb->select($query);
+												$zone_name = "";
+												if ($get_zone_name) {
+													$zone_name = $get_zone_name->fetch_assoc()['zone_name'];
+												}
+												$receive_from_cust_tbl .= '<tr style="color:black" align="left">
+													<td>'.++$i.'</td>
+													<td>'.$zone_name.'</td>
+													<td>'.$order['area'].'</td>
+													<td>'.$order['customer_name'].'</td>
+													<td>'.$order['shop_name'].'</td>
+													<td>'.$order['mobile_no'].'</td>
+													<td>'.$row['pay_amt'].'</td>
+													<td>'.$row['date'].'</td>
+													
+													</tr>';
+											$total_delivery = $total_delivery*1 + $row['pay_amt']*1;
+											}
+										}
+									}
+								}
+							}
+						}else{
+							if ($row['pay_amt'] > 0) {
+								$zone_serial = $order['zone_serial_no'];
+								$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial'";
+								$get_zone_name = $dbOb->select($query);
+								$zone_name = "";
+								if ($get_zone_name) {
+									$zone_name = $get_zone_name->fetch_assoc()['zone_name'];
+								}
+								$receive_from_cust_tbl .= '<tr style="color:black" align="left">
+									<td>'.++$i.'</td>
+									<td>'.$zone_name.'</td>
+									<td>'.$order['area'].'</td>
+									<td>'.$order['customer_name'].'</td>
+									<td>'.$order['shop_name'].'</td>
+									<td>'.$order['mobile_no'].'</td>
+									<td>'.$row['pay_amt'].'</td>
+									<td>'.$row['date'].'</td>
+									
+									</tr>';
+							$total_delivery = $total_delivery*1 + $row['pay_amt']*1;
+							}
+						}
 				}
 			}
 		}
 		if ($i == 0) {
 			$receive_from_cust_tbl .='<tr>
-									<td colspan="7"  align="center" style="color:red">No Record Found</td>
+									<td colspan="8"  align="center" style="color:red">No Record Found</td>
 								</tr>';
 		}else{
 			$receive_from_cust_tbl .='<tr style="color:red" class="bg-success" >
-									<td colspan="5"  align="right" style="color:red">Total Amount</td>
+									<td colspan="6"  align="right" style="color:red">Total Amount</td>
 									<td colspan="2" align="left" style="color:red">'.$total_delivery.'</td>
 									
 								</tr>';
@@ -142,8 +184,17 @@ if (isset($_POST['from_date'])) {
 		exit();
 
  	}elseif ($report_type == 'Pay To Company') {
+		  if (Session::get("ware_house_serial_login")){
+				if (Session::get("ware_house_serial_login") != '-1') {
+					$ware_house_serial = Session::get("ware_house_serial_login");
+					$query = "SELECT * FROM product_stock WHERE company_product_return_id = '0' AND ware_house_serial_no = '$ware_house_serial'";
+				}
+			}else{
+				$query = "SELECT * FROM product_stock WHERE company_product_return_id = '0'";
+		  }
  		$product = [];
- 		$query = "SELECT * FROM product_stock WHERE company_product_return_id = '0'";
+ 		$total_price = [];
+ 		$ware_house_name = [];
 		 $get_product_stock = $dbOb->select($query);
 		 
  		if ($get_product_stock) {
@@ -154,8 +205,10 @@ if (isset($_POST['from_date'])) {
  						if(array_key_exists($product_id, $product))
 				    	{
 				    		$product[$product_id] +=   (int)$row['quantity'];
+				    		$total_price[$product_id] +=   1*$row['quantity']*$row['company_price'];
 				    	}else{
-				    		$product[$product_id] = (int)$row['quantity'];
+							$product[$product_id] = (int)$row['quantity'];
+							$total_price[$product_id] =   1*$row['quantity']*$row['company_price'];
 			    		}
  					}
  				}
@@ -165,14 +218,14 @@ if (isset($_POST['from_date'])) {
  		foreach ($product as $key => $value) {
  			$query = "SELECT * FROM products WHERE products_id_no = '$key'";
  			$get_product_details = $dbOb->find($query);
- 			$price = $get_product_details['company_price'];
- 			$total_price = $price * $value;
+ 			// $price = $get_product_details['company_price'];
+ 			// $total_price = $price * $value;
  			$company_name = $get_product_details['company'];
 
 			if(array_key_exists($company_name, $company_payment)) {
-	    		$company_payment[$company_name] +=   (int)$total_price;
+	    		$company_payment[$company_name] += $total_price[$key];
 	    	}else{
-	    		$company_payment[$company_name] = (int)$total_price;
+	    		$company_payment[$company_name] = $total_price[$key];
     		}
  		}
  			$company_tbl = '<div  id="print_table" style="color:black">
@@ -247,8 +300,14 @@ if (isset($_POST['from_date'])) {
  	
  	// the following section is for bank deposite calculation 	
  	}elseif ($report_type == 'Bank Deposit') {
-
- 		$query = "SELECT * FROM bank_deposite";
+		 if (Session::get("zone_serial_no")){
+			if (Session::get("zone_serial_no") != '-1') {
+				$zone_serial = Session::get("zone_serial_no");
+				$query = "SELECT * FROM bank_deposite WHERE zone_serial_no = '$zone_serial'";
+			}
+		}else{
+			$query = "SELECT * FROM bank_deposite";
+		}
  		$get_bank_deposite = $dbOb->select($query);
 
 		 $i=0;
@@ -288,10 +347,10 @@ if (isset($_POST['from_date'])) {
 						  <thead style="background:#4CAF50; color:white" >
 						    <tr>
 								<th scope="col">Serial No</th>
+								<th scope="col">Zone Name</th>
 								<th scope="col">Bank Name</th>
 								<th scope="col">Branch Name</th>
 								<th scope="col">Account No</th>
-								<th scope="col">Acc Holder Name</th>
 								<th scope="col">Amount</th>
 								<th scope="col">Date</th>
 						    </tr>
@@ -303,10 +362,10 @@ if (isset($_POST['from_date'])) {
  				if (strtotime($row['deposite_date']) >= $from_date && strtotime($row['deposite_date']) <= $to_date) {
  					$deposite_tbl .='<tr style="color:black" align="left">
 								      <td>'.++$i.'</td>
+								      <td>'.$row['zone_name'].'</td>
 								      <td>'.$row['bank_name'].'</td>
 								      <td>'.$row['branch_name'].'</td>
 								      <td>'.$row['bank_account_no'].'</td>
-								      <td>'.$row['account_holder_name'].'</td>
 								      <td>'.$row['amount'].'</td>
 								      <td>'.$row['deposite_date'].'</td>
 								    </tr>';
@@ -338,8 +397,14 @@ if (isset($_POST['from_date'])) {
 										  exit();
  		
  	}elseif ($report_type == 'Bank Withdraw') {
- 		
- 		$query = "SELECT * FROM bank_withdraw";
+ 		 if (Session::get("zone_serial_no")){
+			if (Session::get("zone_serial_no") != '-1') {
+				$zone_serial = Session::get("zone_serial_no");
+				$query = "SELECT * FROM bank_withdraw WHERE zone_serial_no = '$zone_serial'";
+			}
+		}else{
+			$query = "SELECT * FROM bank_withdraw";
+		}
 		 $get_bank_withdraw = $dbOb->select($query);
 		 
 		 $i=0;
@@ -379,6 +444,7 @@ if (isset($_POST['from_date'])) {
 						  <thead style="background:#4CAF50; color:white" >
 						    <tr>
 								<th scope="col">Serial No</th>
+								<th scope="col">Zone Name</th>
 								<th scope="col">Bank Name</th>
 								<th scope="col">Branch Name</th>
 								<th scope="col">Account No</th>
@@ -395,6 +461,7 @@ if (isset($_POST['from_date'])) {
  				if (strtotime($row['cheque_active_date']) >= $from_date && strtotime($row['cheque_active_date']) <= $to_date) {
  					$withdraw_tbl .='<tr style="color:black" align="left">
 								      <td>'.++$i.'</td>
+								      <td>'.$row['zone_name'].'</td>
 								      <td>'.$row['bank_name'].'</td>
 								      <td>'.$row['branch_name'].'</td>
 								      <td>'.$row['bank_account_no'].'</td>
@@ -410,11 +477,11 @@ if (isset($_POST['from_date'])) {
 			}
 			if ($i == 0) {
 				$withdraw_tbl .='<tr>
-										<td colspan="8"  align="center" style="color:red">No Record Found</td>
+										<td colspan="9"  align="center" style="color:red">No Record Found</td>
 									</tr>';
 			}else{
 				$withdraw_tbl .='<tr class="bg-success">
-						      <td colspan="6"  align="right" style="color:red">Total Amount</td>
+						      <td colspan="7"  align="right" style="color:red">Total Amount</td>
 						      <td colspan="2" align="left" style="color:red">'.$total_withdraw_amount.'</td>
 						      
 						    </tr>';
@@ -430,7 +497,14 @@ if (isset($_POST['from_date'])) {
  	
  	// the following section is for calculation of bank loan
  	}elseif ($report_type == 'Bank Loan') {
- 		$query = "SELECT * FROM bank_loan ORDER BY serial_no DESC";
+		  if (Session::get("zone_serial_no")){
+			if (Session::get("zone_serial_no") != '-1') {
+				$zone_serial = Session::get("zone_serial_no");
+				$query = "SELECT * FROM bank_loan  WHERE zone_serial_no = '$zone_serial' ORDER BY serial_no DESC";
+			}
+		}else{
+			$query = "SELECT * FROM bank_loan ORDER BY serial_no DESC";
+		}
 		 $get_loan = $dbOb->select($query);
 		 $i=0;
  		if ($get_loan) {
@@ -469,15 +543,14 @@ if (isset($_POST['from_date'])) {
 								  <thead style="background:#4CAF50; color:white" >
 								     <tr>
 						                <th style="text-align: center;">Sl No.</th>
+						                <th style="text-align: center;">Zone Name</th>
 						                <th style="text-align: center;">Bank Name</th>
 						                <th style="text-align: center;">Branch Name</th>
-						                <th style="text-align: center;">Installment <br> Amount</th>
 						                <th style="text-align: center;">Total Loan <br> Amount</th>
 						                <th style="text-align: center;">Total Pay <br> Amount</th>
 						                <th style="text-align: center;">Due <br> Amount</th>
 						                <th style="text-align: center;">Pay Status</th>
 						                <th style="text-align: center;">Loan Taken <br> Date</th>
-						                <th style="text-align: center;">Installment <br> Date</th>
 						                <th style="text-align: center;">Action</th>
 						              </tr>
 						            </thead>
@@ -509,15 +582,14 @@ if (isset($_POST['from_date'])) {
 
  					 $loan_tbl .='<tr  style="color:black" align="left">
 								      <td>'.++$i.'</td>
+								      <td>'.$row['zone_name'].'</td>
 								      <td>'.$row['bank_name'].'</td>
 								      <td>'.$row['branch_name'].'</td>
-								      <td>'.$row['installment_amount'].'</td>
 								      <td>'.$row['total_amount'].'</td>
 								      <td>'.$total_pay.'</td>
 								      <td>'.$due.'</td>
 								      <td>'.$pay_status.'</td>
 								      <td>'.$row['loan_taken_date'].'</td>
-								      <td>'.$row['installment_date'].'</td>
 				 					  <td>
 				 					  	<a  class="badge  bg-green view_data" id="'.$row['serial_no'].'"  data-toggle="modal" data-target="#view_modal" style="margin:2px">View Pay Info</a>
 				 					  </td>
@@ -529,7 +601,7 @@ if (isset($_POST['from_date'])) {
  			
 			 if ($i == 0) {
 				$loan_tbl .='<tr>
-										<td colspan="11"  align="center" style="color:red">No Record Found</td>
+										<td colspan="9"  align="center" style="color:red">No Record Found</td>
 									</tr>';
 			}
 		}
@@ -540,8 +612,14 @@ if (isset($_POST['from_date'])) {
 	  </div>';
  		echo json_encode($loan_tbl);
  	}elseif ($report_type == 'Buy Invoice') {
- 		//$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Buy Invoice'";
- 		$query = "SELECT * FROM invoice_details where invoice_option = 'Buy Invoice'";
+		   if (Session::get("zone_serial_no")){
+			if (Session::get("zone_serial_no") != '-1') {
+				$zone_serial = Session::get("zone_serial_no");
+				$query = "SELECT * FROM invoice_details where invoice_option = 'Buy Invoice' AND zone_serial_no = '$zone_serial'";
+			}
+		}else{
+			$query = "SELECT * FROM invoice_details where invoice_option = 'Buy Invoice'";
+		}
  		$get_buy_invoice = $dbOb->select($query);
  		$total_buy_invoice_amount = 0;
  		$total_buy_invoice_pay = 0;
@@ -585,6 +663,7 @@ if (isset($_POST['from_date'])) {
 						  <thead style="background:#4CAF50; color:white" >
 						    <tr>
 								<th scope="col">Sl No</th>
+								<th scope="col">Zone Name</th>
 								<th scope="col">Name</th>
 								<th scope="col">Designation</th>
 								<th scope="col">Phone No</th>
@@ -603,6 +682,7 @@ if (isset($_POST['from_date'])) {
 
  					$buy_invoice_tbl .='<tr style="color:black" align="left">
 								      <td>'.++$i.'</td>
+								      <td>'.$row['zone_name'].'</td>
 								      <td>'.$row['name'].'</td>
 								      <td>'.$row['designation'].'</td>
 								      <td>'.$row['phone_no'].'</td>
@@ -617,11 +697,11 @@ if (isset($_POST['from_date'])) {
 			}
 			if ($i == 0) {
 				$buy_invoice_tbl .='<tr>
-										<td colspan="10"  align="center" style="color:red">No Record Found</td>
+										<td colspan="7"  align="center" style="color:red">No Record Found</td>
 									</tr>';
 			}else{
 				$buy_invoice_tbl .='<tr class="bg-success">
-				<td colspan="4"  align="right" style="color:red">Total Amount</td>
+				<td colspan="5"  align="right" style="color:red">Total Amount</td>
 				<td colspan="2" style="color:red; text-align:left">'.$total_buy_invoice_pay.'</td>
 				</tr>';
 			}
@@ -633,14 +713,21 @@ if (isset($_POST['from_date'])) {
  		echo json_encode($buy_invoice_tbl);
 						die();
  	}elseif ($report_type == 'Sell Invoice') {
- 		$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice'";
+		if (Session::get("zone_serial_no")){
+			if (Session::get("zone_serial_no") != '-1') {
+				$zone_serial = Session::get("zone_serial_no");
+				$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice' AND zone_serial_no = '$zone_serial'";
+			}
+		}else{
+			$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice'";
+		}
  		$get_sell_invoice = $dbOb->select($query);
  		$total_sell_invoice_amount = 0;
  		$total_sell_invoice_pay = 0;
  		$total_sell_invoice_due = 0;
 
  		$i = 0;
-$sell_invoice_tbl = '<div  id="print_table" style="color:black">
+		$sell_invoice_tbl = '<div  id="print_table" style="color:black">
 			 <span class="text-center">
 				 <h3><b>' . strtoupper($company_profile['organization_name']) . '</b></h3>
 				 <h5>' . $company_profile['address'] . ', ' . $company_profile['mobile_no'] . '</h5>
@@ -670,10 +757,11 @@ $sell_invoice_tbl = '<div  id="print_table" style="color:black">
 			 </table>
 		 <!--
 		 <hr> -->';
-$sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
+		$sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 						  <thead style="background:#4CAF50; color:white" >
 						    <tr>
 								<th scope="col">Sl No</th>
+								<th scope="col">Zone Name</th>
 								<th scope="col">Name</th>
 								<th scope="col">Designation</th>
 								<th scope="col">Phone no</th>
@@ -692,6 +780,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 
  					$sell_invoice_tbl .='<tr  style="color:black" align="left">
 								      <td>'.++$i.'</td>
+								      <td>'.$row['zone_name'].'</td>
 								      <td>'.$row['name'].'</td>
 								      <td>'.$row['designation'].'</td>
 								      <td>'.$row['phone_no'].'</td>
@@ -706,11 +795,11 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 		}
 		if ($i == 0) {
 			$sell_invoice_tbl .='<tr>
-									<td colspan="6"  align="center" style="color:red">No Record Found</td>
+									<td colspan="7"  align="center" style="color:red">No Record Found</td>
 								</tr>';
 		}else{
 			$sell_invoice_tbl .='<tr class="bg-success">
-							<td colspan="4"  align="right" style="color:red">Total Amount</td>
+							<td colspan="5"  align="right" style="color:red">Total Amount</td>
 							
 							<td colspan="2" style="color:red text-align:left">'.$total_sell_invoice_pay.'</td>
 							
@@ -726,8 +815,17 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 				   echo json_encode($sell_invoice_tbl);
 				   exit();
  	}elseif ($report_type == 'All Invoice') {
- 		
- 		$query = "SELECT * FROM invoice_details ORDER BY invoice_option DESC";
+		 
+		if (Session::get("zone_serial_no")){
+			if (Session::get("zone_serial_no") != '-1') {
+				$zone_serial = Session::get("zone_serial_no");
+				$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice' AND zone_serial_no = '$zone_serial'";
+				$query = "SELECT * FROM invoice_details WHERE zone_serial_no = '$zone_serial' ORDER BY invoice_option DESC";
+			}
+		}else{
+			$query = "SELECT * FROM invoice_details ORDER BY invoice_option DESC";
+		}
+		
  		$get_sell_invoice = $dbOb->select($query);
  		$total_sell_invoice_amount = 0;
  		$total_sell_invoice_pay = 0;
@@ -739,7 +837,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 
  		$i = 0;
  		$k=0;
-$sell_invoice_tbl = '<div  id="print_table" style="color:black">
+		$sell_invoice_tbl = '<div  id="print_table" style="color:black">
 			 <span class="text-center">
 				 <h3><b>' . strtoupper($company_profile['organization_name']) . '</b></h3>
 				 <h5>' . $company_profile['address'] . ', ' . $company_profile['mobile_no'] . '</h5>
@@ -770,11 +868,12 @@ $sell_invoice_tbl = '<div  id="print_table" style="color:black">
 		 <!--
 		 <hr> -->';
 
-$sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
+		$sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 						  <thead style="background:#4CAF50; color:white" >
 						    <tr>
 								<th scope="col">Sl No</th>
 								<th scope="col">Invoice Type</th>
+								<th scope="col">Zone Name</th>
 								<th scope="col">Name</th>
 								<th scope="col">Designation</th>
 								<th scope="col">Phone no</th>
@@ -805,7 +904,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
  					if ($k==0) {
  						if ($row['invoice_option'] == 'Buy Invoice') {
  							$sell_invoice_tbl .='<tr>
-						      <td colspan="5"  align="right" style="color:red">Total Sell Invoice Amount</td>
+						      <td colspan="6"  align="right" style="color:red">Total Sell Invoice Amount</td>
 						      <td colspan="2" style="color:red; text-align:left">'.$total_sell_invoice_pay.'</td>
 						      
 						    </tr>';
@@ -816,6 +915,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
  					$sell_invoice_tbl .='<tr  style="color:black" align="left">
 								      <td>'.++$i.'</td>
 								      <td>'.$inv_option.'</td>
+								      <td>'.$row['zone_name'].'</td>
 								      <td>'.$row['name'].'</td>
 								      <td>'.$row['designation'].'</td>
 								      <td>'.$row['phone_no'].'</td>
@@ -829,11 +929,11 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 		}
 		if ($i == 0) {
 			$sell_invoice_tbl .='<tr>
-									<td colspan="7"  align="center" style="color:red">No Record Found</td>
+									<td colspan="8"  align="center" style="color:red">No Record Found</td>
 								</tr>';
 		}else{
 			$sell_invoice_tbl .='<tr class="bg-success">
-						 <td colspan="5"  align="right" style="color:red">Total Buy Invoice Amount</td>
+						 <td colspan="6"  align="right" style="color:red">Total Buy Invoice Amount</td>
 						 <td colspan="2" style="color:red; text-align:left">'.$total_buy_invoice_pay.'</td>
 						 
 					   </tr>';
@@ -849,12 +949,20 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 				   exit();
  	}elseif ($report_type == 'Company Commission') {
  		
-
+		if (Session::get("zone_serial_no")){
+			if (Session::get("zone_serial_no") != '-1') {
+				$zone_serial = Session::get("zone_serial_no");
+				$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice' AND zone_serial_no = '$zone_serial'";
+				$query = "SELECT * FROM company_commission WHERE zone_serial_no = '$zone_serial'";
+			}
+		}else{
+			$query = "SELECT * FROM company_commission";
+		}
+		
 
 		$total_company_commission = 0;
 		$company_commission = [];
 		$i = 0;
-		$query = "SELECT * FROM company_commission";
 		$get_company_comission = $dbOb->select($query);
 
 		if ($get_company_comission) {
@@ -893,6 +1001,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 							  <thead style="background:#4CAF50; color:white" >
 							    <tr>
 									<th scope="col">Sl No</th>
+									<th scope="col">Zone Name</th>
 									<th scope="col">Company</th>
 									<th scope="col">Month</th>
 									<th scope="col">Target</th>
@@ -909,10 +1018,12 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 
 					if ($row['target_product'] <= $row['target_sell_amount']) {
 
-						$target = $row['target_sell_amount'];
+						$target_sold = $row['target_sell_amount'];
+						$target = $row['target_product'];
 						$comission_persent = $row['comission_persent'];
 
-						$comission_amount = (int)$target * (int)$comission_persent / 100 ;
+						
+						$comission_amount = ($target_sold - $target)*$comission_persent/100 ;
 
 						// $comission = (int)$target + (int)$comission_amount;
 
@@ -965,6 +1076,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 
 					 $company_comission_tbl .='<tr style="color:black" align="left">
 											      <td>'.++$i.'</td>
+											      <td>'.$row['zone_name'].'</td>
 											      <td>'.$row['company'].'</td>
 											      <td>'.$month_name.'</td>
 											      <td>'.$row['target_product'].'</td>
@@ -983,11 +1095,11 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 		}
 		if ($i == 0) {
 			$company_comission_tbl .='<tr>
-									<td colspan="11"  align="center" style="color:red">No Record Found</td>
+									<td colspan="9"  align="center" style="color:red">No Record Found</td>
 								</tr>';
 		}else{
 		$company_comission_tbl .='<tr class="bg-success">
-						 <td colspan="6"  align="right" style="color:red">Total Amount</td>
+						 <td colspan="7"  align="right" style="color:red">Total Amount</td>
 						 <td colspan="2" style="color:red; text-align:left">'.$total_company_commission.'</td>
 						 
 					   </tr>';
@@ -1002,8 +1114,17 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 				   echo json_encode($company_comission_tbl);
 				   exit();
  	}elseif ($report_type == 'Employee Commission') {
+		 if (Session::get("zone_serial_no")){
+			if (Session::get("zone_serial_no") != '-1') {
+				$zone_serial = Session::get("zone_serial_no");
+				$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice' AND zone_serial_no = '$zone_serial'";
+				$query = "SELECT * FROM employee_commission WHERE zone_serial_no = '$zone_serial'";
+			}
+		}else{
+			$query = "SELECT * FROM employee_commission";
+		}
+		
  		$total_employee_commission = 0;
-		$query = "SELECT * FROM employee_commission";
 		$get_employee_commission = $dbOb->select($query);
 		$i = 0;
 
@@ -1043,6 +1164,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 							  <thead style="background:#4CAF50; color:white" >
 							    <tr>
 									<th scope="col">Sl No</th>
+									<th scope="col">Zone Name</th>
 									<th scope="col">ID</th>
 									<th scope="col">Name</th>
 									<th scope="col">Designation</th>
@@ -1118,6 +1240,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 
 						 $employee_comission_tbl .='<tr  style="color:black" align="left">
 												      <td>'.++$i.'</td>
+												      <td>'.$row['zone_name'].'</td>
 												      <td>'.$row['id_no'].'</td>
 												      <td>'.$row['name'].'</td>
 												      <td>'.$row['designation'].'</td>
@@ -1142,7 +1265,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 								</tr>';
 		}else{
 			$employee_comission_tbl .='<tr class="bg-success">
-								<td colspan="8"  align="right" style="color:red">Total Amount</td>
+								<td colspan="9"  align="right" style="color:red">Total Amount</td>
 								<td colspan="2" style="color:red; text-align:left">'.$total_employee_commission.'</td>
 								
 								</tr>';
@@ -1159,9 +1282,18 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
  		//////////////////////////////////////////
  	}elseif ($report_type == 'Employee Payment') {
 
+		 if (Session::get("zone_serial_no")){
+			if (Session::get("zone_serial_no") != '-1') {
+				$zone_serial = Session::get("zone_serial_no");
+				$query = "SELECT * FROM invoice_details WHERE invoice_option = 'Sell Invoice' AND zone_serial_no = '$zone_serial'";
+				$query = "SELECT * FROM employee_payments WHERE zone_serial_no = '$zone_serial'";
+			}
+		}else{
+			$query = "SELECT * FROM employee_payments";
+		}
+
  		$i = 0;
  		$total_salary_payment = 0;
-		$query = "SELECT * FROM employee_payments";
 		$get_salary_payment = $dbOb->select($query);
 
 		if ($get_salary_payment) {
@@ -1200,6 +1332,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 								  <thead style="background:#4CAF50; color:white" >
 								    <tr>
 										<th scope="col">Sl No</th>
+										<th scope="col">Zone Name</th>
 										<th scope="col">ID</th>
 										<th scope="col">Name</th>
 										<th scope="col">Designation</th>
@@ -1262,6 +1395,7 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 
 					 $employee_pay_tbl .='<tr style="color:black" align="left">
 										      <td>'.++$i.'</td>
+										      <td>'.$row['zone_name'].'</td>
 										      <td>'.$row['id_no'].'</td>
 										      <td>'.$row['name'].'</td>
 										      <td>'.$row['designation'].'</td>
@@ -1279,11 +1413,11 @@ $sell_invoice_tbl .= '<table class="table table-bordered table-responsive">
 		}
 		if ($i == 0) {
 			$employee_pay_tbl .='<tr>
-									<td colspan="11"  align="center" style="color:red">No Record Found</td>
+									<td colspan="9"  align="center" style="color:red">No Record Found</td>
 								</tr>';
 		}else{
 			$employee_pay_tbl .='<tr class="bg-success">
-									<td colspan="6"  align="right" style="color:red">Total Amount</td>
+									<td colspan="7"  align="right" style="color:red">Total Amount</td>
 									<td colspan="2" style="color:red;text-align:left">'.$total_salary_payment.'</td>
 									
 								</tr>';

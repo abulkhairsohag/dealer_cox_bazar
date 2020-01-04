@@ -57,6 +57,7 @@ if(!permission_check('cash_balance')){
         if ($get_zone) {
           ?>
            <option value="">Please Select One</option>
+           <option value="-1">All Zone</option>
           <?php
                 while ($row = $get_zone->fetch_assoc()) {
 
@@ -150,8 +151,9 @@ $printing_time = date('h:i:s A');
           <table class="table table-responsive">
             <tbody>
               <tr>
-                <td>
-
+                <td class="text-left">
+                    <h5 style="margin:0px ; margin-top: -8px;">Zone : <span id="zone_name_show"></span></span>
+                  </h5>
                 </td>
                 <td class="text-center">
 
@@ -273,8 +275,14 @@ $printing_time = date('h:i:s A');
       var to_date = $("#to_date").val();
       var zone_serial_no = $("#zone_serial_no").val();
 
-      // alert(zone_serial_no)
-
+      if (zone_serial_no == "") {
+        swal({
+              title: "warning",
+              text: "Please Select Zone",
+              icon: "warning",
+              button: "Done",
+            });
+      }else{
 
       $.ajax({
         url: "ajax_cash_balance.php",
@@ -314,11 +322,13 @@ $printing_time = date('h:i:s A');
           $("#show_date").html(data.show_date);
           $("#printing_date").html(data.printing_date);
           $("#printing_time").html(data.printing_time);
+          $("#zone_name_show").html(data.zone_name);
           // console.log(show_date);
 
 
         }
       });
+    }
 
     });
   });

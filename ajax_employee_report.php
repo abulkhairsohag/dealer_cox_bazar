@@ -634,8 +634,20 @@ if (isset($_POST['report_type'])) {
 				 echo json_encode($sales_dues_tbl);
 		 
 	 }else if ($report_type == 'empwise_dues') {
+
+		if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                	$zone_serial = Session::get("zone_serial_no");
+                	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial'";
+                	$get_zone = $dbOb->find($query);
+                	$zone_name = $get_zone['zone_name'];
+					$query = "SELECT * FROM `order_delivery` WHERE order_employee_id = '$employee_id' AND zone_serial_no = '$zone_serial'";
+                }
+            }else{
+            		$zone_name = "All Zone";
+					$query = "SELECT * FROM `order_delivery` WHERE order_employee_id = '$employee_id' ORDER BY zone_serial_no" ;
+            }
 		
-			$query = "SELECT * FROM `order_delivery` WHERE order_employee_id = '$employee_id'" ;
 			 $get_order = $dbOb->select($query);
 
 			 $sales_dues_tbl = '<div  id="print_table" style="color:black">
@@ -656,6 +668,7 @@ if (isset($_POST['report_type'])) {
 								 <h5 style="margin:0px ; margin-top: -8px;">Employee ID : <span></span>'.$employee_id.'</span></h5>
 								 <h5 style="margin:0px ; margin-top: -8px;">Name : <span></span>'.$emp_name.'</span></h5>
 								 <h5 style="margin:0px ; margin-top: -8px;">Mobile No : <span></span>'.$emp_mobile.'</span></h5>
+								 <h5 style="margin:0px ; margin-top: -8px;">Zone Name : <span></span>'.$zone_name.'</span></h5>
 								 </td>
 								 <td class="text-center">
 									 
@@ -854,7 +867,8 @@ if (isset($_POST['report_type'])) {
 		 echo json_encode($sales_dues_tbl);
 
 	 }else if ($report_type == 'delivery_man_wise_sales') {
-		$query = "SELECT * FROM employee_main_info where id_no = '$deliv_employee_id'";
+		
+				$query = "SELECT * FROM employee_main_info where id_no = '$deliv_employee_id'";
 		$get_emp = $dbOb->select($query);
 		$emp = '';
 		if ($get_emp) {
@@ -862,8 +876,21 @@ if (isset($_POST['report_type'])) {
 		}
 		$emp_name = $emp['name'];
 		$emp_mobile = $emp['mobile_no'];
+
+		 if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                	$zone_serial = Session::get("zone_serial_no");
+                	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial'";
+                	$get_zone = $dbOb->find($query);
+                	$zone_name = $get_zone['zone_name'];
+					$query = "SELECT * FROM `order_delivery` WHERE delivery_employee_id = '$deliv_employee_id' AND zone_serial_no = '$zone_serial'" ;
+                }
+            }else{
+            		$zone_name = "All Zone";
+					$query = "SELECT * FROM `order_delivery` WHERE delivery_employee_id = '$deliv_employee_id' ORDER BY zone_serial_no" ;
+				}
+
 		
-		$query = "SELECT * FROM `order_delivery` WHERE delivery_employee_id = '$deliv_employee_id'" ;
 		 $get_order = $dbOb->select($query);
 
 		 $sales_dues_tbl = '<div  id="print_table" style="color:black">
@@ -884,6 +911,7 @@ if (isset($_POST['report_type'])) {
 					 <h5 style="margin:0px ; margin-top: -8px;">Delivery Man ID : <span></span>'.$deliv_employee_id.'</span></h5>
 					 <h5 style="margin:0px ; margin-top: -8px;">Name : <span></span>'.$emp_name.'</span></h5>
 					 <h5 style="margin:0px ; margin-top: -8px;">Mobile No : <span></span>'.$emp_mobile.'</span></h5>
+					 <h5 style="margin:0px ; margin-top: -8px;">Zone Name : <span></span>'.$zone_name.'</span></h5>
 					 </td>
 					 <td class="text-center">
 						 
@@ -904,11 +932,11 @@ if (isset($_POST['report_type'])) {
 						  <th scope="col">SL No</th>
 						  <th scope="col">Order No</th>
 						  <th scope="col">Shop / (Area)</th>
+						  <th scope="col">Zone</th>
 						  <th scope="col">Sales Man</th>
 						  <th scope="col">Payable</th>
 						  <th scope="col">Pay</th>
 						  <th scope="col">Due</th>
-						  <th scope="col">Order</th>
 						  <th scope="col">Delivery</th>
 						</tr>
 						  </thead>
@@ -922,8 +950,8 @@ if (isset($_POST['report_type'])) {
 			 
 
 			 while ($row = $get_order->fetch_assoc()) {
-				 $order_date = strtotime($row['order_date']);
-				 if ($order_date >= $from_date &&  $order_date <= $to_date) {
+				 $delivery_date = strtotime($row['delivery_date']);
+				 if ($delivery_date >= $from_date &&  $delivery_date <= $to_date) {
 					 $i++;
 					
 
@@ -936,11 +964,11 @@ if (isset($_POST['report_type'])) {
 											<td>'.$i.'</td>
 											<td>'.$row['order_no'].'</td>
 											<td>'.$row['shop_name'].'<br>('.$row['area'].')</td>
+											<td>'.$row['zone_name'].'</td>
 											<td>'.$row['order_employee_id'].'<br>'.$row['order_employee_name'].'</td>
 											<td>'.$row['payable_amt'].'</td>
 											<td>'.$row['pay'].'</td>
 											<td>'.$pay.'</td>
-											<td>'.$row['order_date'].'</td>
 											<td>'.$row['delivery_date'].'</td>
 										</tr>';
 					$total_payable += $row['payable_amt'];
@@ -959,7 +987,7 @@ if (isset($_POST['report_type'])) {
 			 
 			}else{
 				$sales_dues_tbl .= '<tr class="bg-success">
-									<td colspan="4"  align="right" style="color:red">Total</td>
+									<td colspan="5"  align="right" style="color:red">Total</td>
 									<td colspan=""  align="left" style="color:red">'.$total_payable.'</td>
 									<td colspan=""  align="left" style="color:red">'.$total_pay.'</td>
 									<td colspan="3"  align="left" style="color:red">'.$total_due.'</td>

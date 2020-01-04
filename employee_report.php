@@ -32,14 +32,14 @@ if(!permission_check('employee_report')){
           <option value="sales_summery">All Sales Man's Sale Summery</option>
           <option value="sales_and_dues">All Sales Man's Sales & Dues</option>
           <option value="empwise_dues">Sales Man Wise Dues</option>
-          <option value="sales_man_wise_party_coverage">Sales Man Wise Party Coverage</option>
+          <!-- <option value="sales_man_wise_party_coverage">Sales Man Wise Party Coverage</option> -->
           <option value="delivery_man_wise_sales">Delivery Man Wise Sales</option>
           <option value="attendance"> Attendance</option>
           <option value="salary">Monthly  Salary</option>
-          <option value="target">Daily/Monthly Target</option>
-          <option value="target_achivmant">Target Achievement</option>
-          <option value="present_employee">Present Employee Status</option>
-          <option value="ex_employee">Ex Employee Status</option>
+          <!-- <option value="target">Daily/Monthly Target</option> -->
+          <!-- <option value="target_achivmant">Target Achievement</option> -->
+          <!-- <option value="present_employee">Present Employee Status</option> -->
+          <!-- <option value="ex_employee">Ex Employee Status</option> -->
         </select>
       </div>
     </div>
@@ -280,7 +280,7 @@ if(!permission_check('employee_report')){
         $("#deliv_employee_id").val('');
         $("#employee_id_div_sales").hide(500);
         $("#employee_id_sales").val('');
-      }else if( $report_type =='sales_and_dues'){
+      }else if( $report_type =='sales_and_dues' || $report_type =='sales_summery'){
         $("#month").hide(500);
         $("#employee_id_div").hide(500);
         $("#employee_id").val('');

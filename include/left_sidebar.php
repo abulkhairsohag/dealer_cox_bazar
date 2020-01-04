@@ -374,11 +374,24 @@ if ($user_type == "employee") {
           ?>
           <li><a href="accounts_report.php"><i class="fas fa-dollar"></i> Accounts Report</a></li>
         <?php } 
+        if (permission_check('ware_house_wise_report')) {
         ?>
 
         <li><a href="ware_house_wise_report.php"><i class="fas fa-user"></i> Ware House Wise Report</a></li>
+          <?php } 
+        if (permission_check('area_wise_report')) {
+        ?>
         <li><a href="area_wise_report.php"><i class="fas fa-user"></i> Area Wise Report</a></li>
+          <?php } 
+        if (permission_check('employee_report')) {
+        ?>
         <li><a href="employee_report.php"><i class="fas fa-user"></i> Employee Wise Report</a></li>
+          <?php } 
+        if (permission_check('own_shop_report')) {
+        ?>
+        <li><a href="own_shop_report.php"><i class="fas fa-user"></i> Own Shop Report</a></li>
+          <?php } 
+        ?>
       </ul>
     </li>
 

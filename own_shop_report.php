@@ -244,11 +244,8 @@ if(!permission_check('own_shop_report')){
                                           <th>#</th>
                                           <th>ID</th>
                                           <th>Name</th>
-                                          <!-- <th>Category</th> -->
-                                          <th>Promo Offer</th>
-                                          <th>MRP (৳)</th>
-                                          <th>Quantity</th>
                                           <th>Sell Price (৳)</th>
+                                          <th>Quantity</th>
                                           <th class="text-right">Total Price (৳)</th>
                                         </tr>
                                       </thead>

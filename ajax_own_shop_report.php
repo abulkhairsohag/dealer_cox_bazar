@@ -66,9 +66,14 @@ if (isset($_POST['from_date'])) {
 						$color = 'green';
 						$badge = 'bg-green';
 					}
+					if ($row['customer_id'] == '-1') {
+						$customr_nm = "Walking Customer";
+					}else{
+						$customr_nm = $row['customer_name'];
+					}
 					$all_sell_tbl .='<tr style="color:black" align="left">
 								      <td>'.++$i.'</td>
-								      <td>'.$row['customer_name'].'</td>
+								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
 								      <td>'.number_format($row['grand_total'],2).'</td>
@@ -133,9 +138,14 @@ if (isset($_POST['from_date'])) {
 						$color = 'green';
 						$badge = 'bg-green';
 					}
+					if ($row['customer_id'] == '-1') {
+						$customr_nm = "Walking Customer";
+					}else{
+						$customr_nm = $row['customer_name'];
+					}
 					$all_sell_tbl .='<tr style="color:black" align="left">
 								      <td>'.++$i.'</td>
-								      <td>'.$row['customer_name'].'</td>
+								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
 								      <td>'.number_format($row['grand_total'],2).'</td>
@@ -201,9 +211,14 @@ if (isset($_POST['from_date'])) {
 						$color = 'green';
 						$badge = 'bg-green';
 					}
+					if ($row['customer_id'] == '-1') {
+						$customr_nm = "Walking Customer";
+					}else{
+						$customr_nm = $row['customer_name'];
+					}
 					$all_sell_tbl .='<tr style="color:black" align="left">
 								      <td>'.++$i.'</td>
-								      <td>'.$row['customer_name'].'</td>
+								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
 								      <td>'.number_format($row['grand_total'],2).'</td>
@@ -276,9 +291,14 @@ if (isset($_POST['from_date'])) {
 						$color = 'green';
 						$badge = 'bg-green';
 					}
+					if ($row['customer_id'] == '-1') {
+						$customr_nm = "Walking Customer";
+					}else{
+						$customr_nm = $row['customer_name'];
+					}
 					$all_sell_tbl .='<tr style="color:black" align="left">
 								      <td>'.++$i.'</td>
-								      <td>'.$row['customer_name'].'</td>
+								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
 								      <td>'.number_format($row['grand_total'],2).'</td>
@@ -431,9 +451,14 @@ if (isset($_POST['from_date'])) {
 						$color = 'green';
 						$badge = 'bg-green';
 					}
+					if ($row['customer_id'] == '-1') {
+						$customr_nm = "Walking Customer";
+					}else{
+						$customr_nm = $row['customer_name'];
+					}
 					$all_sell_tbl .='<tr style="color:black" align="left">
 								      <td>'.++$i.'</td>
-								      <td>'.$row['customer_name'].'</td>
+								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
 								      <td>'.number_format($row['grand_total'],2).'</td>
@@ -505,9 +530,14 @@ if (isset($_POST['from_date'])) {
 						$color = 'green';
 						$badge = 'bg-green';
 					}
+					if ($row['customer_id'] == '-1') {
+						$customr_nm = "Walking Customer";
+					}else{
+						$customr_nm = $row['customer_name'];
+					}
 					$all_sell_tbl .='<tr style="color:black" align="left">
 								      <td>'.++$i.'</td>
-								      <td>'.$row['customer_name'].'</td>
+								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
 								      <td>'.number_format($row['grand_total'],2).'</td>

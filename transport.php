@@ -2,13 +2,13 @@
 
 
 <?php 
-if(!permission_check('transport_info')){
+// if(!permission_check('transport_info')){
   ?>
-  <script>
+<!--   <script>
     window.location.href = '403.php';
-  </script>
+  </script> -->
   <?php 
-}
+// }
  ?>
 
 

@@ -5,13 +5,13 @@ $dbOb = new Database();
 ?>
 
 <?php 
-if(!permission_check('unload_truck_after_delivery')){
+// if(!permission_check('unload_truck_after_delivery')){
   ?>
-  <script>
+<!--   <script>
     window.location.href = '403.php';
-  </script>
+  </script> -->
   <?php 
-}
+// }
 ?>
 
 <div class="right_col" role="main">

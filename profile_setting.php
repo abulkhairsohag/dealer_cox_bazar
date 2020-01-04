@@ -88,9 +88,16 @@ $get_profile_info = $dbOb->find($query);
             </tr>
             <tr>
               <td colspan="2" align="right">
+                <?php
+if (permission_check('edit_info_button')) {
+  ?>
                 <button class="btn btn-primary edit_info" id="<?php echo($get_profile_info['serial_no']) ?>" data-toggle="modal" data-target="#edit_modal">Edit Info</button>
-
+<?php
+}
+if (permission_check('update_logo_and_favicon_button')) {
+  ?>
                 <button class="btn btn-success edit_logo" id="<?php echo($get_profile_info['serial_no']) ?>" data-toggle="modal" data-target="#update_logo_modal" >Update Logo & Favicon</button>
+<?php } ?>
               </td>
               <td></td>
             </tr>

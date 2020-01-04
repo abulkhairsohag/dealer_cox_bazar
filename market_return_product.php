@@ -295,27 +295,10 @@ if(!permission_check('return_sold_product_from_market')){
                   <?php
                 }
               }else{
-
-          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-          $get_ware_house = $dbOb->select($query);
-          if ($get_ware_house) {
-            ?>
-                <option value="">Please Select One</option>
-            <?php
-            while ($row = $get_ware_house->fetch_assoc()) {
-
-            ?>
-            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
-              echo "selected";
-            } ?>
-            ><?php echo $row['ware_house_name']; ?></option>
-            <?php
-          }
-        }else{
+          
           ?>
-            <option value="">Please Add Ware House First</option>
+            <option value="">Select Zone First</option>
           <?php
-        }
       }
 
         ?>
@@ -853,6 +836,21 @@ if(!permission_check('return_sold_product_from_market')){
         }
       });
  });
+
+   $(document).on('change','#zone_serial_no',function(){
+     var zone_serial_no = $(this).val();
+     $.ajax({
+        url:'ajax_get_ware_house.php',
+        data:{zone_serial_no:zone_serial_no},
+        type:'POST',
+        dataType:'json',
+        success:function(data){
+          // $("#area_employee").html(data.area_options);
+          $("#ware_house_serial_no").html(data);
+          // console.log(data.area_options);
+        }
+      });
+  });
 
   $(document).on('change','#area_employee',function(){
    var area_name = $(this).val();

@@ -36,7 +36,11 @@ if(!permission_check('attendance_info')){
      <div class="form-group" style="margin-bottom: 20px;" align="center">
 
       <div class="col-md-12 col-sm-6 col-xs-8">
+                <?php
+if (permission_check('attendance_view_record_button')) {
+  ?>
         <button class="btn btn-success" id="view_record">View Record</button>
+                    <?php } ?>
       </div>
     </div>
 

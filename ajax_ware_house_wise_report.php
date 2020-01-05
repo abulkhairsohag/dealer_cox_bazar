@@ -938,7 +938,7 @@ if (isset($_POST['from_date'])) {
 		echo json_encode($sales_dues_tbl);
 
 	}elseif ($report_type == 'products in stock') {
-		$query = "SELECT * FROM products";
+		$query = "SELECT DISTINCT products_id_no FROM product_stock WHERE ware_house_serial_no = '$ware_house_serial_no'";
 		$get_product = $dbOb->select($query);
 		$sales_dues_tbl = '<div  id="print_table" style="color:black">
 								<span class="text-center">
@@ -986,6 +986,12 @@ if (isset($_POST['from_date'])) {
 				$i ++;
 				$product_id = $product['products_id_no'];
 
+				$query = "SELECT * FROM products WHERE products_id_no = '$product_id'";
+				$prod_inf = $dbOb->select($query);
+				if ($prod_inf) {
+					$prod = $prod_inf->fetch_assoc();
+				}
+
 				// now getting products stock
 				// $in_stock_qty = get_ware_house_in_stock($ware_house_serial_no, $product_id);
 				$in_stock_qty = get_ware_house_stock($ware_house_serial_no, $product_id);
@@ -993,14 +999,98 @@ if (isset($_POST['from_date'])) {
 				$sales_dues_tbl .= ' <tr align="left" style="color:black">
 											<td>'.$i.'</td>
 											<td>'.$product['products_id_no'].'</td>
-											<td>'.ucwords($product['products_name']).'</td>
-											<td>'.ucwords($product['company']).'</td>
-											<td>'.$product['pack_size'].'</td>
+											<td>'.ucwords($prod['products_name']).'</td>
+											<td>'.ucwords($prod['company']).'</td>
+											<td>'.$prod['pack_size'].'</td>
 											<td>'.$in_stock_qty.'</td>
 										</tr>';
 
 
 			} // end of fetch assoc of get product
+		}else{
+			$sales_dues_tbl .= ' <tr align="center" style="color:red">
+											<td colspan="6">Product Not Found</td>
+										</tr>';
+		} // end of if get product
+		  $sales_dues_tbl .= '  </tbody>
+		   </table>';
+		$sales_dues_tbl .= '</div><div><a class="text-light btn-success btn" onclick="printContent(\''.$print_table.'\')" name="print" id="print_receipt">Print</a>
+			   
+		</div>';
+		echo json_encode($sales_dues_tbl);
+		die	();
+	}elseif ($report_type == 'offer products in stock') {
+		$query = "SELECT DISTINCT products_id FROM offered_products_stock WHERE ware_house_serial_no = '$ware_house_serial_no'";
+		$get_product = $dbOb->select($query);
+		$sales_dues_tbl = '<div  id="print_table" style="color:black">
+								<span class="text-center">
+									<h3><b>'.strtoupper($company_profile['organization_name']).'</b></h3>
+									<h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
+									<h5>Report Date : '.date("d-m-Y").'</h5>
+									
+										</span>
+										<div class="text-center">
+											<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>WARE HOUSE WISE OFFER PRODUCTS IN STOCK</b></h4>
+										</div>		<table class="table table-responsive">
+												<tbody>
+													<tr>
+														<td class="text-left">
+															<h5 style="margin:0px ; margin-top: -8px;">Ware House Name : <span></span>'.$ware_house_name.'</span></h5>
+														</td>
+														<td class="text-center">
+															
+														</td>
+														<td class="text-right">
+															<h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
+															<h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
+														</td>
+													</tr>
+												
+												</tbody>
+											</table>
+										<!--     
+										<hr> -->
+											<table class="table table-bordered table-responsive">
+																<thead style="background:#4CAF50; color:white" >
+																<tr>
+																<th scope="col">SL No</th>
+																<th scope="col">Product ID</th>
+																<th scope="col">Name</th>
+																<th scope="col">Company</th>
+																<th scope="col">Pack Size</th>
+																<th scope="col">In Stock (Pack)</th>
+															</tr>
+																</thead>
+																<tbody>';
+		if ($get_product) {
+			$i = 0;
+			while ($product = $get_product->fetch_assoc()) {
+				$i ++;
+				$product_id = $product['products_id'];
+				$query = "SELECT * FROM products WHERE products_id_no = '$product_id'";
+				$prod_inf = $dbOb->select($query);
+				if ($prod_inf) {
+					$prod = $prod_inf->fetch_assoc();
+				}
+				// now getting products stock
+				// $in_stock_qty = get_ware_house_in_stock($ware_house_serial_no, $product_id);
+				$in_stock_qty = get_ware_house_offer_stock($ware_house_serial_no, $product_id);
+
+				$sales_dues_tbl .= ' <tr align="left" style="color:black">
+											<td>'.$i.'</td>
+											<td>'.$product['products_id'].'</td>
+											<td>'.ucwords($prod['products_name']).'</td>
+											<td>'.ucwords($prod['company']).'</td>
+											<td>'.$prod['pack_size'].'</td>
+											<td>'.$in_stock_qty.'</td>
+										</tr>';
+
+
+			} // end of fetch assoc of get product
+		}else{
+			$sales_dues_tbl .= ' <tr align="center" style="color:red">
+											<td colspan="6">Product Not Found</td>
+										</tr>';
 		} // end of if get product
 		  $sales_dues_tbl .= '  </tbody>
 		   </table>';
@@ -1115,141 +1205,141 @@ if (isset($_POST['from_date'])) {
 
 	}elseif ($report_type == 'all sales') {
 	
-	$query = "SELECT DISTINCT cust_id FROM `order_delivery`";
-		$get_cus =  $dbOb->select($query);
+		$query = "SELECT DISTINCT cust_id FROM `order_delivery`";
+			$get_cus =  $dbOb->select($query);
 
-		if ($get_cus) {
-			$i = 0;
-			$cust_id = [];
-			while ($row = $get_cus->fetch_assoc()) {
-				$cust_ids[$i] = $row['cust_id'];
-				$i++; 
+			if ($get_cus) {
+				$i = 0;
+				$cust_id = [];
+				while ($row = $get_cus->fetch_assoc()) {
+					$cust_ids[$i] = $row['cust_id'];
+					$i++; 
+				}
 			}
-		}
 
-		$sales_dues_tbl = '<div  id="print_table" style="color:black">
-		<span class="text-center">
-			<h3><b>'.strtoupper($company_profile['organization_name']).'</b></h3>
-			<h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
-			<h5>'.$show_date.'</h5>
+			$sales_dues_tbl = '<div  id="print_table" style="color:black">
+			<span class="text-center">
+				<h3><b>'.strtoupper($company_profile['organization_name']).'</b></h3>
+				<h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
+				<h5>'.$show_date.'</h5>
+				
+					</span>
+					<div class="text-center">
+						<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>Ware House Wise All Sales Summery</b></h4>
+					</div>		<table class="table table-responsive">
+							<tbody>
+								<tr>
+									<td class="text-left">
+										<h4>Ware House Name: <b>'.$ware_house_name.'</b></h4>
+									</td>
+									<td class="text-center">
+										
+									</td>
+									<td class="text-right">
+										<h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
+										<h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
+									</td>
+								</tr>
+							
+							</tbody>
+						</table>
+					<!--     
+					<hr> -->
+						<table class="table table-bordered table-responsive">
+											<thead style="background:#4CAF50; color:white" >
+											<tr>
+											<th scope="col">#</th>
+											<th scope="col">Customer ID</th>
+											<th scope="col">Customer Name</th>
+											<th scope="col">Shop Name</th>
+											<th scope="col">Mobile No</th>
+											<th scope="col">Area</th>
+											<th scope="col">Total Payable</th>
+											<th scope="col">Total Pay</th>
+											<th scope="col">Total Due</th>
+										</tr>
+											</thead>
+											<tbody>';
+
+			$i = 0;
+			$count = 0;
 			
-				</span>
-				<div class="text-center">
-					<h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>Ware House Wise All Sales Summery</b></h4>
-				</div>		<table class="table table-responsive">
-						<tbody>
-							<tr>
-								<td class="text-left">
-									<h4>Ware House Name: <b>'.$ware_house_name.'</b></h4>
-								</td>
-								<td class="text-center">
-									
-								</td>
-								<td class="text-right">
-									<h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
-									<h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
-								</td>
-							</tr>
-						
-						</tbody>
-					</table>
-				<!--     
-				<hr> -->
-					<table class="table table-bordered table-responsive">
-										<thead style="background:#4CAF50; color:white" >
-										<tr>
-										<th scope="col">#</th>
-										<th scope="col">Customer ID</th>
-										<th scope="col">Customer Name</th>
-										<th scope="col">Shop Name</th>
-										<th scope="col">Mobile No</th>
-										<th scope="col">Area</th>
-										<th scope="col">Total Payable</th>
-										<th scope="col">Total Pay</th>
-										<th scope="col">Total Due</th>
-									</tr>
-										</thead>
-										<tbody>';
+			$total_pay = 0;
+			$total_payable = 0;
+			$total_due = 0;
 
-		$i = 0;
-		$count = 0;
-		
-		$total_pay = 0;
-		$total_payable = 0;
-		$total_due = 0;
+			$grand_total_payable = 0;
+			$grand_total_pay = 0;
+			$grand_total_due = 0;
+			$i=0;
 
-		$grand_total_payable = 0;
-		$grand_total_pay = 0;
-		$grand_total_due = 0;
-		$i=0;
+			foreach ($cust_ids as $key => $cust_id) {
+				$query = "SELECT * FROM order_delivery WHERE cust_id = '$cust_id' AND ware_house_serial_no = '$ware_house_serial_no' order by area";
+				$get_order = $dbOb->select($query);
+				if ($get_order) {
+					while ($row = $get_order->fetch_assoc()) {
+						$delivery_date = strtotime($row['delivery_date']);
+						if ($delivery_date >= $from_date && $delivery_date <= $to_date) {
+							$count++;
+							$shop_name = $row['shop_name'];
+							$customer_name = $row['customer_name'];
+							$mobile_no = $row['mobile_no'];
+							$area = $row['area'];
+							
+							$total_due += $row['due']; 
+							$total_payable += $row['payable_amt']; 
+							$total_pay += $row['pay']; 
+						}
+					}
+					if ($count > 0) {
+						$i++;
+						$sales_dues_tbl .= ' <tr align="left" style="color:black">
+						<td>'.$i.'</td>
+						<td>'.$cust_id.'</td>
+						<td>'.$customer_name.'</td>
+						<td>'.$shop_name.'</td>
+						<td>'.$mobile_no.'</td>
+						<td>'.$area.'</td>
+						<td>'.$total_payable.'</td>
+						<td>'.$total_pay.'</td>
+						<td>'.($total_due == 0?'<span class="badge bg-green">Paid</span>':$total_due).'</td>
+					</tr>';
 
-		foreach ($cust_ids as $key => $cust_id) {
-			$query = "SELECT * FROM order_delivery WHERE cust_id = '$cust_id' AND ware_house_serial_no = '$ware_house_serial_no' order by area";
-			$get_order = $dbOb->select($query);
-			if ($get_order) {
-				while ($row = $get_order->fetch_assoc()) {
-					$delivery_date = strtotime($row['delivery_date']);
-					if ($delivery_date >= $from_date && $delivery_date <= $to_date) {
-						$count++;
-						$shop_name = $row['shop_name'];
-						$customer_name = $row['customer_name'];
-						$mobile_no = $row['mobile_no'];
-						$area = $row['area'];
-						
-						$total_due += $row['due']; 
-						$total_payable += $row['payable_amt']; 
-						$total_pay += $row['pay']; 
+				
+					$grand_total_due += $total_due;
+					$grand_total_payable += $total_payable;
+					$grand_total_pay += $total_pay;
+					$count = 0;
+					$shop_name ='';
+					$customer_name ='';
+					$total_due = 0;
+					$total_payable = 0;
+					$total_pay = 0;
 					}
 				}
-				if ($count > 0) {
-					$i++;
-					$sales_dues_tbl .= ' <tr align="left" style="color:black">
-					<td>'.$i.'</td>
-					<td>'.$cust_id.'</td>
-					<td>'.$customer_name.'</td>
-					<td>'.$shop_name.'</td>
-					<td>'.$mobile_no.'</td>
-					<td>'.$area.'</td>
-					<td>'.$total_payable.'</td>
-					<td>'.$total_pay.'</td>
-					<td>'.($total_due == 0?'<span class="badge bg-green">Paid</span>':$total_due).'</td>
-				</tr>';
-
-			
-				$grand_total_due += $total_due;
-				$grand_total_payable += $total_payable;
-				$grand_total_pay += $total_pay;
-				$count = 0;
-				$shop_name ='';
-				$customer_name ='';
-				$total_due = 0;
-				$total_payable = 0;
-				$total_pay = 0;
-				}
 			}
-		}
 
-		if ($i == 0) {
-			$sales_dues_tbl .= '<tr>
-								   <td colspan="9"  align="center" style="color:red">No Order Found</td>
-							   </tr>';
-			
-		   }else{
-			   $sales_dues_tbl .= '<tr class="bg-success">
-								   <td colspan="6"  align="right" style="color:red">Total</td>
-								   <td align="left" style="color:red">'.$grand_total_payable.'</td>
-								   <td align="left" style="color:red">'.$grand_total_pay.'</td>
-								   <td align="left" style="color:red">'.$grand_total_due.'</td>
-							   </tr>';
-			$sohag = '';
-		   }
-		   $sales_dues_tbl .= '  </tbody>
-		   </table>';
-		$sales_dues_tbl .= '</div><div><a class="text-light btn-success btn" onclick="printContent(\''.$print_table.'\')" name="print" id="print_receipt">Print</a>
-			   
-		</div>';
-		echo json_encode($sales_dues_tbl);
-	}
+			if ($i == 0) {
+				$sales_dues_tbl .= '<tr>
+									<td colspan="9"  align="center" style="color:red">No Order Found</td>
+								</tr>';
+				
+			}else{
+				$sales_dues_tbl .= '<tr class="bg-success">
+									<td colspan="6"  align="right" style="color:red">Total</td>
+									<td align="left" style="color:red">'.$grand_total_payable.'</td>
+									<td align="left" style="color:red">'.$grand_total_pay.'</td>
+									<td align="left" style="color:red">'.$grand_total_due.'</td>
+								</tr>';
+				$sohag = '';
+			}
+			$sales_dues_tbl .= '  </tbody>
+			</table>';
+			$sales_dues_tbl .= '</div><div><a class="text-light btn-success btn" onclick="printContent(\''.$print_table.'\')" name="print" id="print_receipt">Print</a>
+				
+			</div>';
+			echo json_encode($sales_dues_tbl);
+		}
 
 
 

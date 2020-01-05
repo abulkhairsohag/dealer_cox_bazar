@@ -39,7 +39,7 @@ if (!permission_check('add_offer_product')) {
               <th style="width: 70px">Name</th>
               <th style="width: 80px">Category</th>
               <th style="width: 35px">Pack Size</th>
-              <th style="width: 35px">Available QTY(PCS)</th>
+              <!-- <th style="width: 35px">Available QTY(PCS)</th> -->
               <!-- <th style="width: 80px">Barcode</th> -->
               <th style="width: 210px;text-align: center;">Action</th>
             </tr>
@@ -72,7 +72,7 @@ if (!permission_check('add_offer_product')) {
                   <td><?php echo $product_details['category']; ?></td>
                   
                   <td><?php echo $product_details['pack_size']; ?></td>
-                  <td><?php echo $row['available_qty']; ?></td>
+                 
 
                   <td align="center">
 

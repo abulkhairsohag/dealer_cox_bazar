@@ -151,7 +151,6 @@ if (isset($_POST["sohag"])) {
 				<td><?php echo $product_details['category']; ?></td>
 
 				<td><?php echo $product_details['pack_size']; ?></td>
-				<td><?php echo $row['available_qty']; ?></td>
 
 				<td align="center">
 

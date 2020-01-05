@@ -1,10 +1,8 @@
 <?php include_once('include/header.php'); 
 
-      include_once('class/Database.php');
-      $dbOb = new Database();
-?>
+  include_once('class/Database.php');
+  $dbOb = new Database();
 
-<?php 
 if(!permission_check('product_report')){
   ?>
   <script>
@@ -88,6 +86,7 @@ if(!permission_check('product_report')){
           <option value="">Please Select One</option>
           <option value="all_product_stock_and_sell">All Product Stock & sell</option>
           <option value="products in stock">Products In Stock</option>
+          <option value="offer products in stock">Offer Products In Stock</option>
           <option value="dues">Summery Of Dues</option>
           <option value="order wise dues">Order Wise Dues</option>
           <option value="all sales">All Sales Summery</option>
@@ -161,18 +160,33 @@ if(!permission_check('product_report')){
       var ware_house_serial_no = $("#ware_house_serial_no").val();
 
       $("#show_table").html("");
+      if (ware_house_serial_no == '') {
+          swal({
+                title: 'warning',
+                text: "Please Select A Ware House",
+                icon: 'warning',
+                button: "Done",
+              });
+      }else if(report_type == ''){
+               swal({
+                title: 'warning',
+                text: "Please Select A Report Type",
+                icon: 'warning',
+                button: "Done",
+              });
+      }else{
+        $.ajax({
+          url: "ajax_ware_house_wise_report.php",
+          method: "POST",
+          data:{from_date:from_date,to_date:to_date,report_type:report_type,product_id:product_id,area:area,ware_house_serial_no:ware_house_serial_no},
+          dataType: "json",
+          success:function(data){
+            $("#show_table").html(data);
+            // console.log(data);
 
-      $.ajax({
-        url: "ajax_ware_house_wise_report.php",
-        method: "POST",
-        data:{from_date:from_date,to_date:to_date,report_type:report_type,product_id:product_id,area:area,ware_house_serial_no:ware_house_serial_no},
-        dataType: "json",
-        success:function(data){
-          $("#show_table").html(data);
-          // console.log(data);
-
-        }
-      });
+          }
+        });
+      }
 
     });
 

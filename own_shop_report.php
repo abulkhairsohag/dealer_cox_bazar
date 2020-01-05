@@ -257,14 +257,7 @@ if(!permission_check('own_shop_report')){
                                     </table>
                                   </div>
 
-
-
                                 </div>   <!-- End of info table  -->
-
-
-
-
-
 
                               </div>
                             </div>

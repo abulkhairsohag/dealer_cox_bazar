@@ -3,7 +3,7 @@
   include_once('class/Database.php');
   $dbOb = new Database();
 
-if(!permission_check('product_report')){
+if(!permission_check('ware_house_wise_report')){
   ?>
   <script>
     window.location.href = '403.php';

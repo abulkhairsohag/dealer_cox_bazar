@@ -76,7 +76,7 @@ if (isset($_POST['from_date'])) {
 								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
-								      <td>'.number_format($row['grand_total'],2).'</td>
+								      <td>'.number_format($row['net_payable_amt'],2).'</td>
 								      <td>'.number_format($row['pay'],2).'</td>
 								      <td style="color:'.$color.'">'.number_format($row['due'],2).'</td>
 								      <td>'.$row['sell_date'].'</td>
@@ -84,7 +84,7 @@ if (isset($_POST['from_date'])) {
 								      <a  class="badge  '.$badge.' view_data" id="'.$row['serial_no'].'"  data-toggle="modal" data-target="#view_modal" style="margin:2px"> View</a>
 								      </td>
 								    </tr>';
-					$total_amount += $row['grand_total'];
+					$total_amount += $row['net_payable_amt'];
 					$total_pay += $row['pay'];
 					$total_due += $row['due'];
 				}
@@ -148,7 +148,7 @@ if (isset($_POST['from_date'])) {
 								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
-								      <td>'.number_format($row['grand_total'],2).'</td>
+								      <td>'.number_format($row['net_payable_amt'],2).'</td>
 								      <td>'.number_format($row['pay'],2).'</td>
 								      <td style="color:'.$color.'">'.number_format($row['due'],2).'</td>
 								      <td>'.$row['sell_date'].'</td>
@@ -156,7 +156,7 @@ if (isset($_POST['from_date'])) {
 								      <a  class="badge  '.$badge.' view_data" id="'.$row['serial_no'].'"  data-toggle="modal" data-target="#view_modal" style="margin:2px"> View</a>
 								      </td>
 								    </tr>';
-					$total_amount += $row['grand_total'];
+					$total_amount += $row['net_payable_amt'];
 					$total_pay += $row['pay'];
 					$total_due += $row['due'];
 				}
@@ -221,7 +221,7 @@ if (isset($_POST['from_date'])) {
 								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
-								      <td>'.number_format($row['grand_total'],2).'</td>
+								      <td>'.number_format($row['net_payable_amt'],2).'</td>
 								      <td>'.number_format($row['pay'],2).'</td>
 								      <td style="color:'.$color.'">'.number_format($row['due'],2).'</td>
 								      <td>'.$row['sell_date'].'</td>
@@ -229,7 +229,7 @@ if (isset($_POST['from_date'])) {
 								      <a  class="badge  '.$badge.' view_data" id="'.$row['serial_no'].'"  data-toggle="modal" data-target="#view_modal" style="margin:2px"> View</a>
 								      </td>
 								    </tr>';
-					$total_amount += $row['grand_total'];
+					$total_amount += $row['net_payable_amt'];
 					$total_pay += $row['pay'];
 					$total_due += $row['due'];
 				}
@@ -301,7 +301,7 @@ if (isset($_POST['from_date'])) {
 								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
-								      <td>'.number_format($row['grand_total'],2).'</td>
+								      <td>'.number_format($row['net_payable_amt'],2).'</td>
 								      <td>'.number_format($row['pay'],2).'</td>
 								      <td style="color:'.$color.'">'.number_format($row['due'],2).'</td>
 								      <td>'.$row['sell_date'].'</td>
@@ -309,7 +309,7 @@ if (isset($_POST['from_date'])) {
 								      <a  class="badge  '.$badge.' view_data" id="'.$row['serial_no'].'"  data-toggle="modal" data-target="#view_modal" style="margin:2px"> View</a>
 								      </td>
 								    </tr>';
-					$total_amount += $row['grand_total'];
+					$total_amount += $row['net_payable_amt'];
 					$total_pay += $row['pay'];
 					$total_due += $row['due'];
 				}
@@ -379,7 +379,7 @@ if (isset($_POST['from_date'])) {
 								      <td>'.$row['customer_name'].'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
-								      <td>'.number_format($row['grand_total'],2).'</td>
+								      <td>'.number_format($row['net_payable_amt'],2).'</td>
 								      <td>'.number_format($row['pay'],2).'</td>
 								      <td style="color:'.$color.'">'.number_format($row['due'],2).'</td>
 								      <td>'.$row['sell_date'].'</td>
@@ -387,7 +387,7 @@ if (isset($_POST['from_date'])) {
 								      <a  class="badge  '.$badge.' view_data" id="'.$row['serial_no'].'"  data-toggle="modal" data-target="#view_modal" style="margin:2px"> View</a>
 								      </td>
 								    </tr>';
-					$total_amount += $row['grand_total'];
+					$total_amount += $row['net_payable_amt'];
 					$total_pay += $row['pay'];
 					$total_due += $row['due'];
 				}
@@ -461,7 +461,7 @@ if (isset($_POST['from_date'])) {
 								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
-								      <td>'.number_format($row['grand_total'],2).'</td>
+								      <td>'.number_format($row['net_payable_amt'],2).'</td>
 								      <td>'.number_format($row['pay'],2).'</td>
 								      <td style="color:'.$color.'">'.number_format($row['due'],2).'</td>
 								      <td>'.$row['sell_date'].'</td>
@@ -469,7 +469,7 @@ if (isset($_POST['from_date'])) {
 								      <a  class="badge  '.$badge.' view_data" id="'.$row['serial_no'].'"  data-toggle="modal" data-target="#view_modal" style="margin:2px"> View</a>
 								      </td>
 								    </tr>';
-					$total_amount += $row['grand_total'];
+					$total_amount += $row['net_payable_amt'];
 					$total_pay += $row['pay'];
 					$total_due += $row['due'];
 				}
@@ -540,7 +540,7 @@ if (isset($_POST['from_date'])) {
 								      <td>'.$customr_nm.'</td>
 								      <td>'.$row['mobile_no'].'</td>
 								      <td>'.$row['employee_name'].'</td>
-								      <td>'.number_format($row['grand_total'],2).'</td>
+								      <td>'.number_format($row['net_payable_amt'],2).'</td>
 								      <td>'.number_format($row['pay'],2).'</td>
 								      <td style="color:'.$color.'">'.number_format($row['due'],2).'</td>
 								      <td>'.$row['sell_date'].'</td>
@@ -548,7 +548,7 @@ if (isset($_POST['from_date'])) {
 								      <a  class="badge  '.$badge.' view_data" id="'.$row['serial_no'].'"  data-toggle="modal" data-target="#view_modal" style="margin:2px"> View</a>
 								      </td>
 								    </tr>';
-					$total_amount += $row['grand_total'];
+					$total_amount += $row['net_payable_amt'];
 					$total_pay += $row['pay'];
 					$total_due += $row['due'];
 				}

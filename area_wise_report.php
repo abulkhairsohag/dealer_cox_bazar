@@ -5,7 +5,7 @@ $dbOb = new Database();
 ?>
 
 <?php 
-if(!permission_check('product_report')){
+if(!permission_check('area_wise_report')){
   ?>
   <script>
     window.location.href = '403.php';

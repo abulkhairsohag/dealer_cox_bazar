@@ -33,7 +33,7 @@ if ($user_type == "employee") {
                 <span>Update Password</span>
               </a>
             </li>
-            <li><a href="logout.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+            <li><a href="logout.php"><i class="fa fa-sign-out-alt pull-right"></i> Log Out</a></li>
           </ul>
         </li>
         <?php 

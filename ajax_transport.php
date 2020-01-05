@@ -185,21 +185,11 @@ if (isset($_POST["sohag"])) {
                     <td align="center">
 
 
-                      <?php 
-
-                      if (permission_check('transport_edit_button')) {
-                        ?> 
+                    
                        <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a> 
-                      <?php } ?>
-
-
-
-                      <?php 
-
-                      if (permission_check('transport_delete_button')) {
-                        ?> 
+                      
                          <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
-                      <?php } ?>
+                      
                       
                     </td>
                   </tr>

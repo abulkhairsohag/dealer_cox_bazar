@@ -3,6 +3,7 @@
 
 $user_id = Session::get("user_id");
 $user_type = Session::get("user_type");
+$login_tbl_serial_no = Session::get("login_tbl_serial_no");
 
 include_once("class/Database.php");
 $dbOb = new Database();
@@ -84,6 +85,38 @@ if ($user_type == "employee") {
         <?php 
         }
 
+}elseif ($user_type == "admin") {
+  $query = "SELECT * FROM login WHERE serial_no = '$login_tbl_serial_no'"; 
+  $get_user_info = $dbOb->select($query);
+  $user_pass="";
+  if ($get_user_info) {
+     $user_pass = $get_user_info->fetch_assoc()['password'];
+   }
+
+   if ($user_pass != $old_pass) {
+     ?>
+      <script>
+               swal("Old Password Doesn't match !!", "You clicked the button!", "error");
+           </script>
+     <?php
+   }else if($new_pass != $con_pass){
+      ?>
+      <script>
+               swal("New Password And Confirm Password Miss Matched.. !!", "You clicked the button!", "error");
+           </script>
+     <?php
+   }else{
+     $query = "UPDATE login SET password = '$new_pass' WHERE serial_no = '$login_tbl_serial_no'";
+     $update = $dbOb->update($query);
+      if ($update) {
+       ?>
+          <script>
+               swal("Password Updated.. !!", "You clicked the button!", "success");
+           </script>
+     <?php
+      }
+   }
+  //  222222
 }
 }
 }

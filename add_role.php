@@ -298,7 +298,7 @@ if(!permission_check('add_role')){
                           include_once("class/Database.php");
                           $dbOb = new Database();
 
-                          $query = "SELECT * FROM `permission` LIMIT 36, 22";
+                          $query = "SELECT * FROM `permission` LIMIT 35, 23";
 
                           $get_permission = $dbOb->select($query);
 

@@ -99,7 +99,7 @@ if(!permission_check('stock_list')){
                    <?php 
                     if (in_array($row['serial_no'], $stock_serial_no)) {
 
-                    if(permission_check('sale_product_edit_button')){
+                    if(permission_check('stock_list_edit_button')){
                       ?>
                     <a  class="badge bg-blue edit_data" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#stock_data_modal" style="margin:2px">Edit</a>
                   <?php } }?>

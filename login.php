@@ -59,6 +59,7 @@ if (isset($_POST['submit'])) {
 				}
 			}
 			Session::set("login",true);
+			Session::set("login_tbl_serial_no",$get_user['serial_no']);
 			Session::set("name",$get_user['name']);
 			Session::set("role",$get_user['role']);
 			Session::set("user_id",$get_user['user_id']);

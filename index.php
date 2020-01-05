@@ -589,20 +589,65 @@ if ($delivery_complete<1) {
           <div class="dashboard-widget-content">
             
 <!-- the following section is for showing product quantity notification -->
+
+<!-- the following section is for showing product quantity notification -->
             <?php 
-            $query = "SELECT * FROM products WHERE quantity <='24' order by quantity";
-            $get_product =  $dbOb->select($query);
-            if ($get_product) {
+            if (Session::get("ware_house_serial_login")){
+              if (Session::get("ware_house_serial_login") != '-1') {
+                $ware_house_serial_no  = Session::get("ware_house_serial_login");
+                $query = "SELECT DISTINCT products_id_no FROM product_stock WHERE ware_house_serial_no = '$ware_house_serial_no'";
+                $get_product = $dbOb->select($query);
+                if ($get_product) {
              ?>
 
-                 
+                  <h4 style="background: #34495E; color: white; padding: 10px;text-align: center;">Product Quantity</h4>
                 
 
-              
+              <div class="table-responsive">
+                <table class="table table-striped mb-none">
+                  <thead style="background: green;color: white">
+
+                    <tr>
+                      <th>Product Name</th>
+                      <th>Quantity(Packet)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php 
+                    while ($row = $get_product->fetch_assoc()) {
+                      $prod_id = $row['products_id_no'];
+                      $query = "SELECT * FROM products WHERE products_id_no = '$prod_id'";
+                      $product_inform = $dbOb->select($query);
+                      $prod_name = "";
+                      if ($product_inform) {
+                        $prod_name = $product_inform->fetch_assoc()['products_name'];
+                      }
+                      $quantity = get_ware_house_stock($ware_house_serial_no, $prod_id);
+                      if ($quantity<=150 and $quantity>99 ) {
+                        $color = "green";
+                      }else{
+                        $color = "red";
+                      }
+                      ?>
+                      <tr style="color: <?php echo $color ?>">
+                        <td><?php echo  $prod_name  ?></td>
+                        <td><?php echo $quantity; ?></td>
+                      </tr>
+                      
+                      <?php
+                    }
+                    ?>
+                  </tbody>
+                </table>
+              </div>
             <?php
           };
+              }
+            }
+            $query = "SELECT * FROM products WHERE quantity <='24' order by quantity";
+            $get_product =  $dbOb->select($query);
+            
           ?>
-
 <!-- product quantity notification ends here  -->
 
 <!-- marketing employee duty area starts from here  -->

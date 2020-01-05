@@ -164,17 +164,22 @@ if ($user_type == "employee") {
       ?>
       <li><a><i class="fas fa-bus-alt"></i> Transport <span class="fa fa-chevron-down"></span></a>
         <ul class="nav child_menu">
+        <?php
+        if (permission_check('transport_info')) {
+          ?>
           <li><a href="transport.php"><i class="fas fa-car"></i> Transport Info</a></li>
           <?php 
-
+            }
           if (permission_check('truck_load_for_delivery')) {
             ?>
             <li><a href="truck_load.php"><i class="fas fa-arrow-right"></i> Truck Load For Delivery</a></li>
             <?php 
-
-          }?>
+          }
+          if (permission_check('unload_truck')) {
+          ?>
           <li><a href="truck_unload.php"><i class="fas fa-arrow-left"></i> Unload Truck After Delivery</a></li>  
           <?php
+          }
           if (permission_check('take_back_market_product_return')) {
             ?>
             <li><a href="store_market_return_product.php"><i class="fas fa-arrow-left"></i> Take Back Market Return Product</a></li>
@@ -235,9 +240,17 @@ if ($user_type == "employee") {
       ?>
       <li><a><i class="fa fa-users"></i> Own Shop  <span class="fa fa-chevron-down"></span></a>
         <ul class="nav child_menu">
+        <?php
+          if (permission_check('stock_product_to_shop')) {
+        ?>
           <li><a href="stock_product_to_shop.php"><i class="fas fa-list-ul"></i> stock product to shop</a></li>
+          <?php
+          }
+          if (permission_check('own_shop_products')) {
+        ?>
           <li><a href="own_shop_products.php"><i class="fas fa-list-ul"></i> Shop Products</a></li>
           <?php 
+          }
           if (permission_check('sale_product')) {
             ?>
             <li><a href="sale_product.php"><i class="fas fa-list-ul"></i> Sale Product</a></li>
@@ -286,7 +299,7 @@ if ($user_type == "employee") {
             ?>
             <li><a href="market_return_product.php"><i class="fas fa-arrow-left"></i> Return Sold Products From Market </a></li>
           <?php } ?>
-          <?php  if (permission_check('money_receipt')) { ?>
+          <?php  if (permission_check('print_money_receipt')) { ?>
             <li><a href="money_receipt.php"><i class="fas fa-print"></i> Print Money Receipt </a></li>
           <?php }
           if (permission_check('money_receipt_list')) {

@@ -24,7 +24,7 @@ if(!permission_check('sales_list')){
           <div class="row float-right" align="right">
 
             <?php 
-            if (permission_check('sale_product')) {
+            if (permission_check('sale_product_button')) {
               ?>
               <a href="sale_product.php" class="btn btn-primary" id="add_data"> <span class="badge"><i class="fa fa-plus"> </i></span> Sell Product</a>
             <?php } ?>

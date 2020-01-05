@@ -3,7 +3,7 @@
 
 
 <?php 
-if(!permission_check('money_receipt')){
+if(!permission_check('print_money_receipt')){
   ?>
   <script>
     window.location.href = '403.php';

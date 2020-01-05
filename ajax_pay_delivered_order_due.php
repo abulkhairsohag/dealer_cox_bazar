@@ -95,12 +95,13 @@ if (isset($_POST["sohag"])) {
                     <td><?php echo $row['due']; ?></td>
                     <td><?php echo $row['delivery_date']; ?></td>
                     <td align="center">
-
-
+                  <?php 
+                      if (permission_check('unpaid_but_delivered_view_button')) {
+                        ?>
                       <a class="badge  bg-blue view_data  " id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#view_modal">view </a>
-                      
-                          
+
                       <?php 
+                    }
                       if (permission_check('unpaid_but_delivered_pay_button')) {
                         ?>
 

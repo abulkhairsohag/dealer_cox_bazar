@@ -66,13 +66,12 @@ if(!permission_check('money_receipt_list')){
                     
                     <td align="center">
 
-                     
+                     <?php 
+                      if(permission_check('view_receipt_button')){
+                        ?>
                         <a  class="badge bg-blue view_date" id="<?php echo($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">View Receipt</a> 
-                     
-
-                      
-                        
-                         
+                      <?php } ?>
+    
                     </td>
                   </tr>
 

@@ -6,13 +6,13 @@ $dbOb = new Database();
 
 
 <?php 
-// if(!permission_check('truck_load_for_delivery')){
+if(!permission_check('truck_load_for_delivery')){
   ?>
-  <!-- <script>
+  <script>
     window.location.href = '403.php';
-  </!--> -->
+  </!-->
   <?php 
-// }
+}
 ?>
 
 <div class="right_col" role="main">

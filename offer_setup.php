@@ -112,7 +112,6 @@ if (!permission_check('offer_setup')) {
 
                       <?php
                     }
-
                     ?>
                   </td>
                 </tr>

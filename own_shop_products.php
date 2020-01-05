@@ -2,7 +2,7 @@
 
 
 <?php
-if (!permission_check('add_product')) {
+if (!permission_check('own_shop_products')) {
   ?>
   <script>
     window.location.href = '403.php';

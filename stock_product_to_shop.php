@@ -6,7 +6,7 @@ $dbOb = new Database();
 
 
 <?php 
-if(!permission_check('truck_load_for_delivery')){
+if(!permission_check('stock_product_to_shop')){
   ?>
   <script>
     window.location.href = '403.php';
@@ -170,7 +170,7 @@ if(!permission_check('truck_load_for_delivery')){
             <div class="form-group" align="center">
             <?php 
 
-            if (permission_check('truck_load_save_button')) {
+            if (permission_check('stock_product_to_shop_save_button')) {
               ?>
               <input type="submit" name="submit" value="Save" class="btn btn-success" style="">
               <?php } ?>

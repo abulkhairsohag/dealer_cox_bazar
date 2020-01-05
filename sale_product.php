@@ -21,7 +21,7 @@ if(!permission_check('sale_product')){
           <h2>Sell Product (Own Shop)</h2>
           <div class="row float-right" align="right">
            <?php 
-           if (permission_check('sales_list')) {
+           if (permission_check('view_sales_list_button')) {
 
             ?>
             <a href="sales.php" class="btn btn-primary" id="add_data"> <span class="badge"><i class="fas fa-list-ul"> </i></span> View Sales List</a>
@@ -163,7 +163,13 @@ if(!permission_check('sale_product')){
                 ?>
               </select>
             </div>
-            <div class="col-md-2"> <a data-toggle="modal" id="add_customer" data-target="#add_customer_modal" class="btn bg-green">Add Customer</a> </div>
+            <div class="col-md-2"> 
+            <?php
+            if(permission_check('add_customer_button')){
+            ?>
+            <a data-toggle="modal" id="add_customer" data-target="#add_customer_modal" class="btn bg-green">Add Customer</a> 
+              <?php } ?>
+            </div>
           </div>
 
           <div class="form-group">

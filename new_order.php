@@ -32,15 +32,15 @@ if (!permission_check('new_order')) {
             </div>
             <div class="col-md-6 float-right" align="right">
               <?php
-              if (permission_check('truck_load_for_delivery')) {
+              if (permission_check('load_truck_button')) {
                ?>
                <a href="truck_load.php" class="btn btn-primary" > <span class="badge"></span> Load Truck</a>
-             <?php }?>
-             <?php
-             if (permission_check('new_order')) {
+             <?php 
+             }
+             if (permission_check('unload_truck_button')) {
                ?>
                <a href="truck_unload.php" class="btn btn-success" > <span class="badge"></span> Unload Truck</a>
-             <?php }?>
+             <?php } ?>
            </div>
 
          </div>
@@ -402,7 +402,11 @@ if ($get_invoice) {
 
 
   <div class="form-group" align="center">
+  <?php 
+  if (permission_check('new_order_save_button')) {
+  ?>
     <input type="submit" name="submit" value="Save" class="btn btn-success" style="">
+<?php } ?>
     <input type="reset" name="reset" value="Reset" class="btn btn-warning">
   </div>
 

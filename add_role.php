@@ -88,7 +88,6 @@ if(!permission_check('add_role')){
                     <?php 
                     if (permission_check('role_delete_button')) {
                       ?>
-
                       <a  class="badge  bg-red delete_data" id="<?php echo($row['serial_no']) ?>"  style="margin:2px"> Delete</a> 
                     <?php } ?>  
 
@@ -163,11 +162,7 @@ if(!permission_check('add_role')){
                         <div class="row">
 
                           <?php 
-                          include_once("class/Database.php");
-                          $dbOb = new Database();
-
                           $query = "SELECT * FROM `permission` limit 24";
-
                           $get_permission = $dbOb->select($query);
 
                           if ($get_permission) {
@@ -189,70 +184,11 @@ if(!permission_check('add_role')){
                               <?php
                             }
                           }
-
                           ?>
-
-
-                          <?php 
-                          include_once("class/Database.php");
-                          $dbOb = new Database();
-
-                          $query = "SELECT * FROM `permission` LIMIT 169, 4";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="important_setting" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
-                          $query = "SELECT * FROM `permission` LIMIT 180, 1";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="important_setting" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
-                          ?>
-
                         </div>
                       </div>
-                    </div><hr>
-
-
-
+                    </div>
+                    <hr>
 
 <!-- WareHouse section -->
                   <div class="row">
@@ -267,7 +203,7 @@ if(!permission_check('add_role')){
                         <div class="row">
 
                           <?php 
-                          $query = "SELECT * FROM `permission` LIMIT 182, 5";
+                          $query = "SELECT * FROM `permission` LIMIT 24, 5";
 
                           $get_permission = $dbOb->select($query);
 
@@ -315,7 +251,7 @@ if(!permission_check('add_role')){
                           include_once("class/Database.php");
                           $dbOb = new Database();
 
-                          $query = "SELECT * FROM `permission` LIMIT 24, 6";
+                          $query = "SELECT * FROM `permission` LIMIT 29, 6";
 
                           $get_permission = $dbOb->select($query);
 
@@ -362,7 +298,7 @@ if(!permission_check('add_role')){
                           include_once("class/Database.php");
                           $dbOb = new Database();
 
-                          $query = "SELECT * FROM `permission` LIMIT 30, 16";
+                          $query = "SELECT * FROM `permission` LIMIT 36, 22";
 
                           $get_permission = $dbOb->select($query);
 
@@ -384,56 +320,8 @@ if(!permission_check('add_role')){
                               <?php
                             }
                           }
-
-                          $query = "SELECT * FROM `permission` LIMIT 50, 1";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="employee" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
-
-                          $query = "SELECT * FROM `permission` LIMIT 187, 2";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="employee" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
                           ?>
-
+                          
                         </div>
                       </div>
                     </div>
@@ -455,7 +343,7 @@ if(!permission_check('add_role')){
                           include_once("class/Database.php");
                           $dbOb = new Database();
 
-                          $query = "SELECT * FROM `permission` LIMIT 51, 6";
+                          $query = "SELECT * FROM `permission` LIMIT 58, 6";
 
                           $get_permission = $dbOb->select($query);
 
@@ -502,7 +390,7 @@ if(!permission_check('add_role')){
                           include_once("class/Database.php");
                           $dbOb = new Database();
 
-                          $query = "SELECT * FROM `permission` LIMIT 64, 1";
+                          $query = "SELECT * FROM `permission` LIMIT 64, 8";
 
                           $get_permission = $dbOb->select($query);
 
@@ -524,74 +412,6 @@ if(!permission_check('add_role')){
                               <?php
                             }
                           }
-                          $query = "SELECT * FROM `permission` LIMIT 69, 2";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="transport" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-                          $query = "SELECT * FROM `permission` LIMIT 73, 2";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="transport" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
-                          $query = "SELECT * FROM `permission` LIMIT 181, 1";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="transport" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
                           ?>
 
                         </div>
@@ -616,7 +436,7 @@ if(!permission_check('add_role')){
                           include_once("class/Database.php");
                           $dbOb = new Database();
 
-                          $query = "SELECT * FROM `permission` LIMIT 189, 4";
+                          $query = "SELECT * FROM `permission` LIMIT 72, 4";
 
                           $get_permission = $dbOb->select($query);
 
@@ -663,7 +483,7 @@ if(!permission_check('add_role')){
                           include_once("class/Database.php");
                           $dbOb = new Database();
 
-                          $query = "SELECT * FROM `permission` LIMIT 75, 14";
+                          $query = "SELECT * FROM `permission` LIMIT 76, 18";
 
                           $get_permission = $dbOb->select($query);
 
@@ -685,31 +505,6 @@ if(!permission_check('add_role')){
                               <?php
                             }
                           }
-
-
-                          $query = "SELECT * FROM `permission` LIMIT 193, 6";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="product" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
                           ?>
 
                         </div>
@@ -732,7 +527,7 @@ if(!permission_check('add_role')){
                         <div class="row">
 
                           <?php 
-                          $query = "SELECT * FROM `permission` LIMIT 206, 16";
+                          $query = "SELECT * FROM `permission` LIMIT 94, 17";
 
                           $get_permission = $dbOb->select($query);
 
@@ -779,7 +574,7 @@ if(!permission_check('add_role')){
 
                           <?php 
 
-                          $query = "SELECT * FROM `permission` LIMIT 199, 2";
+                          $query = "SELECT * FROM `permission` LIMIT 111, 18";
                           $get_permission = $dbOb->select($query);
 
                           if ($get_permission) {
@@ -800,75 +595,6 @@ if(!permission_check('add_role')){
                               <?php
                             }
                           }
-
-                          $query = "SELECT * FROM `permission` LIMIT 89, 21";
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="order_and_delivery" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
-
-                          $query = "SELECT * FROM `permission` LIMIT 177, 2";
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="order_and_delivery" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
-
-                          $query = "SELECT * FROM `permission` LIMIT 201, 5";
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="order_and_delivery" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
                           ?>
 
                         </div>
@@ -894,7 +620,7 @@ if(!permission_check('add_role')){
                           include_once("class/Database.php");
                           $dbOb = new Database();
 
-                          $query = "SELECT * FROM `permission` LIMIT 110, 47";
+                          $query = "SELECT * FROM `permission` LIMIT 129, 38";
 
                           $get_permission = $dbOb->select($query);
 
@@ -941,7 +667,7 @@ if(!permission_check('add_role')){
                           include_once("class/Database.php");
                           $dbOb = new Database();
 
-                          $query = "SELECT * FROM `permission` LIMIT 157, 3";
+                          $query = "SELECT * FROM `permission` LIMIT 167, 6";
 
                           $get_permission = $dbOb->select($query);
 
@@ -963,51 +689,6 @@ if(!permission_check('add_role')){
                               <?php
                             }
                           }
-                          $query = "SELECT * FROM `permission` LIMIT 161, 1";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="reports" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-                          $query = "SELECT * FROM `permission` LIMIT 164, 1";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="reports" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
                           ?>
 
                         </div>
@@ -1031,7 +712,7 @@ if(!permission_check('add_role')){
                           include_once("class/Database.php");
                           $dbOb = new Database();
 
-                          $query = "SELECT * FROM `permission` LIMIT 165, 4";
+                          $query = "SELECT * FROM `permission` LIMIT 173, 4";
 
                           $get_permission = $dbOb->select($query);
 
@@ -1060,52 +741,6 @@ if(!permission_check('add_role')){
                       </div>
                     </div>
                     <hr>
-    <!-- SMS section -->
-                  <div class="row">
-                      <div class="col-md-2">
-                        <div class="checkbox">
-                          <label class="text-uppercase">
-                            <input type="checkbox" id="sms"> <b style="margin-top: 0px; font-sixe:18px;color: red">SMS :</b>
-                          </label>
-                        </div>
-                      </div>
-                      <div class="col-md-10">
-                        <div class="row">
-
-                          <?php 
-                          include_once("class/Database.php");
-                          $dbOb = new Database();
-
-                          $query = "SELECT * FROM `permission` LIMIT 179, 1";
-
-                          $get_permission = $dbOb->select($query);
-
-                          if ($get_permission) {
-                            while ($row = $get_permission->fetch_assoc()) {
-                              $name = $row['permission_name'];
-                              $name1 = explode("_",$name);
-                              $final_name = implode(" ",$name1);
-                              ?>
-
-                              <div class="col-md-4">
-                                <div class="checkbox">
-                                  <label>
-                                    <input type="checkbox" class="sms" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
-                                  </label>
-                                </div>
-                              </div>
-
-                              <?php
-                            }
-                          }
-
-                          ?>
-
-                        </div>
-                      </div>
-                    </div>
-                    <hr>
-
 
                     <div style="display: none;">
                       <input type="number" id="edit_id" name="edit_id">

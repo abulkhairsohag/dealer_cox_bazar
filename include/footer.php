@@ -1,7 +1,7 @@
        <!-- footer content -->
         <footer style="background-color: #2A3F54; color: white;" class="hidden-print">
           <div style="text-align: center;margin-top: -10px;margin-bottom: -16px">
-            <p style="">&copy; <?php echo date("Y"); ?> All Rights Reserved To SATT IT<p>
+            <a href="http://sattit.com/" style="color:white"><p style="">&copy; <?php echo date("Y"); ?> All Rights Reserved To SATT IT<p></a>
           </div>
           <div class="clearfix"></div>
         </footer>
@@ -124,7 +124,3 @@
     
     $(".select2").select2();
   </script>
-
-  <!--  -->
-  
-	

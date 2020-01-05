@@ -358,14 +358,13 @@ if(!permission_check('company_wise_product_list')){
 
 
 
-
 <!-- Modal For Showing data  -->
 <div class="modal fade" id="view_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog " style="width: 700px" role="document">
     <div class="modal-content modal-lg">
       <div class="modal-header" style="background: #006666" align="center">
         <h3 class="modal-title" id="ModalLabel" style="color: white">Product Information In Detail</h3>
-        
+
       </div>
       <div class="modal-body">
 
@@ -383,7 +382,7 @@ if(!permission_check('company_wise_product_list')){
                       <div class="col-md-6"><h5>Company Name : </h5></div>
                       <div class="col-md-6"><h5 id="company_name_show"></h5></div>
                     </div>
-                    <hr> 
+                    <hr>
 
                     <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Product ID Number : </h5></div>
@@ -404,116 +403,61 @@ if(!permission_check('company_wise_product_list')){
                     </div>
                     <hr>
 
-                    <!-- <div class="row" style="margin-top:10px" style="display:none">
-                      <div class="col-md-6"><h5>Weight : </h5></div>
-                      <div class="col-md-6"><h5 id="weight_show"> </h5></div>
-                    </div>
-                    <hr> -->
-
-<!-- 
-                    <div class="row" style="margin-top:10px" style="display:none">
-                      <div class="col-md-6"><h5>Color : </h5></div>
-                      <div class="col-md-6"><h5 id="color_show"> </h5></div>
-                    </div>
-                    <hr> -->
                     
-                  
-
-                    <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Company Price : </h5></div>
-                      <div class="col-md-6"><h5 id="company_price_show"> </h5></div>
-                    </div>
-                    <hr>
-                    
-                  <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>MRP Price : </h5></div>
-                      <div class="col-md-6"><h5 id="mrp_price_show"> </h5></div>
-                    </div>
-                    <hr>
-                    
-                    <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Pack Size : </h5></div>
-                      <div class="col-md-6"><h5 id="pack_size_show"> </h5></div>
-                    </div>
-                    <hr>
-<!-- 
-                    <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Dealer Price : </h5></div>
-                      <div class="col-md-6"><h5 id="dealer_price_show"> </h5></div>
+                     <div class="row" style="margin-top:10px">
+                      <div class="col-md-6"><h5>Description : </h5></div>
+                      <div class="col-md-6"><h5 id="description_show"> </h5></div>
                     </div>
                     <hr>
 
 
-                    <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Marketing Sell Price : </h5></div>
-                      <div class="col-md-6"><h5 id="marketing_sell_price_show"> </h5></div>
-                    </div>
-                    <hr> -->
-
-                    
 
                   </div> <!-- end of first row --->
 
                   <!-- Start of second row --->
                   <div class="col-md-6">
 
-                 
 
-                    <!-- <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Barcode : </h5></div>
-                      <div class="col-md-6"><h5 id="barcode_show"> </h5></div>
-                    </div>
-                    <hr> -->
-
-                    <!-- <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Promo Offer : </h5></div>
-                      <div class="col-md-6"><h5 id="promo_offer_show"> </h5></div>
-                    </div>
-                    <hr> -->
-
-                    
-<!-- 
+                  
                     <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Offer Start Date : </h5></div>
-                      <div class="col-md-6"><h5 id="offer_start_date_show"> </h5></div>
+                      <div class="col-md-6"><h5>Company Price : </h5></div>
+                      <div class="col-md-6"><h5 id="company_price_show"> </h5></div>
                     </div>
-                    <hr> -->
-
-                    <!-- <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Offer End Date : </h5></div>
-                      <div class="col-md-6"><h5 id="offer_end_date_show"> </h5></div>
-                    </div>
-                    <hr> -->
-
-
-
+                    <hr>
 
                     <div class="row" style="margin-top:10px">
+                      <div class="col-md-6"><h5>MRP Price : </h5></div>
+                      <div class="col-md-6"><h5 id="mrp_price_show"> </h5></div>
+                    </div>
+                    <hr>
+
+                    <div class="row" style="margin-top:10px">
+                      <div class="col-md-6"><h5>Pack Size : </h5></div>
+                      <div class="col-md-6"><h5 id="pack_size_show"> </h5></div>
+                    </div>
+                    <hr>
+
+                    <!-- <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Total Buy Item (QTY) : </h5></div>
                       <div class="col-md-6"><h5 id="total_buy_item"> </h5></div>
                     </div>
-                    <hr>
-
-                    <!-- <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Available Quantity : </h5></div>
-                      <div class="col-md-6"><h5 id="quantity_show">  </h5></div>
-                    </div>
                     <hr> -->
 
 
-                    <div class="row" style="margin-top:10px">
+
+                  <!--   <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Total Sell (QTY) : </h5></div>
                       <div class="col-md-6"><h5 id="total_sold_item"> </h5></div>
                     </div>
-                    <hr>
+                    <hr> -->
 
-                    <div class="row" style="margin-top:10px">
+                    <!-- <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Return From Market (QTY) : </h5></div>
                       <div class="col-md-6"><h5 id="return_from_market"> </h5></div>
                     </div>
-                    <hr>
+                    <hr> -->
 
-                    <div class="row" style="margin-top:10px">
+                  <!--   <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Return To Company (QTY) : </h5></div>
                       <div class="col-md-6"><h5 id="return_to_company"> </h5></div>
                     </div>
@@ -523,21 +467,17 @@ if(!permission_check('company_wise_product_list')){
                       <div class="col-md-6"><h5>In Stock (QTY): </h5></div>
                       <div class="col-md-6"><h5 id="in_stock"> </h5></div>
                     </div>
-                    <hr>
-                      
+                    <hr> -->
+
                     <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Product Photo : </h5></div>
                       <div class="col-md-6"><h5 id="product_photo_show"> </h5></div>
                     </div>
                     <hr>
-                     
-                    <div class="row" style="margin-top:10px">
-                      <div class="col-md-6"><h5>Description : </h5></div>
-                      <div class="col-md-6"><h5 id="description_show"> </h5></div>
-                    </div>
-                    <hr>
 
-                  
+                   
+
+
 
                   </div>
                   <!-- end of second row --->
@@ -546,7 +486,7 @@ if(!permission_check('company_wise_product_list')){
               </div>
             </div>
           </div>
-        </div>  
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>

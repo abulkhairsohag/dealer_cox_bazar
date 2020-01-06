@@ -183,45 +183,45 @@ if(!permission_check('add_bank_deposite')){
             <div class="form-group">
               <label class="col-md-3 control-label" for="inputDefault">Zone </label>
                <div class="col-md-6">
-            <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
-           
-              <?php
+                    <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+                  
+                      <?php
 
-              if (Session::get("zone_serial_no")){
-                if (Session::get("zone_serial_no") != '-1') {
-                
-                ?>
-                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
-                <?php
-                }else{
-                  ?>
-                    <option value=''><?php echo Session::get("zone_name"); ?></option>
-                  <?php
-                }
-              }else{
-        $query = "SELECT * FROM zone ORDER BY zone_name";
-        $get_zone = $dbOb->select($query);
-        if ($get_zone) {
-          ?>
-           <option value="">Please Select One</option>
-          <?php
-                while ($row = $get_zone->fetch_assoc()) {
+                      if (Session::get("zone_serial_no")){
+                        if (Session::get("zone_serial_no") != '-1') {
+                        
+                        ?>
+                          <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
+                        <?php
+                        }else{
+                          ?>
+                            <option value=''><?php echo Session::get("zone_name"); ?></option>
+                          <?php
+                        }
+                      }else{
+                          $query = "SELECT * FROM zone ORDER BY zone_name";
+                          $get_zone = $dbOb->select($query);
+                          if ($get_zone) {
+                            ?>
+                            <option value="">Please Select One</option>
+                            <?php
+                                  while ($row = $get_zone->fetch_assoc()) {
 
-                ?>
-                <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
-                <?php
-              }
-            }else{
-              ?>
-                <option value="">Please Add Zone First..</option>
-              <?php
+                                  ?>
+                                  <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
+                                  <?php
+                                }
+                              }else{
+                                ?>
+                                  <option value="">Please Add Zone First..</option>
+                                <?php
 
-            }
-             }
+                              }
+                    }
 
-            ?>
+                    ?>
 
-            </select>
+                    </select>
             
               </div>
             </div>

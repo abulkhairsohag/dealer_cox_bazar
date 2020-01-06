@@ -59,7 +59,13 @@ if ($user_type == "employee") {
               <li><a href="add_user.php"><i class="fas fa-users-cog"></i> Add System User</a></li>
               <?php 
             }
+            if (permission_check('expense_head')) {
             ?>
+            <li><a href="expense_head.php"><i class="fas fa-users-cog"></i> Expense Head</a></li>
+             <?php 
+            }
+            ?>
+            
           </ul>
         </li>
       <?php } ?>
@@ -359,11 +365,21 @@ if ($user_type == "employee") {
           if (permission_check('employee_payments')) {
             ?>
             <li><a href="employee_payments.php"><i class="fas fa-arrow-circle-right"></i> Employee Payments</a></li>
-          <?php } 
+          <?php }
 
           if (permission_check('cash_balance')) {
             ?>
             <li><a href="cash_balance.php"><i class="fas fa-coins"></i> Cash Balance</a></li>
+          <?php } 
+
+          if (permission_check('expense')) {
+            ?>
+            <li><a href="expense.php"><i class="fas fa-coins"></i> Expense</a></li>
+          <?php } 
+
+          if (permission_check('receive')) {
+            ?>
+            <li><a href="receive.php"><i class="fas fa-coins"></i> Receive</a></li>
           <?php } ?>
 
         </ul>

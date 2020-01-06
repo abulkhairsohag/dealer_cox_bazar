@@ -36,6 +36,7 @@ if(!permission_check('receive')){
 
               <tr>
                 <th style="text-align: center;">Sl No.</th>
+                <th style="text-align: center;">Zone Name</th>
                 <th style="text-align: center;">Receive Type</th>
                 <th style="text-align: center;">Client Name</th>
                 <th style="text-align: center;">Organization</th>
@@ -43,10 +44,7 @@ if(!permission_check('receive')){
                 <th style="text-align: center;">Mobile No</th>
                 <th style="text-align: center;">Invoice/Docs No</th>
                 <th style="text-align: center;">Total</th>
-                <th style="text-align: center;">Paid</th>
-                <th style="text-align: center;">Due</th>
                 <th style="text-align: center;">Receive Date</th>
-                <th style="text-align: center;">Next Paid Date</th>
                 <th style="text-align: center;">Description</th>
                 <th style="text-align: center;">Action</th>
               </tr>
@@ -57,7 +55,14 @@ if(!permission_check('receive')){
               <?php 
               include_once('class/Database.php');
               $dbOb = new Database();
-              $query = "SELECT * FROM receive ORDER BY serial_no DESC";
+               if (Session::get("zone_serial_no")){
+                  if (Session::get("zone_serial_no") != '-1') {
+                    $zone_serial_no = Session::get("zone_serial_no");
+                    $query = "SELECT * FROM receive WHERE zone_serial_no = '$zone_serial_no' ORDER BY serial_no DESC";
+                  }
+               }else{
+                 $query = "SELECT * FROM receive ORDER BY serial_no DESC";
+               }
               $get_receive = $dbOb->select($query);
               if ($get_receive) {
                 $i=0;
@@ -66,6 +71,7 @@ if(!permission_check('receive')){
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['receive_type']; ?></td>
                     <td><?php echo $row['client_name']; ?></td>
                     <td><?php echo $row['organization_name']; ?></td>
@@ -73,10 +79,7 @@ if(!permission_check('receive')){
                     <td><?php echo $row['mobile_no']; ?></td>
                     <td><?php echo $row['invoice_docs_no']; ?></td>
                     <td><?php echo $row['total_amount']; ?></td>
-                    <td><?php echo $row['paid_amount']; ?></td>
-                    <td><?php echo $row['due_amount']; ?></td>
                     <td><?php echo $row['receive_date']; ?></td>
-                    <td><?php echo $row['next_paid_date']; ?></td>
                     <td><?php echo $row['description']; ?></td>
                     <td align="center">
 
@@ -131,6 +134,51 @@ if(!permission_check('receive')){
                     <!-- Form starts From here  -->
                     <form id="form_edit_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
                       
+                       <div class="form-group">
+                      <label class="col-md-3 control-label" for="inputDefault">Zone </label>
+                      <div class="col-md-6">
+                            <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+                          
+                              <?php
+
+                              if (Session::get("zone_serial_no")){
+                                if (Session::get("zone_serial_no") != '-1') {
+                                
+                                ?>
+                                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
+                                <?php
+                                }else{
+                                  ?>
+                                    <option value=''><?php echo Session::get("zone_name"); ?></option>
+                                  <?php
+                                }
+                              }else{
+                                  $query = "SELECT * FROM zone ORDER BY zone_name";
+                                  $get_zone = $dbOb->select($query);
+                                  if ($get_zone) {
+                                    ?>
+                                    <option value="">Please Select One</option>
+                                    <?php
+                                          while ($row = $get_zone->fetch_assoc()) {
+
+                                          ?>
+                                          <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
+                                          <?php
+                                        }
+                                      }else{
+                                        ?>
+                                          <option value="">Please Add Zone First..</option>
+                                        <?php
+
+                                      }
+                            }
+
+                            ?>
+
+                            </select>
+                    
+                      </div>
+                    </div>
 
                       <div class="form-group">
                         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Receive Type <span class="required" style="color: red">*</span></label>
@@ -147,15 +195,15 @@ if(!permission_check('receive')){
                       </div>
 
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Organization Name<span class="required" style="color: red">*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Organization Name 
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text"  required=""id="organization_name" name="organization_name"  class="form-control col-md-7 col-xs-12">
+                          <input type="text" id="organization_name" name="organization_name"  class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
 
                       <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Address  <span class="required" style="color: red">*</span></label>
+                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Address  </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <input type="text" required="" id="address" name="address" class="form-control col-md-7 col-xs-12" >
                         </div>
@@ -169,7 +217,7 @@ if(!permission_check('receive')){
                       </div>
 
                       <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Invoice/Docs No <span class="required" style="color: red">*</span></label>
+                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Invoice/Docs No </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <input type="text" required="" id="invoice_docs_no" name="invoice_docs_no" class="form-control col-md-7 col-xs-12" >
                         </div>
@@ -182,25 +230,15 @@ if(!permission_check('receive')){
                         </div>
                       </div>
 
-                      <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Paid Amount <span class="required" style="color: red">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="number" min="0" step="0.01" required="" id="paid_amount" name="paid_amount" class="form-control col-md-7 col-xs-12" >
-                        </div>
-                      </div>
+                     
+
+                      
 
                       <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Due Amount <span class="required" style="color: red">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input  type="number" min="0" step="0.01" required="" id="due_amount" name="due_amount" class="form-control col-md-7 col-xs-12" readonly="" >
-                        </div>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Next Paid Date<span class="required" style="color: red">*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Receive Date<span class="required" style="color: red">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" id="next_paid_date" name="next_paid_date" class="date-picker form-control col-md-7 col-xs-12 datepicker" required="required"  autocomplete="off" readonly="" >
+                          <input type="text" id="receive_date" name="receive_date" class="date-picker form-control col-md-7 col-xs-12 datepicker" required="required"  autocomplete="off" readonly="" >
                         </div>
                       </div>
 
@@ -278,7 +316,8 @@ if(!permission_check('receive')){
           $("#paid_amount").val(data.paid_amount);
           $("#due_amount").val(data.due_amount);
           $("#description").val(data.description);
-          $("#next_paid_date").val(data.next_paid_date);
+          $("#receive_date").val(data.receive_date);
+          $("#zone_serial_no").val(data.zone_serial_no);
           $("#edit_id").val(data.serial_no);
 
         }

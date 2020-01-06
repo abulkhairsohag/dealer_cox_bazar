@@ -184,6 +184,28 @@ if(!permission_check('add_role')){
                               <?php
                             }
                           }
+                           $query = "SELECT * FROM `permission` limit 177,4";
+                          $get_permission = $dbOb->select($query);
+
+                          if ($get_permission) {
+                            while ($row = $get_permission->fetch_assoc()) {
+                              $name = $row['permission_name'];
+                              $name1 = explode("_",$name);
+                              $final_name = implode(" ",$name1);
+
+                              ?>
+
+                              <div class="col-md-4">
+                                <div class="checkbox">
+                                  <label>
+                                    <input type="checkbox" class="important_setting" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
+                                  </label>
+                                </div>
+                              </div>
+
+                              <?php
+                            }
+                          }
                           ?>
                         </div>
                       </div>
@@ -617,10 +639,31 @@ if(!permission_check('add_role')){
                         <div class="row">
 
                           <?php 
-                          include_once("class/Database.php");
-                          $dbOb = new Database();
 
                           $query = "SELECT * FROM `permission` LIMIT 129, 38";
+
+                          $get_permission = $dbOb->select($query);
+
+                          if ($get_permission) {
+                            while ($row = $get_permission->fetch_assoc()) {
+                              $name = $row['permission_name'];
+                              $name1 = explode("_",$name);
+                              $final_name = implode(" ",$name1);
+                              ?>
+
+                              <div class="col-md-4">
+                                <div class="checkbox">
+                                  <label>
+                                    <input type="checkbox" class="account" value="<?php echo $row['serial_no'] ?>" id="checkbox_<?php echo $row['serial_no'] ?>" name="permission[]"> <?php echo ucwords($final_name); ?>
+                                  </label>
+                                </div>
+                              </div>
+
+                              <?php
+                            }
+                          }
+
+                             $query = "SELECT * FROM `permission` LIMIT 181, 10";
 
                           $get_permission = $dbOb->select($query);
 

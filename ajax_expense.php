@@ -30,12 +30,12 @@ if (isset($_POST['submit'])) {
 	$mobile_no = validation($_POST['mobile_no']);
 	$invoice_docs_no = validation($_POST['invoice_docs_no']);
 	$total_amount = validation($_POST['total_amount']);
-	$paid_amount = validation($_POST['paid_amount']);
-	$due_amount = validation($_POST['due_amount']);
 	$description = validation($_POST['description']);
-	$next_paid_date = validation($_POST['next_paid_date']);
+	$zone_serial_no = validation($_POST['zone_serial_no']);
+	$query = "SELECT * FROM zone WHERE serial_no = '$zone_serial_no'";
+	$zone_name = validation($dbOb->find($query)['zone_name']);
+	$expense_date = validation($_POST['expence_date']);
 	$edit_id = validation($_POST['edit_id']);
-	$expense_date = date('d-m-Y');
 
 	$invoice_docs_img = $_FILES['invoice_docs_img'];
 
@@ -96,10 +96,9 @@ if (isset($_POST['submit'])) {
 		mobile_no = '$mobile_no',
 		invoice_docs_no = '$invoice_docs_no',
 		total_amount = '$total_amount',
-		paid_amount 	= '$paid_amount',
-		due_amount 	= '$due_amount',
-		next_paid_date 	= '$next_paid_date',
-		description 	= '$description'
+		description 	= '$description',
+		zone_serial_no = '$zone_serial_no',
+		zone_name      ='$zone_name'
 		
 		WHERE
 		serial_no = '$edit_id' ";
@@ -132,9 +131,9 @@ if (isset($_POST['submit'])) {
 		}
 
 		$query = "INSERT INTO expense 
-		(expense_type,client_name,organization_name,address,mobile_no,invoice_docs_no,invoice_docs_img,total_amount,paid_amount,due_amount,next_paid_date,description,expense_date)
+		(expense_type,client_name,organization_name,address,mobile_no,invoice_docs_no,invoice_docs_img,total_amount,description,expense_date,zone_serial_no,zone_name)
 		VALUES 
-		('$expense_type','$client_name','$organization_name','$address','$mobile_no','$invoice_docs_no','$uploaded_image','$total_amount','$paid_amount','$due_amount','$next_paid_date','$description','$expense_date')";
+		('$expense_type','$client_name','$organization_name','$address','$mobile_no','$invoice_docs_no','$uploaded_image','$total_amount','$description','$expense_date','$zone_serial_no','$zone_name')";
 		$insert = $dbOb->insert($query);
 		if ($insert) {
 			$message = "Congratulaitons! Information Is Successfully Saved.";
@@ -179,27 +178,30 @@ if (isset($_POST['serial_no_delete'])) {
 
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
-	$query = "SELECT * FROM expense ORDER BY serial_no DESC";
-	$get_expense = $dbOb->select($query);
-	if ($get_expense) {
-		$i=0;
-		while ($row = $get_expense->fetch_assoc()) {
-			$i++;
-			?>
-			<tr>
-				<td><?php echo $i; ?></td>
-				<td><?php echo $row['expense_type']; ?></td>
-				<td><?php echo $row['client_name']; ?></td>
-				<td><?php echo $row['organization_name']; ?></td>
-				<td><?php echo $row['address']; ?></td>
-				<td><?php echo $row['mobile_no']; ?></td>
-				<td><?php echo $row['invoice_docs_no']; ?></td>
-				<td><?php echo $row['total_amount']; ?></td>
-				<td><?php echo $row['paid_amount']; ?></td>
-				<td><?php echo $row['due_amount']; ?></td>
-				<td><?php echo $row['next_paid_date']; ?></td>
-				<td><?php echo $row['description']; ?></td>
-				<td align="center">
+	if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                  $zone_serial = Session::get("zone_serial_no");
+                  $query = "SELECT * FROM expense WHERE zone_serial_no = '$zone_serial' ORDER BY serial_no DESC";
+                }
+              }else{
+                $query = "SELECT * FROM expense ORDER BY serial_no DESC";
+              }
+              $get_expense = $dbOb->select($query);
+              if ($get_expense) {
+                $i=0;
+                while ($row = $get_expense->fetch_assoc()) {
+                  $i++;
+                  ?>
+                  <tr>
+                    <td><?php echo $i; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
+                    <td><?php echo $row['expense_type']; ?></td>
+                    <td><?php echo $row['client_name']; ?></td>
+                    <td><?php echo $row['mobile_no']; ?></td>
+                    <td><?php echo $row['invoice_docs_no']; ?></td>
+                    <td><img src="<?php echo $row['invoice_docs_img']; ?>" alt=""width='70px'></td>
+                    <td><?php echo $row['total_amount']; ?></td>
+                    <td align="center">
                       <?php 
                       if (permission_check('expense_view_button')) {
                         ?>
@@ -219,6 +221,7 @@ if (isset($_POST["sohag"])) {
                       <?php } ?>     
                     </td>
                   </tr>
+
                   <?php
                 }
               }

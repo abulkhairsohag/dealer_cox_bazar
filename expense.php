@@ -38,15 +38,13 @@ if(!permission_check('expense')){
 
               <tr>
                 <th style="text-align: center;">Sl No.</th>
+                <th style="text-align: center;">Zone</th>
                 <th style="text-align: center;">Expense Head</th>
                 <th style="text-align: center;">Client Name</th>
                 <th style="text-align: center;">Mobile No</th>
                 <th style="text-align: center;">Invoice/Docs No</th>
                 <th style="text-align: center;">Invoice/Docs Img</th>
                 <th style="text-align: center;">Total</th>
-                <th style="text-align: center;">Paid</th>
-                <th style="text-align: center;">Due</th>
-                <th style="text-align: center;">Next Pay Date</th>
                 <th style="text-align: center;">Action</th>
               </tr>
             </thead>
@@ -56,7 +54,14 @@ if(!permission_check('expense')){
               <?php 
               include_once('class/Database.php');
               $dbOb = new Database();
-              $query = "SELECT * FROM expense ORDER BY serial_no DESC";
+              if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                  $zone_serial = Session::get("zone_serial_no");
+                  $query = "SELECT * FROM expense WHERE zone_serial_no = '$zone_serial' ORDER BY serial_no DESC";
+                }
+              }else{
+                $query = "SELECT * FROM expense ORDER BY serial_no DESC";
+              }
               $get_expense = $dbOb->select($query);
               if ($get_expense) {
                 $i=0;
@@ -65,15 +70,13 @@ if(!permission_check('expense')){
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
+                    <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['expense_type']; ?></td>
                     <td><?php echo $row['client_name']; ?></td>
                     <td><?php echo $row['mobile_no']; ?></td>
                     <td><?php echo $row['invoice_docs_no']; ?></td>
                     <td><img src="<?php echo $row['invoice_docs_img']; ?>" alt=""width='70px'></td>
                     <td><?php echo $row['total_amount']; ?></td>
-                    <td><?php echo $row['paid_amount']; ?></td>
-                    <td><?php echo $row['due_amount']; ?></td>
-                    <td><?php echo $row['next_paid_date']; ?></td>
                     <td align="center">
                       <?php 
                       if (permission_check('expense_view_button')) {
@@ -129,6 +132,53 @@ if(!permission_check('expense')){
                     <br />
                     <!-- Form starts From here  -->
                     <form id="form_edit_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left" enctype='multipart/form-data'>
+
+
+                      <div class="form-group">
+                      <label class="col-md-3 control-label" for="inputDefault">Zone </label>
+                      <div class="col-md-6">
+                            <select name="zone_serial_no" id="zone_serial_no"  required="" class="form-control zone_serial_no ">
+                          
+                              <?php
+
+                              if (Session::get("zone_serial_no")){
+                                if (Session::get("zone_serial_no") != '-1') {
+                                
+                                ?>
+                                  <option value='<?php echo Session::get("zone_serial_no"); ?>'><?php echo Session::get("zone_name"); ?></option>
+                                <?php
+                                }else{
+                                  ?>
+                                    <option value=''><?php echo Session::get("zone_name"); ?></option>
+                                  <?php
+                                }
+                              }else{
+                                  $query = "SELECT * FROM zone ORDER BY zone_name";
+                                  $get_zone = $dbOb->select($query);
+                                  if ($get_zone) {
+                                    ?>
+                                    <option value="">Please Select One</option>
+                                    <?php
+                                          while ($row = $get_zone->fetch_assoc()) {
+
+                                          ?>
+                                          <option value="<?php echo $row['serial_no']; ?>"  ><?php echo $row['zone_name']; ?></option>
+                                          <?php
+                                        }
+                                      }else{
+                                        ?>
+                                          <option value="">Please Add Zone First..</option>
+                                        <?php
+
+                                      }
+                            }
+
+                            ?>
+
+                            </select>
+                    
+                      </div>
+                    </div>
 
 
                       <div class="form-group">
@@ -204,24 +254,10 @@ if(!permission_check('expense')){
                       </div>
 
                       <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Paid Amount <span class="required" style="color: red">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="number" min="0" step="0.01" required="" id="paid_amount" name="paid_amount" class="form-control col-md-7 col-xs-12" >
-                        </div>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Due Amount <span class="required" style="color: red">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input  type="number" min="0" step="0.01" required="" id="due_amount" name="due_amount" class="form-control col-md-7 col-xs-12" readonly="" >
-                        </div>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Next Paid Date
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Expense Date
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" id="next_paid_date" name="next_paid_date" class="date-picker form-control col-md-7 col-xs-12 datepicker"  readonly  >
+                          <input type="text" id="expence_date" name="expence_date" class="date-picker form-control col-md-7 col-xs-12 datepicker"  readonly  >
                         </div>
                       </div>
 
@@ -292,7 +328,7 @@ if(!permission_check('expense')){
             </tr>
             <tr>
               <td></td>
-              <td align="">Expense Head(Type)</td>
+              <td align="">Expense Head</td>
               <td id='show_expense_head'></td>
             </tr>
             <tr>
@@ -325,21 +361,7 @@ if(!permission_check('expense')){
               <td align="">Total Amount</td>
               <td id='show_total_amount'></td>
             </tr>
-            <tr>
-              <td></td>
-              <td align="">Pay</td>
-              <td id='show_pay'></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td align="">Due/td>
-              <td id='show_due'></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td align="">Next Pay Date</td>
-              <td id='show_next_pay_date'></td>
-            </tr>
+            
             <tr>
               <td></td>
               <td align="">Description</td>
@@ -349,6 +371,11 @@ if(!permission_check('expense')){
               <td></td>
               <td align="">Expense Date</td>
               <td id='show_expense_date'></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td align="">Zone Name</td>
+              <td id='show_zone_name'></td>
             </tr>
             
           </tbody>
@@ -404,7 +431,8 @@ if(!permission_check('expense')){
           $("#paid_amount").val(data.paid_amount);
           $("#due_amount").val(data.due_amount);
           $("#description").val(data.description);
-          $("#next_paid_date").val(data.next_paid_date);
+          $("#expense_date").val(data.expense_date);
+          $("#zone_serial_no").val(data.zone_serial_no);
           $("#edit_id").val(data.serial_no);
 
         }
@@ -413,7 +441,7 @@ if(!permission_check('expense')){
     });
 
     $(document).on('click','#add_data',function(){
-      $("#ModalLabel").html("Add Receive Information.");
+      $("#ModalLabel").html("Add Expense Information.");
       $("#submit_button").html("Save");
 
       $("#expense_type").val("");
@@ -455,6 +483,7 @@ if(!permission_check('expense')){
                $("#show_next_pay_date").html(data.next_paid_date);
                $("#show_description").html(data.description);
                $("#show_expense_date").html(data.expense_date);
+               $("#show_zone_name").html(data.zone_name);
             }
           });
 

@@ -285,7 +285,27 @@ if ($delivery_complete<1) {
     }
   }
 
-   $total_credit = 1*$delivery + 1*$cell_invoice +1*$bank_withdraw +1*$bank_loan +1*$company_commission +1*$company_products_return;
+  	// calculating receive
+	if ($zone_serial_no) {
+		$query = "SELECT * FROM receive WHERE zone_serial_no = '$zone_serial_no'";
+  }else{
+		$query = "SELECT * FROM receive";
+	}
+	$receive = 0;
+	$get_receive = $dbOb->select($query);
+
+	if ($get_receive) {
+		while ($row = $get_receive->fetch_assoc()) {
+			if (strtotime($row['receive_date']) >= $from_date && strtotime($row['receive_date']) <= $to_date) {
+				$receive = 1*$receive + 1*$row['total_amount'];
+			}
+		}
+	}
+
+
+
+
+   $total_credit = 1*$delivery + 1*$cell_invoice +1*$bank_withdraw +1*$bank_loan +1*$company_commission +1*$company_products_return + 1*$receive;
 
 
 
@@ -453,8 +473,25 @@ if ($delivery_complete<1) {
     }
   }
 
+	// calculating expense
+	if ($zone_serial_no) {
+    $query = "SELECT * FROM expense WHERE zone_serial_no = '$zone_serial_no'";
+	}else{
+		$query = "SELECT * FROM expense";
+	}
+	$expense = 0;
+	$get_expense = $dbOb->select($query);
 
-    $total_debit =  1*$salary_payment + 1*$bank_deposite + 1*$loan_pay + 1*$buy_invoice + 1*$products_buy+ 1*$market_return + 1*$employee_commission;
+	if ($get_expense) {
+		while ($row = $get_expense->fetch_assoc()) {
+			if (strtotime($row['expense_date']) >= $from_date && strtotime($row['expense_date']) <= $to_date) {
+				$expense = 1*$expense + 1*$row['total_amount'];
+			}
+		}
+  }
+  
+
+    $total_debit =  1*$salary_payment + 1*$bank_deposite + 1*$loan_pay + 1*$buy_invoice + 1*$products_buy+ 1*$market_return + 1*$employee_commission + 1*$expense;
 
     $cash_balance = 1*$total_credit - 1*$total_debit;
 

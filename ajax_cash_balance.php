@@ -175,7 +175,6 @@ if (isset($_POST['from_date'])) {
 		}
 	}
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	// calculating company Products Return
 	
@@ -195,12 +194,31 @@ if (isset($_POST['from_date'])) {
 		}
 	}
 
-   $total_credit = 1*$delivery + 1*$cell_invoice +1*$bank_withdraw +1*$bank_loan +1*$company_commission +1*$company_products_return;
+	// calculating receive
+	if ($zone_serial_no == -1) {
+		$query = "SELECT * FROM receive";
+	}else{
+		$query = "SELECT * FROM receive WHERE zone_serial_no = '$zone_serial_no'";
+	}
+	$receive = 0;
+	$get_receive = $dbOb->select($query);
+
+	if ($get_receive) {
+		while ($row = $get_receive->fetch_assoc()) {
+			if (strtotime($row['receive_date']) >= $from_date && strtotime($row['receive_date']) <= $to_date) {
+				$receive = 1*$receive + 1*$row['total_amount'];
+			}
+		}
+	}
+
+
+	
+//  now calculating cash in 
+   $total_credit = 1*$delivery + 1*$cell_invoice +1*$bank_withdraw +1*$bank_loan +1*$company_commission +1*$company_products_return + 1*$receive;
 
 
 
-
-
+// now its time to claculate cash out
 
    // now calculating Salary Payment
    if ($zone_serial_no == -1) {
@@ -356,12 +374,29 @@ if (isset($_POST['from_date'])) {
 		}
 	}
 
+	// calculating expense
+	if ($zone_serial_no == -1) {
+		$query = "SELECT * FROM expense";
+	}else{
+		$query = "SELECT * FROM expense WHERE zone_serial_no = '$zone_serial_no'";
+	}
+	$expense = 0;
+	$get_expense = $dbOb->select($query);
 
-    $total_debit =  1*$salary_payment + 1*$bank_deposite + 1*$loan_pay + 1*$buy_invoice + 1*$products_buy+ 1*$market_return + 1*$employee_commission;
+	if ($get_expense) {
+		while ($row = $get_expense->fetch_assoc()) {
+			if (strtotime($row['expense_date']) >= $from_date && strtotime($row['expense_date']) <= $to_date) {
+				$expense = 1*$expense + 1*$row['total_amount'];
+			}
+		}
+	}
+
+
+    $total_debit =  1*$salary_payment + 1*$bank_deposite + 1*$loan_pay + 1*$buy_invoice + 1*$products_buy+ 1*$market_return + 1*$employee_commission + 1*$expense;
 
     $cash_balance = 1*$total_credit - 1*$total_debit;
 
-	echo json_encode(['delivery'=>number_format($delivery,2),'own_shop_sell'=>number_format($own_shop_sell,2),'cell_invoice'=>number_format($cell_invoice,2),'bank_withdraw'=>number_format($bank_withdraw,2),'bank_loan'=>number_format($bank_loan,2),'company_commission'=>number_format($company_commission,2),'company_products_return'=>number_format($company_products_return,2),'total_debit'=>number_format($total_debit,2),'salary_payment'=>number_format($salary_payment,2),'bank_deposite'=>number_format($bank_deposite,2),'loan_pay'=>number_format($loan_pay,2),'buy_invoice'=>number_format($buy_invoice,2),'products_buy'=>number_format($products_buy,2),'market_return'=>number_format($market_return,2),'employee_commission'=>number_format($employee_commission,2),'total_credit'=>number_format($total_credit,2),'cash_balance'=>number_format($cash_balance,2),'show_date'=>$show_date,'printing_date'=>$printing_date,'printing_time'=>$printing_time,'print_table'=>$print_table,'organization_name'=>$organization_name,'organization_address'=>$organization_address,'organization_email'=>$organization_email,'organization_mobile_no'=>$organization_mobile_no,'zone_name'=>$zone_name]);
+	echo json_encode(['receive'=>$receive,'delivery'=>number_format($delivery,2),'own_shop_sell'=>number_format($own_shop_sell,2),'cell_invoice'=>number_format($cell_invoice,2),'bank_withdraw'=>number_format($bank_withdraw,2),'bank_loan'=>number_format($bank_loan,2),'company_commission'=>number_format($company_commission,2),'company_products_return'=>number_format($company_products_return,2),'total_debit'=>number_format($total_debit,2),'salary_payment'=>number_format($salary_payment,2),'bank_deposite'=>number_format($bank_deposite,2),'loan_pay'=>number_format($loan_pay,2),'buy_invoice'=>number_format($buy_invoice,2),'products_buy'=>number_format($products_buy,2),'market_return'=>number_format($market_return,2),'employee_commission'=>number_format($employee_commission,2),'total_credit'=>number_format($total_credit,2),'cash_balance'=>number_format($cash_balance,2),'show_date'=>$show_date,'printing_date'=>$printing_date,'printing_time'=>$printing_time,'print_table'=>$print_table,'organization_name'=>$organization_name,'organization_address'=>$organization_address,'organization_email'=>$organization_email,'organization_mobile_no'=>$organization_mobile_no,'zone_name'=>$zone_name,'expense'=>$expense]);
 } // end of if isset......
 
 ?>

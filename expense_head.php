@@ -1,7 +1,7 @@
 <?php include_once('include/header.php'); ?>
 
 <?php 
-if(!permission_check('add_expense_head')){
+if(!permission_check('expense_head')){
   ?>
   <script>
     window.location.href = '403.php';

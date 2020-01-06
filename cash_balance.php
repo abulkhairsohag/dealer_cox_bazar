@@ -237,6 +237,14 @@ $printing_time = date('h:i:s A');
                
 
                 <tr>
+                  <td>Receive</td>
+                  <td id="receive" class="text-right" >  0.0 </td>
+                  <td>Expense  </td>
+                  <td id="expense" class="text-right"> 0.0  </td>
+                </tr>
+               
+
+                <tr>
                   <td></td>
                   <td>   </td>
                   <td>Employee Commission  </td>
@@ -297,7 +305,7 @@ $printing_time = date('h:i:s A');
           // credit info 
           $("#delivery").html(data.delivery);
           $("#own_shop_sell").html(data.own_shop_sell);
-          // $("#receive").html(data.receive);
+          $("#receive").html(data.receive);
           $("#sell_invoice").html(data.cell_invoice);
           // console.log(data.cell_invoice);
           $("#buy_invoice").html(data.buy_invoice);

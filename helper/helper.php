@@ -108,13 +108,14 @@
 				if ($get_unloaded_truck) {
 					$i = 0 ;
 					while ($row = $get_unloaded_truck->fetch_assoc()) {
-						$truck_load_serial_no[$i] = $row['serial_no'];
+						$truck_load_serial_no[] = $row['serial_no'];
 						$truck_load_tbl_id = $row['serial_no'];
 						$query = "SELECT * FROM truck_loaded_products WHERE truck_load_tbl_id = '$truck_load_tbl_id' AND product_id = '$product_id'";
 						$get_unloaded_product = $dbOb->select($query);
 						if ($get_unloaded_product) {
 							$truck_loaded_product_qty += $get_unloaded_product->fetch_assoc()['quantity'];
 						}
+						$i++;
 					}
 				} // end of unloaded truck products
 				
@@ -123,17 +124,30 @@
 				if ($truck_load_serial_no) {
 					$truck_load_serial = implode(',',$truck_load_serial_no);
 				}
+				
 				if ($truck_load_serial) {
 					// now getting Product sell
-				$query = "SELECT * FROM order_delivery_expense WHERE ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id' 	AND delivery_status = 1 AND truck_load_serial_no NOT IN ($truck_load_serial) " ;
+				$query = "SELECT * FROM order_delivery_expense WHERE products_id_no = '$product_id'  AND 	 ware_house_serial_no = '$ware_house_serial_no' AND delivery_status = 1 AND truck_load_serial_no NOT IN ($truck_load_serial) " ;
 				$get_product_sell = $dbOb->select($query);
 			
 			
-				if ($get_product_sell) {
-					while ($product_sell = $get_product_sell->fetch_assoc()) {
-						$product_sell_qty += $product_sell['qty'];
-					}
-				} // end of Product sell
+					if ($get_product_sell) {
+						while ($product_sell = $get_product_sell->fetch_assoc()) {
+							$product_sell_qty += $product_sell['qty'];
+						}
+					} 
+				}else{
+
+					$query = "SELECT * FROM order_delivery_expense WHERE products_id_no = '$product_id'  AND 	 ware_house_serial_no = '$ware_house_serial_no' AND delivery_status = 1" ;
+					$get_product_sell = $dbOb->select($query);
+				
+				
+						if ($get_product_sell) {
+							while ($product_sell = $get_product_sell->fetch_assoc()) {
+								$product_sell_qty += $product_sell['qty'];
+							}
+						} 
+
 				}
 				
 
@@ -194,7 +208,7 @@
 		if ($get_unloaded_truck) {
 			$i = 0 ;
 			while ($row = $get_unloaded_truck->fetch_assoc()) {
-				$truck_load_serial_no[$i] = $row['serial_no'];
+				$truck_load_serial_no[] = $row['serial_no'];
 				$truck_load_tbl_id = $row['serial_no'];
 				$query = "SELECT * FROM truck_loaded_products WHERE truck_load_tbl_id = '$truck_load_tbl_id' AND product_id = '$product_id'";
 				$get_unloaded_product = $dbOb->select($query);

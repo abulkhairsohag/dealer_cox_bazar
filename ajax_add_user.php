@@ -157,7 +157,7 @@ if (isset($_POST['submit_role'])) {
 
 // getting data table information
 if (isset($_POST['sohag'])) {
-     $query = "SELECT * FROM user ORDER BY serial_no DESC";
+       $query = "SELECT * FROM user ORDER BY serial_no DESC";
               $get_user = $dbOb->select($query);
               if ($get_user) {
                 $i = 0;

@@ -111,7 +111,7 @@ if(!permission_check('customer_category_setting')){
                     <form id="form_add_edit_data" data-parsley-validate class="form-horizontal form-label-left" action="" method="post">
 
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Category Name<span class="required">*</span>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="category_name">Category Name<span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <input type="text" id="category_name" name="category_name" required="required" class="form-control col-md-7 col-xs-12">

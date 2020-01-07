@@ -205,21 +205,21 @@ if(!permission_check('receive')){
                       <div class="form-group">
                         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Address  </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" required="" id="address" name="address" class="form-control col-md-7 col-xs-12" >
+                          <input type="text"  id="address" name="address" class="form-control col-md-7 col-xs-12" >
                         </div>
                       </div>
 
                       <div class="form-group">
-                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Mobile Number <span class="required" style="color: red">*</span></label>
+                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Mobile Number </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="number" required="" id="mobile_no" name="mobile_no" class="form-control col-md-7 col-xs-12" required="">
+                          <input type="number"  id="mobile_no" name="mobile_no" class="form-control col-md-7 col-xs-12" >
                         </div>
                       </div>
 
                       <div class="form-group">
                         <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Invoice/Docs No </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" required="" id="invoice_docs_no" name="invoice_docs_no" class="form-control col-md-7 col-xs-12" >
+                          <input type="text"  id="invoice_docs_no" name="invoice_docs_no" class="form-control col-md-7 col-xs-12" >
                         </div>
                       </div>
 

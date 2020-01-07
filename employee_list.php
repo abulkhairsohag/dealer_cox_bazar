@@ -109,7 +109,7 @@ if(!permission_check('employee_list')){
                     if (permission_check('employee_edit_button')) {
                       ?>
 
-                    <!-- <a href="edit_employee.php?serial_no=<?php echo urldecode($row['serial_no']);?>" type="button" class="badge bg-yellow view_data"> Edit</a> -->
+                    <a href="edit_employee.php?serial_no=<?php echo urldecode($row['serial_no']);?>" type="button" class="badge bg-yellow view_data"> Edit</a>
                     <?php } ?>
                     <?php 
                     if (permission_check('employee_delete_button')) {

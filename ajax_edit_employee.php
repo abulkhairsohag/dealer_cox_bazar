@@ -8,6 +8,9 @@ Session::checkSession();
 error_reporting(1);
 include_once ('helper/helper.php');
 
+include_once('class/Database.php');
+$dbOb = new Database();
+
 
 if (isset($_POST['submit']) ){
   //Office Information

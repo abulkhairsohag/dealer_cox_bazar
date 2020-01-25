@@ -153,6 +153,8 @@ if (isset($_POST['ware_serial'])) {
 		$ware_house_serial_no = validation($_POST['ware_serial']);
 		$product_id = validation($_POST['prod_id']);
 		$ware_house_stock = get_ware_house_stock($ware_house_serial_no, $product_id);
-		die(json_encode($ware_house_stock));
+		$query = "SELECT * FROM products WHERE products_id_no = '$product_id'";
+		$pack_size = $dbOb->find($query)['pack_size'];
+		die(json_encode(['available_qty'=>$ware_house_stock, 'pack_size'=>$pack_size]));
 	}
  ?>

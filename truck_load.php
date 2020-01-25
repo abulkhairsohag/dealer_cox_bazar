@@ -243,8 +243,12 @@ if(!permission_check('truck_load_for_delivery')){
 	                  <th style="text-align: center;">Product ID</th>
 	                  <th style="text-align: center;">Product Name</th>
 	                  <th style="text-align: center;">Category</th>
-                    <th style="text-align: center;">Available</th>
-	                  <th style="text-align: center;">Quantity(Packet)</th>
+                    <th style="text-align: center;">Available (Pack)</th>
+                    <th style="text-align: center;">Available (PCS)</th>
+                    <th style="text-align: center;">All In PCS</th>
+                    <th style="text-align: center;">pack Size</th>
+	                  <th style="text-align: center;">Quantity (Packet)</th>
+                    <th style="text-align: center;">Quantity (Pcs)</th>
 	                 
 	                </tr>
 	              </thead>
@@ -269,7 +273,19 @@ if(!permission_check('truck_load_for_delivery')){
                             <input type="text" class="form-control main_available available" name="available[]" readonly="" value="">
                           </td>
                           <td>
+                            <input type="text" class="form-control main_available_pcs available_pcs" name="available_pcs[]" readonly="" value="">
+                          </td>
+                          <td>
+                            <input type="text" class="form-control main_all_in_pcs all_in_pcs" name="all_in_pcs[]" readonly="" value="">
+                          </td>
+                          <td>
+                            <input type="text" class="form-control main_pack_size pack_size" name="pack_size[]" readonly="" value="">
+                          </td>
+                          <td>
                             <input type="number" min="0" step="1" class="form-control main_quantity quantity" name="quantity[]"  value="">
+                          </td>
+                           <td>
+                            <input type="number" min="0" step="1" class="form-control main_quantity_pcs quantity_pcs" name="quantity_pcs[]"  value="">
                           </td>
                           <td  style="display:none">
                             <input type="text" class="form-control main_quantity_offer quantity_offer" name="quantity_offer[]" readonly=""  value="">
@@ -472,6 +488,7 @@ if(!permission_check('truck_load_for_delivery')){
               });
              tr.find(".quantity").val("");
              tr.find(".quantity_offer").val("");
+            //  tr.find(".quantity_pcs").val("");
         }else{
            $.ajax({
             url:'ajax_truck_load.php',
@@ -509,6 +526,7 @@ if(!permission_check('truck_load_for_delivery')){
          $(".available").val("");
        $(".quantity").val("");
        $(".quantity_offer").val("");
+       $(".pack_size").val("");
 
      }else{
   
@@ -518,7 +536,42 @@ if(!permission_check('truck_load_for_delivery')){
           type:'POST',
           dataType:'json',
           success:function(data){
-           tr.find(".available").val(data);
+           tr.find(".available").val(data.available_qty);
+           tr.find(".pack_size").val(data.pack_size);
+          }
+        });
+   } // end of else
+  });
+
+ // here we are going to get products available quantity  
+  $(document).on('click','.quantity_pcs',function(){
+    var quantity = $(this).val();
+     var tr = $(this).parent().parent();
+     var product_id = tr.find(".product_id").val();
+     var ware_house_serial_no  = $("#ware_house_serial_no").val();
+
+     if (ware_house_serial_no == "") {
+         swal({
+                title: 'warning',
+                text: "Please Select Ware House First..",
+                icon: 'warning',
+                button: "Done",
+              });
+         $(".available").val("");
+       $(".quantity").val("");
+       $(".quantity_offer").val("");
+       $(".pack_size").val("");
+
+     }else{
+  
+       $.ajax({
+          url:'ajax_truck_load.php',
+          data:{ware_serial:ware_house_serial_no,prod_id:product_id},
+          type:'POST',
+          dataType:'json',
+          success:function(data){
+           tr.find(".available").val(data.available_qty);
+           tr.find(".pack_size").val(data.pack_size);
           }
         });
    } // end of else

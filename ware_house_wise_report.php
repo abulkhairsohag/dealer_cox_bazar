@@ -86,7 +86,7 @@ if(!permission_check('ware_house_wise_report')){
           <option value="">Please Select One</option>
           <option value="all_product_stock_and_sell">All Product Stock & sell</option>
           <option value="products in stock">Products In Stock</option>
-          <option value="offer products in stock">Offer Products In Stock</option>
+          <!-- <option value="offer products in stock">Offer Products In Stock</option> -->
           <option value="dues">Summery Of Dues</option>
           <option value="order wise dues">Order Wise Dues</option>
           <option value="all sales">All Sales Summery</option>

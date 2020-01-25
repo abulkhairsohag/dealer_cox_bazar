@@ -7,10 +7,7 @@ Session::init();
 Session::checkSession();
 error_reporting(1);
 include_once ('helper/helper.php');
-?>
-
-
-<?php 
+ 
 include_once("class/Database.php");
 $dbOb = new Database();
 
@@ -87,11 +84,8 @@ if (isset($_POST['reg_no'])) {
 	                  <th style="text-align: center;">Product ID</th>
 	                  <th style="text-align: center;">Product Name</th>
 	                  <th style="text-align: center;">Loaded(Packet)</th>
-	                  <th style="text-align: center;">Loaded Offer(PCS)</th>
 	                  <th style="text-align: center;">Sold(Packet)</th>
-	                  <th style="text-align: center;">Sold Offer(PCS)</th>
 	                  <th style="text-align: center;">Back(Packet)</th>
-	                  <th style="text-align: center;">Back Offer(PCS)</th>
 	                </tr>
 	              </thead>
 	              <tbody id="">';
@@ -117,25 +111,26 @@ if (isset($_POST['reg_no'])) {
 			$product_info .=$loaded_packet;
 			$product_info .= '"></td>';
 
-			$product_info .=  '<td><input type="text" class="form-control main_loaded_offer_qty loaded_offer_qty" name="loaded_offer_qty[]" readonly="" value="';
-			$product_info .=$loaded_offer_qty;
-			$product_info .= '"></td>';
+			// $product_info .=  '<td><input type="text" class="form-control main_loaded_offer_qty loaded_offer_qty" name="loaded_offer_qty[]" readonly="" value="';
+			// $product_info .=$loaded_offer_qty;
+			// $product_info .= '"></td>';
 
 			$product_info .=  '<td><input type="text" class="form-control main_sold_packet sold_packet" name="sold_packet[]" readonly="" value="';
 			$product_info .=$sold_packet;
 			$product_info .= '"></td>';
 
-			$product_info .=  '<td><input type="text" class="form-control main_sold_offer_qty sold_offer_qty" name="sold_offer_qty[]" readonly="" value="';
-			$product_info .=$sold_offer_qty;
-			$product_info .= '"></td>';
+			// $product_info .=  '<td><input type="text" class="form-control main_sold_offer_qty sold_offer_qty" name="sold_offer_qty[]" readonly="" value="';
+			// $product_info .=$sold_offer_qty;
+			// $product_info .= '"></td>';
 
 			$product_info .=  '<td><input type="text" class="form-control main_back_packet back_packet" name="back_packet[]" readonly="" value="';
 			$product_info .=$back_packet;
 			$product_info .= '"></td>';
 
-			$product_info .= ' <td><input type="text"   class="form-control main_back_offer_qty back_offer_qty" id="back_offer_qty" name="back_offer_qty[]" readonly=""  value="';
-			$product_info .=$back_offer_qty;
-			$product_info .= '" > </td> </tr>';
+			// $product_info .= ' <td><input type="text"   class="form-control main_back_offer_qty back_offer_qty" id="back_offer_qty" name="back_offer_qty[]" readonly=""  value="';
+			// $product_info .=$back_offer_qty;
+			// $product_info .= '" > </td> </tr>';
+			$product_info .= '</tr>';
 		}
 		$product_info .= ' </tbody>  </table>';
 		$product_info .= '<input type="hidden" name="load_id" id="load_id" value="';

@@ -1,6 +1,6 @@
 <?php 
 include_once 'include/header.php';
-if (!permission_check('add_offer_product')) {
+if (true) {
   ?>
   <script>
     window.location.href = '403.php';

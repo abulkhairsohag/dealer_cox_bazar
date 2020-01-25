@@ -2,9 +2,7 @@
 <?php 
 
 $user_id = Session::get("user_id");
-$login_tbl_serial_no = Session::get("login_tbl_serial_no");
 $user_type = Session::get("user_type");
-$username = Session::get("username");
 
 if ($user_type == "employee") {
   $query = "SELECT * FROM employee_main_info WHERE serial_no = '$user_id' ";
@@ -29,9 +27,9 @@ if ($user_type == "employee") {
   $name = $get_user_info['name'];
 
 }elseif ($user_type == "admin") {
-  $query = "SELECT * FROM login WHERE serial_no = '$login_tbl_serial_no' ";
+  $query = "SELECT * FROM login WHERE serial_no = '$user_id' ";
   $get_admin_info =  $dbOb->find($query);
-  // $photo = $get_admin_info['photo'];
+  $photo = $get_admin_info['photo'];
   $designation = $get_admin_info['designation'];
   $mobile_no = $get_admin_info['mobile_no'];
   $address = $get_admin_info['address'];

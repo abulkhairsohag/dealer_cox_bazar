@@ -245,7 +245,7 @@ if(!permission_check('truck_load_for_delivery')){
 	                  <th style="text-align: center;">Category</th>
                     <th style="text-align: center;">Available</th>
 	                  <th style="text-align: center;">Quantity(Packet)</th>
-	                  <th style="text-align: center;">Offer QTY(PCS)</th>
+	                 
 	                </tr>
 	              </thead>
 	              <tbody id="invoice_details">  
@@ -271,7 +271,7 @@ if(!permission_check('truck_load_for_delivery')){
                           <td>
                             <input type="number" min="0" step="1" class="form-control main_quantity quantity" name="quantity[]"  value="">
                           </td>
-                          <td>
+                          <td  style="display:none">
                             <input type="text" class="form-control main_quantity_offer quantity_offer" name="quantity_offer[]" readonly=""  value="">
                           </td>
                         </tr> 

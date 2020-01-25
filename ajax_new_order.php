@@ -3,15 +3,12 @@ ini_set('display_errors', 'on');
 ini_set('error_reporting', 'E_ALL');
 
 include_once "class/Session.php";
+include_once 'helper/helper.php';
+include_once 'class/Database.php';
+
 Session::init();
 Session::checkSession();
 error_reporting(1);
-include_once 'helper/helper.php';
-?>
-
-<?php
-
-include_once 'class/Database.php';
 $dbOb = new Database();
 
 if (isset($_POST['products_id_no_get_info'])) {
@@ -38,7 +35,25 @@ if (isset($_POST['products_id_no_get_info'])) {
 			$remaining_qty = $load_qty - $delivered_qty;
 			$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no'";
 			$get_products = $dbOb->find($query);
-			die(json_encode(['products' => $get_products, 'load_qty' => $remaining_qty]));
+			$query = "SELECT * FROM offers WHERE products_id = '$products_id_no' AND status = '1' ";
+			$get_offer  = $dbOb->select($query);
+			if ($get_offer) {
+				$offer = $get_offer->fetch_assoc();
+				$offer_pack = $offer['packet_qty'];
+				$offer_product = $offer['product_qty'];
+				$offer_product_with_unit_packet = $offer_product/$offer_pack;
+				$pack_size = $get_products['pack_size'];
+				$new_pack_size = $pack_size*1 + $offer_product_with_unit_packet*1 ;
+				$original_sell_price = $get_products['sell_price'];
+				$new_sell_p_unit = $original_sell_price /$new_pack_size;
+				// round($product_sell_profit,3)
+				$new_packet_sell_price = round(($new_sell_p_unit*$pack_size),2);
+				
+			}else{
+				$new_packet_sell_price = $get_products['sell_price'];
+				$original_sell_price = $get_products['sell_price'];
+			}
+			die(json_encode(['products' => $get_products, 'load_qty' => $remaining_qty,'sell_price'=>$new_packet_sell_price,'original_sell_price'=>$original_sell_price]));
 		}else {
 			$message = "Sorry This Product Is Not Loaded In The Truck.";
 			$type = 'warning';
@@ -47,11 +62,6 @@ if (isset($_POST['products_id_no_get_info'])) {
 		
 	}
 
-	
-	// $offer = "";
-
-
-	// echo json_encode(['products' => $get_products, 'offer' => $offer]);
 }
 
 // now we are going to add information
@@ -106,11 +116,11 @@ if (isset($_POST['submit'])) {
 	
 	$query = "INSERT INTO  order_delivery
 
-			(order_employee_id,order_employee_name,delivery_employee_id,delivery_employee_name,order_no,vehicle_reg_no,vehicle_name,truck_load_serial_no,ware_house_serial_no,ware_house_name,zone_serial_no,zone_name,area,cust_id,customer_name,shop_name,address,mobile_no,payable_amt,pay,due,delivery_date)
+	(order_employee_id,order_employee_name,delivery_employee_id,delivery_employee_name,order_no,vehicle_reg_no,vehicle_name,truck_load_serial_no,ware_house_serial_no,ware_house_name,zone_serial_no,zone_name,area,cust_id,customer_name,shop_name,address,mobile_no,payable_amt,pay,due,delivery_date)
 
-			VALUES
+	VALUES
 
-			('$order_employee_id','$order_employee_name','$delivery_employee_id','$delivery_employee_name','$order_no','$vehicle_reg_no','$vehicle_name','$truck_load_serial_no','$ware_house_serial_no','$ware_house_name','$zone_serial_no','$zone_name','$area','$cust_id','$customer_name','$shop_name','$address','$mobile_no','$payable_amt','$pay','$due','$delivery_date')";
+	('$order_employee_id','$order_employee_name','$delivery_employee_id','$delivery_employee_name','$order_no','$vehicle_reg_no','$vehicle_name','$truck_load_serial_no','$ware_house_serial_no','$ware_house_name','$zone_serial_no','$zone_name','$area','$cust_id','$customer_name','$shop_name','$address','$mobile_no','$payable_amt','$pay','$due','$delivery_date')";
 
 	$last_id = $dbOb->custom_insert($query);
 	$insert_order_expense = '';
@@ -124,12 +134,18 @@ if (isset($_POST['submit'])) {
 			$purchase_price = $product['company_price'] * $qty[$i];
 			$available_qty = $product['quantity'] ;
 
-	
+			$query = "SELECT * FROM offers WHERE products_id = '$prod_id' AND status = '1'";
+			$get_offer = $dbOb->select($query);
+			if ($get_offer) {
+				$offer = 1;
+			}else{
+				$offer = 0;
+			}
 
 			$query = "INSERT INTO  order_delivery_expense
-					(delivery_tbl_serial_no,products_id_no,products_name,sell_price,qty,offer_qty,total_price,purchase_price,ware_house_serial_no,truck_load_serial_no,zone_serial_no,vehicle_reg_no,order_employee_id,delivery_employee_id,delivery_date)
-					VALUES
-					('$last_id','$products_id_no[$i]','$products_name[$i]','$sell_price[$i]','$qty[$i]','$offer_qty[$i]','$total_price[$i]','$purchase_price','$ware_house_serial_no','$truck_load_serial_no','$zone_serial_no','$vehicle_reg_no','$order_employee_id','$delivery_employee_id','$delivery_date')";
+			(delivery_tbl_serial_no,products_id_no,products_name,sell_price,qty,offer_qty,total_price,purchase_price,ware_house_serial_no,truck_load_serial_no,zone_serial_no,vehicle_reg_no,order_employee_id,delivery_employee_id,delivery_date,offer)
+			VALUES
+			('$last_id','$products_id_no[$i]','$products_name[$i]','$sell_price[$i]','$qty[$i]','$offer_qty[$i]','$total_price[$i]','$purchase_price','$ware_house_serial_no','$truck_load_serial_no','$zone_serial_no','$vehicle_reg_no','$order_employee_id','$delivery_employee_id','$delivery_date','$offer')";
 			$insert_order_expense = $dbOb->insert($query);
 			if ($insert_order_expense) {
 				$update_qty = $available_qty - $qty[$i];
@@ -140,26 +156,26 @@ if (isset($_POST['submit'])) {
 
 		if ($insert_order_expense) {
 			$query = "INSERT INTO delivered_order_payment_history 
-					  (deliver_order_serial_no,delivery_emp_id,pay_amt,date,zone_serial_no)
-					  VALUES
-					  ('$last_id','$delivery_employee_id','$pay','$delivery_date','$zone_serial_no')";
+			(deliver_order_serial_no,delivery_emp_id,pay_amt,date,zone_serial_no)
+			VALUES
+			('$last_id','$delivery_employee_id','$pay','$delivery_date','$zone_serial_no')";
 			$insert_history = $dbOb->insert($query);
 			$message = "Congratulaiton! Order Is Successfully Saved.";
 			$type = "success";
 			echo json_encode(['message' => $message, 'type' => $type]);
-		} else {
+		}else {
 			$message = "Sorry! Order Is Not Saved.";
 			$type = "warning";
 			echo json_encode(['message' => $message, 'type' => $type]);
 
 		}
-	} else {
+	}else {
 		$message = "Sorry! Information Is Not Saved.";
 		$type = "warning";
 		echo json_encode(['message' => $message, 'type' => $type]);
 
 	}
-die();
+	die();
 } // end of  if (isset($_POST['submit']))
 
 if (isset($_POST['customer_id'])) {

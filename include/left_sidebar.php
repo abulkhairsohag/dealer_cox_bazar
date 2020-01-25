@@ -235,7 +235,7 @@ if ($user_type == "employee") {
           <?php } 
           if (permission_check('add_offer_product')) {
             ?>
-          <li><a href="add_offer_product.php"><i class="fas fa-plus-circle"></i> Add Offer Product</a></li>
+          <!-- <li><a href="add_offer_product.php"><i class="fas fa-plus-circle"></i> Add Offer Product</a></li> -->
            <?php } ?>
         </ul>
       </li>

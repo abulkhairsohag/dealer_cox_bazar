@@ -769,7 +769,13 @@ if (isset($_POST['from_date'])) {
 				$sell_price = $sell_price -($sell_price*$invoice_setting['special_discount']/100);
 				if ($stock > 0 || $company_product_return > 0 || $return_market_product > 0 || $product_sell_pack > 0 || $product_sell_pcs > 0 || $own_shop_qty > 0) {
 					$i++;
-				
+				if (!$pack_size) {
+					$own_shop_pkt = 0;
+					$own_shop_pcs = $own_shop_qty;
+				}else{
+					$own_shop_pkt = floor($own_shop_qty/$pack_size);
+					$own_shop_pcs = $own_shop_qty%$pack_size;
+				}
 				$stock_tbl .= '<tr>
 									<td>'. $i.' </td>
 									<td> '. ucfirst($row['products_name']).'</td>
@@ -782,7 +788,7 @@ if (isset($_POST['from_date'])) {
 									<td> '. $product_sell_pack.' Pkt<br>'.$product_sell_pcs.' Pcs'.'</td>
 									<td> '. $product_sell_price.'</td>
 									<td> '. (round($product_sell_profit,3)).'</td>
-									<td> '. floor($own_shop_qty/$pack_size).' Pkt<br>'.$own_shop_qty%$pack_size.' Pcs'.'</td>
+									<td> '. $own_shop_pkt.' Pkt<br>'.$own_shop_pcs.' Pcs'.'</td>
 									<td> '. $own_shop_tk.'</td>
 									
 								</tr>';

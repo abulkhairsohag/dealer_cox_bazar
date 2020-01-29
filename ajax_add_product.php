@@ -9,11 +9,7 @@ $user_name = Session::get("username");
 $password  = Session::get("password");
 error_reporting(1);
 include_once ('helper/helper.php');
-?>
 
-
-
-<?php 
 include_once("class/Database.php");
 $dbOb = new Database();
 
@@ -29,41 +25,38 @@ if (isset($_POST['submit'])) {
 
 	$company = strtolower(validation($_POST["company"]));
 
-
-
 	$query = "SELECT * FROM id_no_generator WHERE id_type = 'product' ORDER BY serial_no DESC LIMIT 1";
-                          $get_prod = $dbOb->select($query);
-                          if ($get_prod) {
-                            $last_id = $get_prod->fetch_assoc()['id'];
-                            $last_id = explode('-',$last_id)[1];
-                            $last_id = $last_id*1+1;
-                            $id_length = strlen ($last_id); 
-                            $remaining_length = 6 - $id_length;
-                            $zeros = "";
-                            if ($remaining_length > 0) {
-                              for ($i=0; $i < $remaining_length ; $i++) { 
-                                $zeros = $zeros.'0';
-                              }
-                              $last_id = $zeros.$last_id ;
-                            }
-                            $products_id_no = "PR-".$last_id;
-                          }else{
-                            $products_id_no = "PR-000001";
-                          }
-
-
-
-
-
+	$get_prod = $dbOb->select($query);
+	if ($get_prod) {
+		$last_id = $get_prod->fetch_assoc()['id'];
+		$last_id = explode('-',$last_id)[1];
+		$last_id = $last_id*1+1;
+		$id_length = strlen ($last_id); 
+		$remaining_length = 6 - $id_length;
+		$zeros = "";
+		if ($remaining_length > 0) {
+			for ($i=0; $i < $remaining_length ; $i++) { 
+				$zeros = $zeros.'0';
+			}
+			$last_id = $zeros.$last_id ;
+		}
+		$products_id_no = "PR-".$last_id;
+	}else{
+		$products_id_no = "PR-000001";
+	}
 
 
 	$products_name = validation($_POST["products_name"]);
 	$category = validation($_POST["category"]);
-	$company_price = validation($_POST["company_price"]);
+	$company_price_pack = validation($_POST["company_price"]);
 	$sell_price = validation($_POST["sell_price"]);
 	$mrp_price = validation($_POST["mrp_price"]);
 	$pack_size = validation($_POST["pack_size"]);
-	$quantity = validation($_POST["quantity"]);
+	$quantity_pkt = validation($_POST["quantity_pkt"]);
+	$quantity_pcs = validation($_POST["quantity_pcs"]);
+	$total_stock_pcs = $quantity_pkt*$pack_size + $quantity_pcs*1;
+
+	$per_pcs_company_price = $company_price_pack/$pack_size;
 
 	$product_photo = $_FILES['product_photo'];
 	if ($product_photo) {
@@ -82,7 +75,7 @@ if (isset($_POST['submit'])) {
 	}
 
 	$description =  validation($_POST["description"]);
-	$stock_date = date("d-m-Y");
+	$stock_date =  validation($_POST["stock_date"]);
 	$ware_house_serial_no = validation($_POST["ware_house_serial_no"]);
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 	$ware_house_name = $dbOb->find($query)['ware_house_name'];
@@ -94,7 +87,7 @@ if (isset($_POST['submit'])) {
 		$query = "SELECT * FROM products WHERE serial_no = '$edit_id'";
 		$get_product = $dbOb->find($query);
 
-	
+
 		if (!empty($file_name)) { // while editing if an image is choosen then the following section will work
 			if (!in_array($file_extension, $permitted)) {
 				$message = "Please Upload Image With Extension : ".implode(', ',$permitted);
@@ -174,7 +167,7 @@ if (isset($_POST['submit'])) {
 					$query = "INSERT INTO products 
 					(company ,products_id_no ,products_name ,category ,company_price ,sell_price,mrp_price,pack_size ,quantity, product_photo,description,stock_date )
 					VALUES 
-					('$company' ,'$products_id_no' ,'$products_name' ,'$category'  ,'$company_price' ,'$sell_price','$mrp_price'  ,'$pack_size' ,'$quantity','$uploaded_image','$description','$stock_date')";
+					('$company' ,'$products_id_no' ,'$products_name' ,'$category'  ,'$company_price_pack' ,'$sell_price','$mrp_price'  ,'$pack_size' ,'$quantity_pkt','$uploaded_image','$description','$stock_date')";
 					$insert = $dbOb->insert($query);
 					if ($insert) {
 
@@ -182,7 +175,7 @@ if (isset($_POST['submit'])) {
 						$insert_id = $dbOb->insert($query);
 
 						$query = "INSERT INTO product_stock (products_id_no, quantity, stock_date,company_price,ware_house_serial_no,ware_house_name)
-						VALUES ('$products_id_no', '$quantity', '$stock_date','$company_price','$ware_house_serial_no','$ware_house_name')";
+						VALUES ('$products_id_no', '$total_stock_pcs', '$stock_date','$per_pcs_company_price','$ware_house_serial_no','$ware_house_name')";
 						$insert_stock = $dbOb->insert($query);
 
 						$message = "Congratulations! Information Is Successfully Saved.";
@@ -197,16 +190,16 @@ if (isset($_POST['submit'])) {
 			}
 		}else{ //end of    if (!empty($file_name))   ie no image is choosen 
 			$query = "INSERT INTO products 
-				(company ,products_id_no ,products_name ,category ,company_price ,sell_price,mrp_price,pack_size ,quantity,description,stock_date )
-					VALUES 
-				('$company' ,'$products_id_no' ,'$products_name' ,'$category'  ,'$company_price' ,'$sell_price','$mrp_price'  ,'$pack_size' ,'$quantity','$description','$stock_date')";
+			(company ,products_id_no ,products_name ,category ,company_price ,sell_price,mrp_price,pack_size ,quantity,description,stock_date )
+			VALUES 
+			('$company' ,'$products_id_no' ,'$products_name' ,'$category'  ,'$company_price_pack' ,'$sell_price','$mrp_price'  ,'$pack_size' ,'$quantity','$description','$stock_date')";
 			$insert = $dbOb->insert($query);
 			if ($insert) {
 				$query = "INSERT INTO id_no_generator (id,id_type) VALUES ('$products_id_no','product')";
 				$insert_id = $dbOb->insert($query);
 
 				$query = "INSERT INTO product_stock (products_id_no, quantity, stock_date,company_price,ware_house_serial_no,ware_house_name)
-				VALUES ('$products_id_no', '$quantity', '$stock_date','$company_price','$ware_house_serial_no','$ware_house_name')";
+				VALUES ('$products_id_no', '$total_stock_pcs', '$stock_date','$per_pcs_company_price','$ware_house_serial_no','$ware_house_name')";
 				$insert_stock = $dbOb->insert($query);
 
 				$message = "Congratulations! Information Is Successfully Saved.";
@@ -275,11 +268,26 @@ if (isset($_POST['get_products_id_no_stock'])) {
 if (isset($_POST['submit_stock'])) {
 
 	$products_id_no_stock = validation($_POST['products_id_no_stock']);
+	$query = "SELECT * FROM products WHERE products_id_no = '$products_id_no_stock'";
+	$get_prod_info =$dbOb->find($query);
+	$pack_size = $get_prod_info['pack_size'];
+
 	$available_quantity   = validation($_POST['available_quantity']);
-	$new_quantity 		  = validation($_POST['new_quantity']);
-	$total_quantity 	  = validation($_POST['total_quantity']);
+	$new_quantity_pack 		  = validation($_POST['new_quantity_pack']);
+	$new_quantity_pcs 		  = validation($_POST['new_quantity_pcs']);
+
+	if (($new_quantity_pack == '' || $new_quantity_pack < 1) && ($new_quantity_pcs == '' || $new_quantity_pcs < 1)) {
+		$message = "Please Provide Quantity";
+		$type = "warning";
+		die(json_encode(['message'=>$message,'type'=>$type]));
+	}
+
+	$total_stock_pcs = $new_quantity_pack*$pack_size + $new_quantity_pcs*1 ;
+
+
 	$stock_date 	  	  = validation($_POST['stock_date']);
 	$company_price_stock  = validation($_POST['company_price_stock']);
+	$per_pcs_company_price = $company_price_stock / $pack_size ;
 	$ware_house_serial_no  = validation($_POST['ware_house_serial_no']);
 	$ware_house_name = '';
 	$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
@@ -288,13 +296,13 @@ if (isset($_POST['submit_stock'])) {
 		$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
 	}
 
-	$query = "UPDATE `products` SET quantity = '$total_quantity', company_price = '$company_price_stock' WHERE products_id_no = '$products_id_no_stock'";
+	$query = "UPDATE `products` SET company_price = '$company_price_stock' WHERE products_id_no = '$products_id_no_stock'";
 	$update = $dbOb->update($query);
 	if ($update) {
 		// $stock_date = date('d-m-Y');
 		$query = "INSERT INTO `product_stock` (products_id_no,quantity,stock_date,company_price,ware_house_serial_no,ware_house_name)
 		VALUES 
-		('$products_id_no_stock','$new_quantity','$stock_date','$company_price_stock','$ware_house_serial_no','$ware_house_name')";
+		('$products_id_no_stock','$total_stock_pcs','$stock_date','$per_pcs_company_price','$ware_house_serial_no','$ware_house_name')";
 		$insert = $dbOb->insert($query);
 		if ($insert) {
 			$message = "Congratulations! Information Is Successfully Saved";
@@ -313,87 +321,68 @@ if (isset($_POST['submit_stock'])) {
 	
 
 }
-// updating original price 
-
-if (isset($_POST['submit_original_price'])) {
-	$serial_no  = $_POST['product_id_orig_price'];
-	$actual_purchase_price  = $_POST['original_price'];
-	$query = "UPDATE products SET actual_purchase_price = '$actual_purchase_price' WHERE serial_no = '$serial_no'";
-	$update = $dbOb->update($query);
-	if ($update) {
-		$message = "Congratulations! Original Price Is Updated";
-		$type = 'success';
-		echo json_encode(['message'=>$message,'type'=>$type]);
-	}else{
-		$message = "Sorry! Price Is Not Updated";
-		$type = 'warning';
-		echo json_encode(['message'=>$message,'type'=>$type]);
-	}
-
-}
-
 // the following section is for fetching data from database 
 if (isset($_POST["sohag"])) {
-	   $query = "SELECT * FROM products ORDER BY serial_no DESC";
-            $get_products = $dbOb->select($query);
-            if ($get_products) {
-              $i = 0;
-              while ($row = $get_products->fetch_assoc()) {
-                $i++;
-                ?>
-                <tr>
-                  <td><?php echo $i; ?></td>
-                  <td><?php echo strtoupper($row['company']); ?></td>
-                  <td><?php echo $row['products_id_no']; ?></td>
-                  <td><?php echo $row['products_name']; ?></td>
-                  <td><?php echo $row['category']; ?></td>
-                  <td><?php echo $row['company_price']; ?></td>
-                  <td><?php echo $row['sell_price']; ?></td>
-                  <td><?php echo $row['mrp_price']; ?></td>
-                  <td><?php echo $row['pack_size']; ?></td>
+	$query = "SELECT * FROM products ORDER BY serial_no DESC";
+	$get_products = $dbOb->select($query);
+	if ($get_products) {
+		$i = 0;
+		while ($row = $get_products->fetch_assoc()) {
+			$i++;
+			?>
+			<tr>
+				<td><?php echo $i; ?></td>
+				<td><?php echo strtoupper($row['company']); ?></td>
+				<td><?php echo $row['products_id_no']; ?></td>
+				<td><?php echo $row['products_name']; ?></td>
+				<td><?php echo $row['category']; ?></td>
+				<td><?php echo $row['company_price']; ?></td>
+				<td><?php echo $row['sell_price']; ?></td>
+				<td><?php echo $row['mrp_price']; ?></td>
+				<td><?php echo $row['pack_size']; ?></td>
 
-                  <td align="center">
+				<td align="center">
 
-                   <?php
-                   if (permission_check('product_edit_button')) {
-                    ?>
-                    <a  class="badge bg-blue edit_data" id="<?php echo ($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a>
-                  <?php }?>
+					<?php
+					if (permission_check('product_edit_button')) {
+						?>
+						<a  class="badge bg-blue edit_data" id="<?php echo ($row['serial_no']) ?>"   data-toggle="modal" data-target="#add_update_modal" style="margin:2px">Edit</a>
+					<?php }?>
 
-                  <?php
-                  if (permission_check('product_stock_button')) {
-                    ?>
+					<?php
+					if (permission_check('product_stock_button')) {
+						?>
 
-                    <a class="badge bg-green stock_data" id="<?php echo ($row['products_id_no']) ?>"   data-toggle="modal" data-target="#stock_data_modal">Stock This Product </a>
-                  <?php }?>
-
-
-                  <?php
-                  if (permission_check('product_delete_button')) {
-                    ?>
-
-                    <a  class="badge  bg-red delete_data" id="<?php echo ($row['products_id_no']) ?>"  style="margin:2px"> Delete</a>
-                  <?php }?>
+						<a class="badge bg-green stock_data" id="<?php echo ($row['products_id_no']) ?>"   data-toggle="modal" data-target="#stock_data_modal">Stock This Product </a>
+					<?php }?>
 
 
+					<?php
+					if (permission_check('product_delete_button')) {
+						?>
 
-                  <?php
-                  if (permission_check('product_view_button')) {
-                    ?>
-
-                    <a class="badge bg-orange view_details"  id="<?php echo $row['products_id_no'] ?>" data-toggle="modal" data-target="#view_modal" style="margin:2px">View</a>
-                  <?php }?>
+						<a  class="badge  bg-red delete_data" id="<?php echo ($row['products_id_no']) ?>"  style="margin:2px"> Delete</a>
+					<?php }?>
 
 
 
+					<?php
+					if (permission_check('product_view_button')) {
+						?>
 
-                </td>
+						<a class="badge bg-orange view_details"  id="<?php echo $row['products_id_no'] ?>" data-toggle="modal" data-target="#view_modal" style="margin:2px">View</a>
+					<?php }?>
 
-              </tr>
 
-              <?php
-            }
-          }
+
+
+				</td>
+
+			</tr>
+
+			<?php
+		}
+	}
 }
 
 ?>

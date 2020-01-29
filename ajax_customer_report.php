@@ -60,57 +60,54 @@ if (isset($_POST['report_type'])) {
 		 $get_order = $dbOb->select($query);
 
 		 $sales_dues_tbl = '<div  id="print_table" style="color:black">
-		 <span class="text-center">
-			 <h3><b>'.strtoupper($company_profile['organization_name']).'</b></h3>
-			 <h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
-			 <h5>'.$show_date.'</h5>
+			 <span class="text-center">
+				 <h3><b>'.strtoupper($company_profile['organization_name']).'</b></h3>
+				 <h5>'.$company_profile['address'].', '.$company_profile['mobile_no'].'</h5>
+				 <h5>'.$show_date.'</h5>
 			 
-	 </span>
-	 <div class="text-center">
-		 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>CUSTOMER WISE DELIVERY REPORT</b></h4>
-	 </div>
-	 <br>
-		 <table class="table table-responsive">
-			 <tbody>
-				 <tr>
-					 <td class="text-left">
-                        <h5 style="margin:0px ; margin-top: -8px;">Customer ID : <span></span>'.$customer_id.'</span></h5>
-                        <h5 style="margin:0px ; margin-top: -8px;">Shop Name : <span></span>'.$cust_shop.'</span></h5>
-                        <h5 style="margin:0px ; margin-top: -8px;">Name : <span></span>'.$cust_name.'</span></h5>
-                        <h5 style="margin:0px ; margin-top: -8px;">Phone : <span></span>'.$cust_phone.'</span></h5>
-                        <h5 style="margin:0px ; margin-top: -8px;">Area : <span></span>'.$cust_area.'</span></h5>
-					 </td>
-					 <td class="text-center">
-						 
-					 </td>
-					 <td class="text-right">
-						 <h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
-						 <h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
-					 </td>
-				 </tr>
-			 
-			 </tbody>
-		 </table>
-	 <!--     
-	 <hr> -->
-	 <table class="table table-bordered table-responsive">
-						  <thead style="background:#4CAF50; color:white" >
-						  <tr>
-						  <th scope="col">SL No</th>
-						  <th scope="col">Employee ID</th>
-						  <th scope="col">Name</th>
-						  <th scope="col">Order No</th>
-						  <th scope="col">Total TP</th>
-						  <th scope="col">Total VAT</th>
-						  <th scope="col">Total TP+VAT </th>
-						  <th scope="col">Payable</th>
-						  <th scope="col">Pay</th>
-						  <th scope="col">Due</th>
-						  <th scope="col">Order</th>
-						  <th scope="col">Delivery</th>
-						</tr>
-						  </thead>
-						  <tbody>';
+					 </span>
+					 <div class="text-center">
+						 <h4 style="margin:0px ; margin-top: 5px; border:solid 1px #000; border-radius:50px; display:inline-block; padding:10px;"><b>CUSTOMER WISE DELIVERY REPORT</b></h4>
+					 </div>
+					 <br>
+						 <table class="table table-responsive">
+							 <tbody>
+								 <tr>
+									 <td class="text-left">
+				                        <h5 style="margin:0px ; margin-top: -8px;">Customer ID : <span></span>'.$customer_id.'</span></h5>
+				                        <h5 style="margin:0px ; margin-top: -8px;">Shop Name : <span></span>'.$cust_shop.'</span></h5>
+				                        <h5 style="margin:0px ; margin-top: -8px;">Name : <span></span>'.$cust_name.'</span></h5>
+				                        <h5 style="margin:0px ; margin-top: -8px;">Phone : <span></span>'.$cust_phone.'</span></h5>
+				                        <h5 style="margin:0px ; margin-top: -8px;">Area : <span></span>'.$cust_area.'</span></h5>
+									 </td>
+									 <td class="text-center">
+										 
+									 </td>
+									 <td class="text-right">
+										 <h5 style="margin:0px ; margin-top: -8px;">Printing Date : <span></span>'.$printing_date.'</span></h5>
+										 <h5 style="margin:0px ; margin-top: -8px;">Time : <span></span>'.$printing_time.'</span></h5>
+									 </td>
+								 </tr>
+							 
+							 </tbody>
+						 </table>
+					 <!--     
+					 <hr> -->
+					 <table class="table table-bordered table-responsive">
+										  <thead style="background:#4CAF50; color:white" >
+										  <tr>
+										  <th scope="col">SL No</th>
+										  <th scope="col">Sales Man</th>
+										  <th scope="col">Delivery Man</th>
+										  <th scope="col">Order No</th>
+										  
+										  <th scope="col">Payable</th>
+										  <th scope="col">Pay</th>
+										  <th scope="col">Due</th>
+										  <th scope="col">Delivery</th>
+										</tr>
+										  </thead>
+										  <tbody>';
 		$i = 0;
 		$total_tp = 0;
 		$total_vat = 0;
@@ -122,26 +119,28 @@ if (isset($_POST['report_type'])) {
 			 
 
 			 while ($row = $get_order->fetch_assoc()) {
-				 $order_date = strtotime($row['order_date']);
-				 if ($order_date >= $from_date &&  $order_date <= $to_date) {
+				 $delivery_date = strtotime($row['delivery_date']);
+				 if ($delivery_date >= $from_date &&  $delivery_date <= $to_date) {
 					 if ($row['due']==0) {
 						$pay =  '<span class="badge bg-green">Paid</span>';
 					 }else{
 						$pay =  $row['due'];
 					 }
+					 if ($row['previous_due'] == '1') {
+	                     $prev_due = '<br><span><a  class="badge bg-red badge-sm">Previous due</a></span>';
+	                   }else{
+	                    $prev_due = "";
+	                   }
 					
 					 $sales_dues_tbl .= ' <tr align="left" style="color:black">
 											<td>'.++$i.'</td>
-											<td>'.$row['order_employee_id'].'</td>
-											<td>'.$row['order_employee_name'].'</td>
-											<td>'.$row['order_no'].'</td>
-											<td>'.($row['net_total_tp']) .'</td>
-											<td>'.($row['net_total_vat']) .'</td>
-											<td>'.($row['net_total_tp']*1+$row['net_total_vat']*1) .'</td>
+											<td>'.$row['order_employee_id'].'<br>'.$row['order_employee_name'].'</td>
+											<td>'.$row['delivery_employee_id'].'<br>'.$row['delivery_employee_name'].'</td>
+											<td><a href="#" class="order_no" id="'.$row["serial_no"].'" data-toggle="modal" data-target="#view_modal">'.$row['order_no'].$prev_due.'</a></td>
+											
 											<td>'.$row['payable_amt'].'</td>
 											<td>'.$row['pay'].'</td>
 											<td >'.$pay.'</td>
-											<td>'.$row['order_date'].'</td>
 											<td>'.$row['delivery_date'].'</td>
 										</tr>';
 					$total_tp += $row['net_total_tp'];
@@ -158,18 +157,15 @@ if (isset($_POST['report_type'])) {
 
 		if ($i == 0) {
 			 $sales_dues_tbl .= '<tr>
-									<td colspan="14"  align="center" style="color:red">No Order Found</td>
+									<td colspan="8"  align="center" style="color:red">No Order Found</td>
 								</tr>';
 			 
 			}else{
 				$sales_dues_tbl .= '<tr class="bg-success">
 									<td colspan="4"  align="right" style="color:red">Total</td>
-									<td colspan=""  align="left" style="color:red">'.$total_tp.'</td>
-									<td colspan=""  align="left" style="color:red">'.$total_vat.'</td>
-									<td colspan=""  align="left" style="color:red">'.$total_tp_vat.'</td>
 									<td colspan=""  align="left" style="color:red">'.$total_payable.'</td>
 									<td colspan=""  align="left" style="color:red">'.$total_pay.'</td>
-									<td colspan="3"  align="left" style="color:red">'.$total_due.'</td>
+									<td colspan="2"  align="left" style="color:red">'.$total_due.'</td>
 								</tr>';
 			}
 			$sales_dues_tbl .= '  </tbody>

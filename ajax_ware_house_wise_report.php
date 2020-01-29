@@ -612,16 +612,16 @@ if (isset($_POST['from_date'])) {
 		$stock_tbl .= '<table class="table table-bordered table-responsive">
 							<thead style="background:#4CAF50; color:white" >
 								<tr>
-									<th>Sl<br> No.</th>
+									<th>#</th>
 									<th>Product<br>Name</th>
 									<th>Purchase<br>(Qty)</th>
 									<th>Purchase<br>(৳)</th>
-									<th>Company <br>Return(Qty)</th>
-									<th>Company <br>Return (৳)</th>
-									<th>Market <br>Return (Qty)</th>
-									<th>Market <br>Return (৳)</th>
-									<th>Product <br> Sell (Qty)</th>
-									<th>Product <br> Sell (৳)</th>
+									<th>Company<br>Return<br>(Qty)</th>
+									<th>Company <br>Return <br>(৳)</th>
+									<th>Market <br>Return<br> (Qty)</th>
+									<th>Market<br>Return<br>(৳)</th>
+									<th>Product<br>Sell<br>(Pkt)</th>
+									<th>Product <br> Sell<br> (৳)</th>
 									<th>Profit On<br>Sell (৳)</th>
 									<th>Own Shop<br>Stock (Qty)</th>
 									<th>Own Shop<br>Stock (৳)</th>
@@ -643,8 +643,9 @@ if (isset($_POST['from_date'])) {
 			$i=0;
 			while ($row = $get_product->fetch_assoc()) {
 
-				$i++;
+				
 				$products_id_no = $row['products_id_no'];
+				$pack_size = $row['pack_size'];
 
 				// Product Stock
 				$stock = 0;
@@ -673,7 +674,7 @@ if (isset($_POST['from_date'])) {
 					}
 				}
 	
-	
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 				//  Product Sell
 				$product_sell =0;
@@ -693,6 +694,10 @@ if (isset($_POST['from_date'])) {
 						
 					}
 				}
+			
+				// now convert total piece into packet and piece
+				$product_sell_pack = floor($product_sell/$pack_size);
+				$product_sell_pcs = $product_sell%$pack_size;
 	
 				// Return Product Order
 				$return_market_product = 0 ;
@@ -720,7 +725,7 @@ if (isset($_POST['from_date'])) {
 					
 					while ($own_shop_row = $get_own_shop_history->fetch_assoc()) {
 						if (strtotime($own_shop_row['stock_date']) >= $from_date && strtotime($own_shop_row['stock_date']) <= $to_date ) {
-							$stock_qty = $own_shop_row['quantity_packet'];
+							$stock_qty = $own_shop_row['quantity_pcs'];
 							$own_shop_qty = $own_shop_qty + $stock_qty;
 							$own_shop_tk = $own_shop_tk + $own_shop_row['price'];
 						}
@@ -762,20 +767,22 @@ if (isset($_POST['from_date'])) {
 				$discount_on_total_tp = $total_tp * $invoice_setting['discount_on_tp'] / 100 ;
 				$sell_price = $total_price - $discount_on_total_tp;
 				$sell_price = $sell_price -($sell_price*$invoice_setting['special_discount']/100);
+				if ($stock > 0 || $company_product_return > 0 || $return_market_product > 0 || $product_sell_pack > 0 || $product_sell_pcs > 0 || $own_shop_qty > 0) {
+					$i++;
 				
 				$stock_tbl .= '<tr>
 									<td>'. $i.' </td>
 									<td> '. ucfirst($row['products_name']).'</td>
-									<td> '. $stock.'</td>
+									<td> '. floor($stock/$pack_size).' Pkt<br>'.$stock%$pack_size.' Pcs'.'</td>
 									<td> '. $stock_taka.'</td>
 									<td> '. $company_product_return.'</td>
 									<td> '. $company_product_return_tk.'</td>
 									<td> '. $return_market_product.'</td>
 									<td> '. $return_market_tk.'</td>
-									<td> '. $product_sell.'</td>
+									<td> '. $product_sell_pack.' Pkt<br>'.$product_sell_pcs.' Pcs'.'</td>
 									<td> '. $product_sell_price.'</td>
 									<td> '. (round($product_sell_profit,3)).'</td>
-									<td> '. $own_shop_qty.'</td>
+									<td> '. floor($own_shop_qty/$pack_size).' Pkt<br>'.$own_shop_qty%$pack_size.' Pcs'.'</td>
 									<td> '. $own_shop_tk.'</td>
 									
 								</tr>';
@@ -788,6 +795,8 @@ if (isset($_POST['from_date'])) {
 				// $total_own_shop_qty += $own_shop_qty;
 				$total_own_shop_tk += $own_shop_tk;
 				// $total_in_stock_amt += $row['quantity']*$row['company_price'];
+					# code...
+				}
 
 			}
 		}
@@ -798,7 +807,7 @@ if (isset($_POST['from_date'])) {
 							<td> '.round($total_company_product_return_tk).'</td>
 							<td colspan=""></td>
 							<td> '.round($total_return_market_tk).'</td>
-							<td colspan=""></td>
+							<td colspan="1"></td>
 							<td> '.round($total_product_sell_amt).'</td>
 							
 							<td> '.round($total_profit_on_sell_amt).'</td>
@@ -977,6 +986,7 @@ if (isset($_POST['from_date'])) {
 																<th scope="col">Company</th>
 																<th scope="col">Pack Size</th>
 																<th scope="col">In Stock (Pack)</th>
+																<th scope="col">In Stock (Pcs)</th>
 															</tr>
 																</thead>
 																<tbody>';
@@ -994,15 +1004,19 @@ if (isset($_POST['from_date'])) {
 
 				// now getting products stock
 				// $in_stock_qty = get_ware_house_in_stock($ware_house_serial_no, $product_id);
-				$in_stock_qty = get_ware_house_stock($ware_house_serial_no, $product_id);
+				$pack_size = $prod['pack_size'];
+				$total_stock_pcs = get_ware_house_stock($ware_house_serial_no, $product_id);
+				$in_stock_pack = floor($total_stock_pcs/$pack_size);
+				$in_stock_pcs = $total_stock_pcs%$pack_size;
 
 				$sales_dues_tbl .= ' <tr align="left" style="color:black">
 											<td>'.$i.'</td>
 											<td>'.$product['products_id_no'].'</td>
 											<td>'.ucwords($prod['products_name']).'</td>
 											<td>'.ucwords($prod['company']).'</td>
-											<td>'.$prod['pack_size'].'</td>
-											<td>'.$in_stock_qty.'</td>
+											<td>'.$pack_size.'</td>
+											<td>'.$in_stock_pack.'</td>
+											<td>'.$in_stock_pcs.'</td>
 										</tr>';
 
 
@@ -1160,6 +1174,11 @@ if (isset($_POST['from_date'])) {
 				while ($row = $get_order->fetch_assoc()) {
 					if ($row['due'] > 0) {
 						$i++;
+						 if ($row['previous_due'] == '1') {
+		                     $prev_due = '<br><span><a  class="badge bg-red badge-sm">Previous due</a></span>';
+		                   }else{
+		                    $prev_due = "";
+		                   }
 						$sales_dues_tbl .= ' <tr align="left" style="color:black">
 												<td>'.$i.'</td>
 												<td>'.$row['cust_id'].'</td>
@@ -1167,7 +1186,7 @@ if (isset($_POST['from_date'])) {
 												<td>'.$row['shop_name'].'</td>
 												<td>'.$row['mobile_no'].'</td>
 												<td>'.$row['area'].'</td>
-												<td>'.$row['order_no'].'</td>
+												<td><a href="#" class="order_no" id="'.$row["serial_no"].'" data-toggle="modal" data-target="#view_modal">'.$row['order_no'].$prev_due.'</a></td>
 												<td>'.$row['payable_amt'].'</td>
 												<td>'.$row['pay'].'</td>
 												<td>'.$row['due'].'</td>

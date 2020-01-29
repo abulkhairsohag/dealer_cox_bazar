@@ -1072,6 +1072,12 @@ if (isset($_POST['from_date'])) {
 				while ($row = $get_order->fetch_assoc()) {
 					if ($row['due'] > 0) {
 						$i++;
+						if ($row['previous_due'] == '1') {
+	                     $prev_due = '<br><span><a  class="badge bg-red badge-sm">Previous due</a></span>';
+	                   }else{
+	                    $prev_due = "";
+	                   }
+
 						$sales_dues_tbl .= ' <tr align="left" style="color:black">
 												<td>'.$i.'</td>
 												<td>'.$row['cust_id'].'</td>
@@ -1079,7 +1085,7 @@ if (isset($_POST['from_date'])) {
 												<td>'.$row['shop_name'].'</td>
 												<td>'.$row['mobile_no'].'</td>
 												<td>'.$row['area'].'</td>
-												<td>'.$row['order_no'].'</td>
+												<td><a href="#" class="order_no" id="'.$row["serial_no"].'" data-toggle="modal" data-target="#view_modal">'.$row['order_no'].$prev_due.'</a></td>
 												<td>'.$row['payable_amt'].'</td>
 												<td>'.$row['pay'].'</td>
 												<td>'.$row['due'].'</td>

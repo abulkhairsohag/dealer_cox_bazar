@@ -70,51 +70,51 @@ if(!permission_check('sale_product')){
               $get_employee_iformation= "";
               if ($emp_main) {
                 $get_employee_iformation = $emp_main->fetch_assoc();
-             
-              
-              $get_employee_id = $get_employee_iformation['id_no'];
 
-              $query = "SELECT * from own_shop_employee where id_no = '$get_employee_id' AND active_status = 'Active'";
-              $get_duty_employee = $dbOb->find($query);
 
-              ?>
-              <tr>
-                <td>
-                  <input type="text" class="form-control " id="employee_id" name="employee_id" readonly="" value="<?php echo($get_duty_employee['id_no']) ?>" required="">
-                </td>
-                <td>
-                  <input type="text" class="form-control" id="employee_name" name="employee_name" readonly="" value="<?php echo $employee_name ?>" >
-                </td>
-                
-              
-                <td>
-                  <input type="text" class="form-control " id="date" name="date" readonly="" value="<?php echo date("d-m-Y") ?>">
-                </td>
-              </tr>
+                $get_employee_id = $get_employee_iformation['id_no'];
+
+                $query = "SELECT * from own_shop_employee where id_no = '$get_employee_id' AND active_status = 'Active'";
+                $get_duty_employee = $dbOb->find($query);
+
+                ?>
+                <tr>
+                  <td>
+                    <input type="text" class="form-control " id="employee_id" name="employee_id" readonly="" value="<?php echo($get_duty_employee['id_no']) ?>" required="">
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" id="employee_name" name="employee_name" readonly="" value="<?php echo $employee_name ?>" >
+                  </td>
+
+
+                  <td>
+                    <input type="text" class="form-control " id="date" name="date" readonly="" value="<?php echo date("d-m-Y") ?>">
+                  </td>
+                </tr>
               <?php  } else{
 
                 ?>
 
                 <tr>
                   <td>
-                   
-              <select name="employee_id" id="employee_id"  required="" class="form-control employee_id ">
-                  <option value="">Please Select</option>
-                  <?php
-                  $query = "SELECT * FROM own_shop_employee WHERE active_status = 'Active' ORDER BY id_no";
-                  $get_own_shop_emp = $dbOb->select($query);
-                  if ($get_own_shop_emp) {
-                    while ($row = $get_own_shop_emp->fetch_assoc()) {
-                    ?>
-                    <option value="<?php echo $row['id_no']; ?>" <?php if (Session::get("own_shop_emp_id") == $row['id_no']) {
-                      echo "selected";
-                    } ?>><?php echo $row['id_no'].', '.$row['name']; ?></option>
-                    <?php
-                  }
-                }
-                ?>
 
-            </select>
+                    <select name="employee_id" id="employee_id"  required="" class="form-control employee_id ">
+                      <option value="">Please Select</option>
+                      <?php
+                      $query = "SELECT * FROM own_shop_employee WHERE active_status = 'Active' ORDER BY id_no";
+                      $get_own_shop_emp = $dbOb->select($query);
+                      if ($get_own_shop_emp) {
+                        while ($row = $get_own_shop_emp->fetch_assoc()) {
+                          ?>
+                          <option value="<?php echo $row['id_no']; ?>" <?php if (Session::get("own_shop_emp_id") == $row['id_no']) {
+                            echo "selected";
+                          } ?>><?php echo $row['id_no'].', '.$row['name']; ?></option>
+                          <?php
+                        }
+                      }
+                      ?>
+
+                    </select>
                   </td>
                   <td>
                     <input type="text" class="form-control employee_name" id="employee_name" name="employee_name" readonly="" value="<?php if (Session::get("own_shop_emp_name")) {
@@ -122,7 +122,7 @@ if(!permission_check('sale_product')){
                     } ?>" >
                   </td>
                   
-                
+
                   <td>
                     <input type="text" class="form-control " id="date" name="date" readonly="" value="<?php echo date("d-m-Y") ?>">
                   </td>
@@ -136,76 +136,76 @@ if(!permission_check('sale_product')){
 
 
 
-          <div class="form-group">
-            <label class="col-md-3 control-label" for="inputDefault">Order Number</label>
-            <div class="col-md-6">
-             <!-- <select class="form-control" id="invoice_option" name="invoice_option" required=""> -->
-              <input type="text" class="form-control" id="order_no" name="order_no" readonly="" value="<?php echo('ORDER-'.substr(uniqid('', true), -5).substr(number_format(time() * rand(),0,'',''),0,2)) ?>">
-            </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label" for="inputDefault">Order Number</label>
+          <div class="col-md-6">
+           <!-- <select class="form-control" id="invoice_option" name="invoice_option" required=""> -->
+            <input type="text" class="form-control" id="order_no" name="order_no" readonly="" value="<?php echo('ORDER-'.substr(uniqid('', true), -5).substr(number_format(time() * rand(),0,'',''),0,2)) ?>">
           </div>
+        </div>
 
-          <div class="form-group">
-            <label class="col-md-3 control-label" for="inputDefault">Customer<span class="required" style="color: red">*</span></label>
-            <div class="col-md-6">
-              <select name="customer_id" id="customer_id" class="form-control select2" required="">
-                <option value="-1">Walking Customer</option>
-                <?php 
-                $query = "SELECT * from own_shop_client Order BY client_name ";
-                $get_client = $dbOb->select($query);
-                if ($get_client) {
-                  while ($row = $get_client->fetch_assoc()) {
-                    ?>
-                    <option value="<?php echo $row['serial_no'] ?>"><?php echo ucwords($row['client_name']).', '.$row['mobile_no']; ?></option>
+        <div class="form-group">
+          <label class="col-md-3 control-label" for="inputDefault">Customer<span class="required" style="color: red">*</span></label>
+          <div class="col-md-6">
+            <select name="customer_id" id="customer_id" class="form-control select2" required="">
+              <option value="-1">Walking Customer</option>
+              <?php 
+              $query = "SELECT * from own_shop_client Order BY client_name ";
+              $get_client = $dbOb->select($query);
+              if ($get_client) {
+                while ($row = $get_client->fetch_assoc()) {
+                  ?>
+                  <option value="<?php echo $row['serial_no'] ?>"><?php echo ucwords($row['client_name']).', '.$row['mobile_no']; ?></option>
 
-                    <?php
-                  }
+                  <?php
                 }
-                ?>
-              </select>
-            </div>
-            <div class="col-md-2"> 
+              }
+              ?>
+            </select>
+          </div>
+          <div class="col-md-2"> 
             <?php
             if(permission_check('add_customer_button')){
-            ?>
-            <a data-toggle="modal" id="add_customer" data-target="#add_customer_modal" class="btn bg-green">Add Customer</a> 
-              <?php } ?>
-            </div>
+              ?>
+              <a data-toggle="modal" id="add_customer" data-target="#add_customer_modal" class="btn bg-green">Add Customer</a> 
+            <?php } ?>
           </div>
+        </div>
 
-          <div class="form-group">
-            <label class="col-md-3 control-label" for="inputDefault">Customer Name </label>
-            <div class="col-md-6">
-              <input type="text" class="form-control customer_info" id="customer_name" name="customer_name" >
-            </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label" for="inputDefault">Customer Name </label>
+          <div class="col-md-6">
+            <input type="text" class="form-control customer_info" id="customer_name" name="customer_name" >
           </div>
+        </div>
 
-          <div class="form-group">
-            <label class="col-md-3 control-label" for="inputDefault">Mobile No</label>
-            <div class="col-md-6">
-              <input type="text" class="form-control customer_info" id="mobile_no" name="mobile_no" >
-            </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label" for="inputDefault">Mobile No</label>
+          <div class="col-md-6">
+            <input type="text" class="form-control customer_info" id="mobile_no" name="mobile_no" >
           </div>
+        </div>
 
-          <div class="form-group bg-success" style="padding-bottom: 5px;margin-top: 30px">
+        <div class="form-group bg-success" style="padding-bottom: 5px;margin-top: 30px">
 
-            <div class="col-md-6 control-label" for="inputDefault"  style="text-align: left; color: #34495E;font-size: 20px">
-              Add Order Details
-            </div>
+          <div class="col-md-6 control-label" for="inputDefault"  style="text-align: left; color: #34495E;font-size: 20px">
+            Add Order Details
           </div>
+        </div>
 
-          <table class="table" class="">
+        <table class="table" class="">
 
-            <thead>
-              <tr>
-                <th style="text-align: center;">Product ID</th>
-                <th style="text-align: center;">Name</th>
-                <th style="text-align: center;">Sell Price (৳)</th>
-                <th style="text-align: center;">Quantity</th>
-                <th style="text-align: center;">Total Price (৳)</th>
-                <th><button type="button" class="btn btn-success" id="add_more"><i class="fas fa-plus"></i></button></th>
-              </tr>
-            </thead>
-            <tbody id="invoice_details">
+          <thead>
+            <tr>
+              <th style="text-align: center;">Product ID</th>
+              <th style="text-align: center;">Name</th>
+              <th style="text-align: center;">Sell Price (৳)</th>
+              <th style="text-align: center;">Quantity</th>
+              <th style="text-align: center;">Total Price (৳)</th>
+              <th><button type="button" class="btn btn-success" id="add_more"><i class="fas fa-plus"></i></button></th>
+            </tr>
+          </thead>
+          <tbody id="invoice_details">
 
             <tr>
               <td>
@@ -217,163 +217,163 @@ if(!permission_check('sale_product')){
                   $query = "SELECT * FROM own_shop_products_stock";
                   $get_products = $dbOb->select($query);
                   if ($get_products) {
-                  while ($row = $get_products->fetch_assoc()) {
-                    ?>
-                    <option value="<?php echo ($row['products_id']) ?>"> <?php echo ($row['products_id'] . ', ' . $row['product_name']) ?> </option>
+                    while ($row = $get_products->fetch_assoc()) {
+                      ?>
+                      <option value="<?php echo ($row['products_id']) ?>"> <?php echo ($row['products_id'] . ', ' . $row['product_name']) ?> </option>
 
-                    <?php
+                      <?php
+                    }
                   }
-                }
-                ?>
-              </select>
-            </td>
-            <td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly=""></td>
+                  ?>
+                </select>
+              </td>
+              <td><input type="text" class="form-control main_products_name products_name"  name="products_name[]" readonly=""></td>
 
-            <td><input type="text"  class="form-control main_sell_price sell_price" id="sell_price" name="sell_price[]" readonly="" ></td>
-            
-            <td><input type="text"  class="form-control main_qty" id="qty" name="qty[]" value="" readonly="" required=""></td>
-          
+              <td><input type="text"  class="form-control main_sell_price sell_price" id="sell_price" name="sell_price[]" readonly="" ></td>
 
-            <td><input type="text" class="form-control main_total_price total_price" id="total_price" name="total_price[]" readonly=""></td>
-            <td><button type="button" class="btn btn-danger remove_button"><i class="fas fa-times"></i></button></td>
+              <td><input type="text"  class="form-control main_qty" id="qty" name="qty[]" value="" readonly="" required=""></td>
 
-          </tr>
 
-            </tbody>
+              <td><input type="text" class="form-control main_total_price total_price" id="total_price" name="total_price[]" readonly=""></td>
+              <td><button type="button" class="btn btn-danger remove_button"><i class="fas fa-times"></i></button></td>
 
-          </table>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+
+        <div class="form-group">
+          <h3>
+            <label class="col-md-3 control-label" for="inputDefault"  style="text-align: left; color: #34495E"></label></h3>
+          </div>
+
+
+
 
 
           <div class="form-group">
-            <h3>
-              <label class="col-md-3 control-label" for="inputDefault"  style="text-align: left; color: #34495E"></label></h3>
+            <label class="col-md-3 control-label" for="net_payable_amt">Net Payable Amount(৳)</label>
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="net_payable_amt" name="net_payable_amt" readonly="" value="0">
             </div>
+          </div>
 
-       
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="pay">Paid Amount(৳)</label>
+            <div class="col-md-6">
+              <input type="number" min="0" step="1" class="form-control" id="pay" name="pay">
+            </div>
+          </div>
 
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="due">Due Amount(৳)</label>
+            <div class="col-md-6">
+              <input type="number" min="0" class="form-control" id="due" name="due" readonly="" value="0">
+            </div>
+          </div>
 
-  
-  <div class="form-group">
-    <label class="col-md-3 control-label" for="net_payable_amt">Net Payable Amount(৳)</label>
-    <div class="col-md-6">
-      <input type="text" class="form-control" id="net_payable_amt" name="net_payable_amt" readonly="" value="0">
-    </div>
-  </div>
-  
-  <div class="form-group">
-    <label class="col-md-3 control-label" for="pay">Paid Amount(৳)</label>
-    <div class="col-md-6">
-      <input type="number" min="0" step="1" class="form-control" id="pay" name="pay">
-    </div>
-  </div>
-  
-  <div class="form-group">
-    <label class="col-md-3 control-label" for="due">Due Amount(৳)</label>
-    <div class="col-md-6">
-      <input type="number" min="0" class="form-control" id="due" name="due" readonly="" value="0">
-    </div>
-  </div>
-
-            <div class="form-group" align="center">
+          <div class="form-group" align="center">
             <?php 
             if (permission_check('sale_product_save_button')) {
               ?>
               <input type="submit" name="submit" value="Save" class="btn btn-success" style="">
-              <?php } ?>
-              <input type="reset" name="reset" value="Reset" class="btn btn-warning">
-            </div>
+            <?php } ?>
+            <input type="reset" name="reset" value="Reset" class="btn btn-warning">
+          </div>
 
-          </form>
+        </form>
 
 
-        </div>
       </div>
     </div>
+  </div>
 
 
   
-    <!-- Modal For Adding and Updating data  -->
-    <div class="modal fade" id="add_customer_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg " role="document">
-        <div class="modal-content">
-          <div class="modal-header" style="background: #006666">
-            <h3 class="modal-title" id="ModalLabel" style="color: white"></h3>
-            <div style="float:right;">
+  <!-- Modal For Adding and Updating data  -->
+  <div class="modal fade" id="add_customer_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background: #006666">
+          <h3 class="modal-title" id="ModalLabel" style="color: white"></h3>
+          <div style="float:right;">
 
-            </div>
           </div>
-          <div class="modal-body">
+        </div>
+        <div class="modal-body">
 
-            <div class="row">
-              <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel" style="background: #f2ffe6">
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel" style="background: #f2ffe6">
 
-                  <div class="x_content" style="background: #f2ffe6">
-                    <br />
-                    <!-- Form starts From here  -->
-                    <form id="form_add_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
+                <div class="x_content" style="background: #f2ffe6">
+                  <br />
+                  <!-- Form starts From here  -->
+                  <form id="form_add_data" action="" method="POST" data-parsley-validate class="form-horizontal form-label-left">
 
-                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Customer Name<span class="required">*</span>
-                      </label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input type="text"  required="" id="add_customer_name" name="add_customer_name" required="required" class="form-control col-md-7 col-xs-12">
-                      </div>
+                   <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Customer Name<span class="required">*</span>
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="text"  required="" id="add_customer_name" name="add_customer_name" required="required" class="form-control col-md-7 col-xs-12">
                     </div>
+                  </div>
 
-                    <div class="form-group">
-                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Address  <span class="required">*</span></label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <textarea type="text" required="" id="add_customer_address" name="add_customer_address" class="form-control col-md-7 col-xs-12" ></textarea>
-                      </div>
+                  <div class="form-group">
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Address  <span class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <textarea type="text" required="" id="add_customer_address" name="add_customer_address" class="form-control col-md-7 col-xs-12" ></textarea>
                     </div>
+                  </div>
 
-                    <div class="form-group">
-                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Mobile  <span class="required">*</span></label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input type="text" required="" id="add_customer_mobile_no" name="add_customer_mobile_no" class="form-control col-md-7 col-xs-12" >
-                      </div>
+                  <div class="form-group">
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Mobile  <span class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="text" required="" id="add_customer_mobile_no" name="add_customer_mobile_no" class="form-control col-md-7 col-xs-12" >
                     </div>
+                  </div>
 
-                    <div class="form-group">
-                      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Email</label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input type="email" id="add_customer_email" name="add_customer_email" class="form-control col-md-7 col-xs-12" >
-                      </div>
+                  <div class="form-group">
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Email</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="email" id="add_customer_email" name="add_customer_email" class="form-control col-md-7 col-xs-12" >
                     </div>
+                  </div>
 
 
-                    <div style="display: none;">
-                      <input type="number" id="edit_id" name="edit_id">
+                  <div style="display: none;">
+                    <input type="number" id="edit_id" name="edit_id">
+                  </div>
+
+                  <div class="ln_solid"></div>
+                  <div class="form-group">
+                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                      <button type="reset" class="btn btn-primary" >Reset</button>
+                      <button type="submit" class="btn btn-success" id="submit_button"></button>
                     </div>
-
-                    <div class="ln_solid"></div>
-                    <div class="form-group">
-                      <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                        <button type="reset" class="btn btn-primary" >Reset</button>
-                        <button type="submit" class="btn btn-success" id="submit_button"></button>
-                      </div>
-                    </div>
+                  </div>
 
 
-                  </form>
-                </div>
+                </form>
               </div>
             </div>
-          </div>  
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
+          </div>
+        </div>  
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
-  </div> <!-- End of modal for  Adding and Updating data-->
-
-
-
-    <!-- /page content -->
-
   </div>
+</div> <!-- End of modal for  Adding and Updating data-->
+
+
+
+<!-- /page content -->
+
+</div>
 </div>
 <?php include_once('include/footer.php'); ?>
 
@@ -393,7 +393,7 @@ if(!permission_check('sale_product')){
         $password = Session::get("password");
 
         
-       $query = "SELECT * FROM own_shop_products_stock";
+        $query = "SELECT * FROM own_shop_products_stock";
         $get_products = $dbOb->select($query);
         if ($get_products) {
          while ($row = $get_products->fetch_assoc()) {
@@ -457,38 +457,38 @@ if(!permission_check('sale_product')){
         var discount_on_mrp = $("#discount_on_mrp").val();
         var vat = $("#vat").val();
 
-      $.ajax({
-        url:"ajax_sell_product.php",
-         data:{products_id_no_get_info:products_id_no_get_info},
-        type:"post",
-        dataType:'json',
-        success:function(data){
-          
-         
-          if (data.type == 'warning') {
-               swal({
-                title: data.type,
-                text: data.message,
-                icon: data.type,
-                button: "Done",
-              });
-          tr.find(".products_name").val('');
-          }
+        $.ajax({
+          url:"ajax_sell_product.php",
+          data:{products_id_no_get_info:products_id_no_get_info},
+          type:"post",
+          dataType:'json',
+          success:function(data){
 
-          tr.find(".sell_price").val(data.products.sell_price);
-          tr.find(".products_name").val(data.products.product_name);
-          var total_price = (data.products.sell_price * qty) ;
-          tr.find(".total_price").val(total_price );
 
-          tr.find("#qty").attr("readonly", false);
-          tr.find("#qty").attr("placeholder", data.available_qty);
-          tr.find("#qty").attr("data-available", data.available_qty);
-          tr.find("#qty").focus();
+            if (data.type == 'warning') {
+             swal({
+              title: data.type,
+              text: data.message,
+              icon: data.type,
+              button: "Done",
+            });
+             tr.find(".products_name").val('');
+           }
 
-          cal();
-        }
-      });
-    }
+           tr.find(".sell_price").val(data.products.sell_price);
+           tr.find(".products_name").val(data.products.product_name);
+           var total_price = (data.products.sell_price * qty) ;
+           tr.find(".total_price").val(total_price );
+
+           tr.find("#qty").attr("readonly", false);
+           tr.find("#qty").attr("placeholder", data.available_qty);
+           tr.find("#qty").attr("data-available", data.available_qty);
+           tr.find("#qty").focus();
+
+           cal();
+         }
+       });
+      }
       // cal();
     });
 
@@ -496,56 +496,56 @@ if(!permission_check('sale_product')){
 
 
 // invoice calculation
-  $("#invoice_details").delegate('#qty','keyup blur change',function(){
-    var tr=$(this).parent().parent();
+$("#invoice_details").delegate('#qty','keyup blur change',function(){
+  var tr=$(this).parent().parent();
 
-    var quantity =tr.find("#qty").val();
-    var available =tr.find("#qty").data('available');
+  var quantity =tr.find("#qty").val();
+  var available =tr.find("#qty").data('available');
     // alert(available);
 
     if (quantity > available) {
-       swal({
-              title: 'warning',
-              text: 'The Quantity You Have Entered Is Not Available In The Shop',
-              icon: 'warning',
-              button: "Done",
-            });
-         tr.find("#qty").val('');
-         return 0;
-      }
+     swal({
+      title: 'warning',
+      text: 'The Quantity You Have Entered Is Not Available In The Shop',
+      icon: 'warning',
+      button: "Done",
+    });
+     tr.find("#qty").val('');
+     return 0;
+   }
 
-     if (isNaN(quantity) || quantity == '') {
-        quantity = 0;
-      }
-      var sell_price = tr.find(".sell_price").val();
+   if (isNaN(quantity) || quantity == '') {
+    quantity = 0;
+  }
+  var sell_price = tr.find(".sell_price").val();
 
-      if (isNaN(sell_price) || sell_price == '') {
-        sell_price = 0;
-      }
-      var total_price =  ( sell_price * quantity) ;
-      tr.find(".total_price").val(total_price);
+  if (isNaN(sell_price) || sell_price == '') {
+    sell_price = 0;
+  }
+  var total_price =  ( sell_price * quantity) ;
+  tr.find(".total_price").val(total_price);
 
-      var product_id = tr.find(".product_id").val();
-       $.ajax({
-        url:'ajax_truck_load.php',
-        data:{product_id_check:product_id},
-        type:'POST',
-        dataType:'json',
-        success:function(data){
-         if (data == 'N/A') {
-           tr.find(".offer_qty").val(data);
-         }else{
-           var offer_integer = parseInt(quantity / data.packet_qty);
-           tr.find(".offer_qty").val(offer_integer * data.product_qty);
-         }
-         
-        }
-      });
-     
-      cal();
-  });
+  var product_id = tr.find(".product_id").val();
+  $.ajax({
+    url:'ajax_truck_load.php',
+    data:{product_id_check:product_id},
+    type:'POST',
+    dataType:'json',
+    success:function(data){
+     if (data == 'N/A') {
+       tr.find(".offer_qty").val(data);
+     }else{
+       var offer_integer = parseInt(quantity / data.packet_qty);
+       tr.find(".offer_qty").val(offer_integer * data.product_qty);
+     }
 
-    
+   }
+ });
+
+  cal();
+});
+
+
 
 
 
@@ -588,35 +588,35 @@ if(!permission_check('sale_product')){
 
 
   // the following function is for invoice claculation
- 
 
 
 
 
- $(document).on('keyup blur change','#pay',function(){
+
+  $(document).on('keyup blur change','#pay',function(){
   //  console.log();
-   console.log($("#net_payable_amt").val());
-     var pay = parseFloat($(this).val());
-     var payable  = parseFloat($("#net_payable_amt").val());
-     if (pay > payable) {
-        swal({
-              title: 'warning',
-              text: 'Pay Amount Cannot Be Greater Than The Payable Amt',
-              icon: 'warning',
-              button: "Done",
-            });
-        $(this).val(0);
-        $("#due").val(payable);
-     }
-      cal();
-  });
+  console.log($("#net_payable_amt").val());
+  var pay = parseFloat($(this).val());
+  var payable  = parseFloat($("#net_payable_amt").val());
+  if (pay > payable) {
+    swal({
+      title: 'warning',
+      text: 'Pay Amount Cannot Be Greater Than The Payable Amt',
+      icon: 'warning',
+      button: "Done",
+    });
+    $(this).val(0);
+    $("#due").val(payable);
+  }
+  cal();
+});
 
 
 
-$(document).on('change','#customer_id',function(){
-  var customer = $(this).val();
-  if (customer != '-1') {
-    $('.customer_info').attr("readonly", true);
+  $(document).on('change','#customer_id',function(){
+    var customer = $(this).val();
+    if (customer != '-1') {
+      $('.customer_info').attr("readonly", true);
     // console.log(customer)
   }else{
     $('.customer_info').attr("readonly", false);
@@ -638,15 +638,15 @@ $(document).on('change','#customer_id',function(){
 });
 
   $(document).on('change','.employee_id',function(){
-     var employee_id = $(this).val();
+   var employee_id = $(this).val();
     //  alert(employee_id);
-     $.ajax({
-        url:'ajax_sell_product.php',
-        data:{employee_id_get:employee_id},
-        type:'POST',
-        dataType:'json',
-        success:function(data){
-          $(".employee_name").val(data);
+    $.ajax({
+      url:'ajax_sell_product.php',
+      data:{employee_id_get:employee_id},
+      type:'POST',
+      dataType:'json',
+      success:function(data){
+        $(".employee_name").val(data);
           // $(".employee_id").val(emp_id);
         }
       });
@@ -663,34 +663,34 @@ $(document).on('change','#customer_id',function(){
 <script>
 
  function cal()
-  {
-        var net_total =0;
-        var paid = $("#pay").val();
-        if (isNaN(paid) || paid == '' ) {
-          paid = 0;
-        }
-
-        $(".total_price").each(function(){
-          net_total=(net_total+($(this).val()*1));
-        });
-        $("#net_payable_amt").val(net_total);
-        $("#due").val(net_total - paid);
-
-
+ {
+  var net_total =0;
+  var paid = $("#pay").val();
+  if (isNaN(paid) || paid == '' ) {
+    paid = 0;
   }
 
+  $(".total_price").each(function(){
+    net_total=(net_total+($(this).val()*1));
+  });
+  $("#net_payable_amt").val(Math.round(net_total));
+  $("#due").val(Math.round(net_total) - paid);
 
 
-  
+}
 
-    $(document).on('click','#add_customer',function(){
-      $("#ModalLabel").html("Provide New Customer Information");
-      $("#submit_button").html("Save");
-      $("#add_customer_name").val("");
-      $("#add_customer_address").val("");
-      $("#add_customer_mobile_no").val("");
-      $("#add_customer_email").val("");
-    });
+
+
+
+
+$(document).on('click','#add_customer',function(){
+  $("#ModalLabel").html("Provide New Customer Information");
+  $("#submit_button").html("Save");
+  $("#add_customer_name").val("");
+  $("#add_customer_address").val("");
+  $("#add_customer_mobile_no").val("");
+  $("#add_customer_email").val("");
+});
 
 
     // now we are going to  insert data 
@@ -723,8 +723,8 @@ $(document).on('change','#customer_id',function(){
             setTimeout(function(){
               window.location.reload(true);
 
-             }, 1500);
-              
+            }, 1500);
+
 
           }
         }
@@ -732,9 +732,9 @@ $(document).on('change','#customer_id',function(){
     }); // end of insert 
 
 
-$("#customer_id").select2({ width: '100%' }); 
-$("#product_id").select2({ width: '100%' }); 
-</script>
+    $("#customer_id").select2({ width: '100%' }); 
+    $("#product_id").select2({ width: '100%' }); 
+  </script>
 
 </body>
 </html>

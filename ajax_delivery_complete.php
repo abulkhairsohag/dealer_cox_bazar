@@ -29,33 +29,47 @@ if (isset($_POST['serial_no_view'])) {
 	if ($delivery_expense) {
 		$i = 0;
 		while ($row = $delivery_expense->fetch_assoc()) {
+			$products_id = $row["products_id_no"];
+			$query = "SELECT * FROM products WHERE products_id_no = '$products_id'";
+			$get_product = $dbOb->select($query);
+			$prod_info="";
+			if ($get_product) {
+				$prod_info = $get_product->fetch_assoc();
+			}
+			$pack_size = $prod_info['pack_size'];
+			$sell_pack = floor($row["qty"]/$pack_size);
+			$sell_pcs = $row["qty"]%$pack_size;
 			$i++;
 			$tr .='<tr style="color:black"><td>';
 			$tr .= $i;
 			$tr .= '</td><td>';
-			$tr .=($row["products_id_no"]);
+			$tr .=($products_id);
 			$tr .= '</td><td>';
 			$tr .= $row["products_name"] ;
-			$tr .= '</td><td>';
-			$tr .= $row["sell_price"];
-			$tr .= '</td><td>';
-			$tr .= $row["qty"];
-			$tr .= '</td><td>';
-			$tr .= $row["offer_qty"] ;
+			$tr .= '</td><td align="center">';
+			$tr .= $pack_size ;
+			$tr .= '</td><td align="center">';
+			$tr .= $row["sell_price_pack"];
+			$tr .= '</td><td align="center">';
+			$tr .= $row["sell_price_pcs"];
+			$tr .= '</td><td align="center">';
+			$tr .= $sell_pack;
+			$tr .= '</td><td align="center">';
+			$tr .= $sell_pcs ;
 			$tr .= '</td><td class="text-right">';
-			$tr .= $row["total_price"];
+			$tr .= round($row["total_price"],3);
 			$tr .= '</td></tr>';
 		}
 
-		$tr .= '<tr style="color:blue"><td colspan="6" style="text-align: right;">Net Payable Amount  </td><td colspan="3" class="text-right" style="color:blue">';
+		$tr .= '<tr style="color:blue"><td colspan="7" style="text-align: right;">Net Payable Amount  </td><td colspan="3" class="text-right" style="color:blue">';
 		$tr .= number_format($delivery_details['payable_amt'],2);
 		$tr .= '</td></tr>';
 
-		$tr .= '<tr style="color:blue"><td colspan="6" style="text-align: right;">Pay Amount  </td><td colspan="3" class="text-right" style="color:blue">';
+		$tr .= '<tr style="color:blue"><td colspan="7" style="text-align: right;">Pay Amount  </td><td colspan="3" class="text-right" style="color:blue">';
 		$tr .= number_format($delivery_details['pay'],2);
 		$tr .= '</td></tr>';
 
-		$tr .= '<tr style="color:blue"><td colspan="6" style="text-align: right;">Due Amount  </td><td colspan="3" class="text-right" style="color:red">';
+		$tr .= '<tr style="color:blue"><td colspan="7" style="text-align: right;">Due Amount  </td><td colspan="3" class="text-right" style="color:red">';
 		$tr .= number_format($delivery_details['due'],2);
 		$tr .= '</td></tr>';
 		

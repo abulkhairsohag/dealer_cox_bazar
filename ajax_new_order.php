@@ -104,14 +104,25 @@ if (isset($_POST['submit'])) {
 	$payable_amt = validation($_POST['net_payable_amt']);
 
 	$pay = validation($_POST['pay']);
+	if ($pay == '' || $pay == null) {
+		$pay = 0 ;
+	}
 	$due = validation($_POST['due']);
 
 	$products_id_no = validation($_POST['products_id_no']);
+	if (sizeof($products_id_no)<1) {
+		$message = "Please Select A Product Then Save Information";
+		$type = "warning";
+		die(json_encode(['message'=>$message,'type'=>$type]));
+	}
 	$products_name = validation($_POST['products_name']);
-	$sell_price = validation($_POST['sell_price']);
-
+	$sell_price_pack = validation($_POST['sell_price']);
+	$sell_price_pcs = validation($_POST['sell_price_pcs']);
+// //////////////////////////////////////////////////////////////////////
 	$qty = validation($_POST['qty']);
-	$offer_qty = validation($_POST['offer_qty']);
+	$qty_pcs = validation($_POST['qty_pcs']);
+	$pack_size = validation($_POST['pack_size']);
+
 	$total_price = validation($_POST['total_price']);
 	
 	$query = "INSERT INTO  order_delivery
@@ -131,8 +142,14 @@ if (isset($_POST['submit'])) {
 			$prod_id = $products_id_no[$i];
 			$query = "SELECT * FROM products where products_id_no = '$prod_id'";
 			$product = $dbOb->find($query);
-			$purchase_price = $product['company_price'] * $qty[$i];
-			$available_qty = $product['quantity'] ;
+			$purchase_price_per_pcs = $product['company_price'] / $product['pack_size'];
+
+			$pack_qty = $qty[$i];
+			$pcs_qty =  $qty_pcs[$i];
+			$size_of_pack =  $pack_size[$i];
+			$total_pcs = $pack_qty*$size_of_pack + $pcs_qty;
+
+			$total_purchase_price = round(($purchase_price_per_pcs*$total_pcs),3);
 
 			$query = "SELECT * FROM offers WHERE products_id = '$prod_id' AND status = '1'";
 			$get_offer = $dbOb->select($query);
@@ -143,15 +160,11 @@ if (isset($_POST['submit'])) {
 			}
 
 			$query = "INSERT INTO  order_delivery_expense
-			(delivery_tbl_serial_no,products_id_no,products_name,sell_price,qty,offer_qty,total_price,purchase_price,ware_house_serial_no,truck_load_serial_no,zone_serial_no,vehicle_reg_no,order_employee_id,delivery_employee_id,delivery_date,offer)
+			(delivery_tbl_serial_no,products_id_no,products_name,sell_price_pack,sell_price_pcs,qty,total_price,purchase_price,ware_house_serial_no,truck_load_serial_no,zone_serial_no,vehicle_reg_no,order_employee_id,delivery_employee_id,delivery_date,offer)
 			VALUES
-			('$last_id','$products_id_no[$i]','$products_name[$i]','$sell_price[$i]','$qty[$i]','$offer_qty[$i]','$total_price[$i]','$purchase_price','$ware_house_serial_no','$truck_load_serial_no','$zone_serial_no','$vehicle_reg_no','$order_employee_id','$delivery_employee_id','$delivery_date','$offer')";
+			('$last_id','$products_id_no[$i]','$products_name[$i]','$sell_price_pack[$i]','$sell_price_pcs[$i]','$total_pcs','$total_price[$i]','$total_purchase_price','$ware_house_serial_no','$truck_load_serial_no','$zone_serial_no','$vehicle_reg_no','$order_employee_id','$delivery_employee_id','$delivery_date','$offer')";
 			$insert_order_expense = $dbOb->insert($query);
-			if ($insert_order_expense) {
-				$update_qty = $available_qty - $qty[$i];
-				$query = "UPDATE products SET quantity = '$update_qty' WHERE products_id_no = '$prod_id'";
-				$update_product_tbl = $dbOb->update($query);
-			}
+			
 		}
 
 		if ($insert_order_expense) {

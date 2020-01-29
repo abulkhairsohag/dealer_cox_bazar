@@ -8,7 +8,7 @@ if(!permission_check('paid_and_delivered')){
   </script>
   <?php 
 }
- ?>
+?>
 
 <div class="right_col" role="main">
   <div class="row">
@@ -58,244 +58,250 @@ if(!permission_check('paid_and_delivered')){
               <?php 
               include_once('class/Database.php');
               $dbOb = new Database();
-                if (Session::get("zone_serial_no")){
-                    if (Session::get("zone_serial_no") != '-1') {
-                      $zone_serial = Session::get("zone_serial_no");
-                      $query = "SELECT * FROM order_delivery where zone_serial_no = '$zone_serial' AND due = 0 ORDER BY serial_no DESC ";
-                      $get_order_info = $dbOb->select($query);
-                    }
-                  }else{
-                    $query = "SELECT * FROM order_delivery where due = 0 ORDER BY serial_no DESC ";
-                    $get_order_info = $dbOb->select($query);
-                  }
+              if (Session::get("zone_serial_no")){
+                if (Session::get("zone_serial_no") != '-1') {
+                  $zone_serial = Session::get("zone_serial_no");
+                  $query = "SELECT * FROM order_delivery where zone_serial_no = '$zone_serial' AND due = 0 ORDER BY serial_no DESC ";
+                  $get_order_info = $dbOb->select($query);
+                }
+              }else{
+                $query = "SELECT * FROM order_delivery where due = 0 ORDER BY serial_no DESC ";
+                $get_order_info = $dbOb->select($query);
+              }
 
 
               if ($get_order_info) {
                 $i=0;
                 while ($row = $get_order_info->fetch_assoc()) {
                   $i++;
-
-                  ?>
-                  <tr>
-                    <td><?php echo $i; ?></td>
-                    <td><?php echo $row['order_no']; ?></td>
-                    <td><?php echo $row['shop_name']; ?></td>
-                    <td><?php echo $row['zone_name']; ?></td>
-                    <td><?php echo $row['area']; ?></td>
-                    <td><?php echo $row['ware_house_name']; ?></td>
-                    <td><?php echo $row['payable_amt']; ?></td>
-                    <td><?php echo $row['pay']; ?></td>
-                    <td><?php echo $row['delivery_date']; ?></td>
-                    <td align="center">
-                      
-                      <?php 
-                      if (permission_check('paid_and_delivered_view_button')) {
-                        ?>
-                        <a class="badge  bg-blue view_data  " id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#view_modal">view </a>
-                      <?php } ?> 
-                      
-                    
-                    </td>
-                  </tr>
-
-                  <?php
+                  if ($row['previous_due'] == '1') {
+                   $prev_due = '<br><span><a  class="badge bg-red badge-sm">Previous due</a></span>';
+                 }else{
+                  $prev_due = "";
                 }
-              }
-              ?>
+                ?>
+                <tr>
+                  <td><?php echo $i; ?></td>
+                  <td><?php echo $row['order_no'].$prev_due; ?></td>
+                  <td><?php echo $row['shop_name']; ?></td>
+                  <td><?php echo $row['zone_name']; ?></td>
+                  <td><?php echo $row['area']; ?></td>
+                  <td><?php echo $row['ware_house_name']; ?></td>
+                  <td><?php echo $row['payable_amt']; ?></td>
+                  <td><?php echo $row['pay']; ?></td>
+                  <td><?php echo $row['delivery_date']; ?></td>
+                  <td align="center">
+                    
+                    <?php 
+                    if (permission_check('paid_and_delivered_view_button')) {
+                      ?>
+                      <a class="badge  bg-blue view_data  " id="<?php echo($row['serial_no']) ?>"  data-toggle="modal" data-target="#view_modal">view </a>
+                    <?php } ?> 
+                    
+                    
+                  </td>
+                </tr>
 
-            </tbody>
-          </table>
-        </div>
+                <?php
+              }
+            }
+            ?>
+
+          </tbody>
+        </table>
       </div>
     </div>
+  </div>
 
 
 
-    <!-- Modal For Showing data  -->
-    <div class="modal fade" id="view_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog " style="width: 700px" role="document">
-        <div class="modal-content modal-lg">
-          <div class="modal-header" style="background: #006666">
-            <h3 class="modal-title" id="ModalLabel" style="color: white">Order Infomation In Detail</h3>
-            <div style="float:right;">
+  <!-- Modal For Showing data  -->
+  <div class="modal fade" id="view_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog " style="width: 700px" role="document">
+      <div class="modal-content modal-lg">
+        <div class="modal-header" style="background: #006666">
+          <h3 class="modal-title" id="ModalLabel" style="color: white">Order Infomation In Detail</h3>
+          <div style="float:right;">
 
-            </div>
           </div>
-          <div class="modal-body">
+        </div>
+        <div class="modal-body">
 
-            <div class="row">
-              <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel" style="background: #f2ffe6">
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel" style="background: #f2ffe6">
 
-                  <div class="x_content" style="background: #f2ffe6">
-                    <br />
-
-
-
-
-
-                    <div style="margin : 20px" id="info_table">
+                <div class="x_content" style="background: #f2ffe6">
+                  <br />
 
 
 
-                      <div class="row"><div class="col"> <h3 style="color:  #34495E">Order Employee Information</h3><hr></div></div>
+
+
+                  <div style="margin : 20px" id="info_table">
 
 
 
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">ID </h5></div>
-                        <div class="col-md-3"><h5 style="color:black" id="employee_id" ></h5></div>
-                        <div class="col-md-3"></div>
-                      </div>
-
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Name</h5></div>
-                        <div class="col-md-3" ><h5 style="color:black" id="employee_name"></h5></div>
-                        <div class="col-md-3"></div>
-                      </div>
-
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Area</h5></div>
-                        <div class="col-md-3"><h5 style="color:black" id="area_employee"></h5></div>
-                        <div class="col-md-3"></div>
-                      </div>
-
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Order Date</h5></div>
-                        <div class="col-md-3"><h5 style="color:black" id="order_date"></h5></div>
-                        <div class="col-md-3"></div>
-                      </div>
+                    <div class="row"><div class="col"> <h3 style="color:  #34495E">Order Employee Information</h3><hr></div></div>
 
 
 
-                      <div class="row"><div class="col"> <h3 style="color:  #34495E">Delivery Employee Information</h3><hr></div></div>
-
-
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">ID </h5></div>
-                        <div class="col-md-3"><h5 style="color:black" id="employee_id_delivery" ></h5></div>
-                        <div class="col-md-3"></div>
-                      </div>
-
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Name</h5></div>
-                        <div class="col-md-3" ><h5 style="color:black" id="employee_name_delivery"></h5></div>
-                        <div class="col-md-3"></div>
-                      </div>
-
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Area</h5></div>
-                        <div class="col-md-3"><h5 style="color:black" id="area_employee_delivery"></h5></div>
-                        <div class="col-md-3"></div>
-                      </div>
-
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Delivery Date</h5></div>
-                        <div class="col-md-3"><h5 style="color:black" id="delivery_date"></h5></div>
-                        <div class="col-md-3"></div>
-                      </div>
-
-
-
-                      <div class="row"><div class="col"> <h3 style="color:  #34495E">Customer Information</h3><hr></div></div>
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Customer_id</h4></div>
-                          <div class="col-md-3"><h5 style="color:black" id="cust_id"></h4></div>
-                            <div class="col-md-3"></div>
-                          </div>
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Customer Name</h4></div>
-                          <div class="col-md-3"><h5 style="color:black" id="customer_name"></h4></div>
-                            <div class="col-md-3"></div>
-                          </div>
-                      <div class="row" style="margin-top:10px" >
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3"><h5 style="color:black">Shop Name</h4></div>
-                          <div class="col-md-3"><h5 style="color:black" id="shop_name"></h4></div>
-                            <div class="col-md-3"></div>
-                          </div>
-
-                          <div class="row" style="margin-top:10px" >
-                            <div class="col-md-3"></div>
-                            <div class="col-md-3"><h5 style="color:black">Address</h4></div>
-                              <div class="col-md-3"><h5 style="color:black" id="address"></h4></div>
-                                <div class="col-md-3"></div>
-                              </div>
-
-                              <div class="row" style="margin-top:10px" >
-                                <div class="col-md-3"></div>
-                                <div class="col-md-3"><h5 style="color:black">Mobile Number</h4></div>
-                                  <div class="col-md-3"><h5 style="color:black" id="mobile_no"> </h4></div>
-                                    <div class="col-md-3"></div>
-                                  </div>
-
-
-
-                                  <div class="row" style="margin-top:10px"><div class="col"> <h3 style="color:  #34495E">Order Information</h3><hr></div></div>
-
-
-                                  <div class="table-responsive">
-                                    <table class="table table-striped mb-none">
-                                       <thead style="background: green">
-                                          <tr style="color: white">
-                                            <th>#</th>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Sell Price</th>
-                                            <th>Sell QTY(Packet)</th>
-                                            <th>Offer QTY(PCS)</th>
-                                            <th class="text-right">Total Price (৳)</th>
-                                          </tr>
-                                        </thead>
-                                      <tbody id="order_table">
-
-
-
-                                      </tbody>
-                                    </table>
-                                  </div>
-
-
-
-                                </div>   <!-- End of info table  -->
-
-
-
-                              </div>
-                            </div>
-                          </div>
-                        </div>  
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                      </div>
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">ID </h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="employee_id" ></h5></div>
+                      <div class="col-md-3"></div>
                     </div>
+
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Name</h5></div>
+                      <div class="col-md-3" ><h5 style="color:black" id="employee_name"></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Area</h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="area_employee"></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Order Date</h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="order_date"></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+
+
+
+                    <div class="row"><div class="col"> <h3 style="color:  #34495E">Delivery Employee Information</h3><hr></div></div>
+
+
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">ID </h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="employee_id_delivery" ></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Name</h5></div>
+                      <div class="col-md-3" ><h5 style="color:black" id="employee_name_delivery"></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Area</h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="area_employee_delivery"></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Delivery Date</h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="delivery_date"></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+
+
+
+                    <div class="row"><div class="col"> <h3 style="color:  #34495E">Customer Information</h3><hr></div></div>
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Customer_id</h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="cust_id"></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Customer Name</h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="customer_name"></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Shop Name</h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="shop_name"></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Address</h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="address"></h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px" >
+                      <div class="col-md-3"></div>
+                      <div class="col-md-3"><h5 style="color:black">Mobile Number</h5></div>
+                      <div class="col-md-3"><h5 style="color:black" id="mobile_no"> </h5></div>
+                      <div class="col-md-3"></div>
+                    </div>
+
+
+
+                    <div class="row" style="margin-top:10px"><div class="col"> <h3 style="color:  #34495E">Order Information</h3><hr></div></div>
+
+
+                    <div class="table-responsive">
+                      <table class="table table-striped mb-none">
+                       <thead style="background: green">
+                        <tr style="color: white">
+                          <th>#</th>
+                          <th>ID</th>
+                          <th>Name</th>
+                          <th>Pack Size</th>
+                          <th>Sell Price<br>(Pack)</th>
+                          <th>Sell Price<br>(Pcs)</th>
+                          <th>Sell QTY<br>(Pack)</th>
+                          <th>Sell QTY<br>(Pcs)</th>
+                          <th class="text-right">Total Price (৳)</th>
+                        </tr>
+                      </thead>
+                      <tbody id="order_table">
+
+
+
+                      </tbody>
+                    </table>
                   </div>
-                </div> <!-- End of modal for  Showing data-->
 
 
 
+                </div>   <!-- End of info table  -->
 
 
-
-                <!-- /page content -->
 
               </div>
             </div>
-            <?php include_once('include/footer.php'); ?>
+          </div>
+        </div>  
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div> <!-- End of modal for  Showing data-->
 
-            <script>
-              $(document).ready(function(){
+
+
+
+
+
+<!-- /page content -->
+
+</div>
+</div>
+<?php include_once('include/footer.php'); ?>
+
+<script>
+  $(document).ready(function(){
 
 
 

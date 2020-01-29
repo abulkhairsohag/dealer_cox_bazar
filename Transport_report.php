@@ -47,30 +47,48 @@ if(!permission_check('transport_report')){
 
      <div class="form-group col-md-12" id="transport_info">
       <div class="col-md-1"></div>
-      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select Vehicle <span class="required" style="color: red">*</span></label>
+      <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" align="right">Select Ware House <span class="required" style="color: red">*</span></label>
       <div class="col-md-4 col-sm-6 col-xs-12">
         
 
-        <select name="vehicle_reg" id="vehicle_reg" class="form-control">
-          
-                <option value="">Please Select One </option>
+        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
+            
+            <?php
+            if (Session::get("ware_house_serial_login")){
+              if (Session::get("ware_house_serial_login") != '-1') {
+                
+                ?>
+                <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                <?php
+              }else{
+                ?>
+                <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                <?php
+              }
+            }else{
 
-                <?php 
-                include_once('class/Database.php');
-                $dbOb = new Database();
-                $query = "SELECT *  FROM transport";
-                $get_transport = $dbOb->select($query);
+              $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+              $get_ware_house = $dbOb->select($query);
+              if ($get_ware_house) {
+                ?>
+                <option value="">Please Select One</option>
+                <?php
+                while ($row = $get_ware_house->fetch_assoc()) {
 
-                if ($get_transport) {
-                 while ($row = $get_transport->fetch_assoc()) {
-                  
-                   ?>
-                   <option value="<?php echo $row['reg_no'] ?>"> <?php echo $row['reg_no'].', '.$row['vehicle_name']; ?> </option>
-                   <?php
-                 }
-               }
-               ?>
-        </select>
+                  ?>
+                  <option value="<?php echo $row['serial_no']; ?>"><?php echo $row['ware_house_name']; ?></option>
+                  <?php
+                }
+              }else{
+                ?>
+                <option value="">Please Add Ware House First</option>
+                <?php
+              }
+            }
+
+            ?>
+
+          </select>
       </div>
     </div>
 
@@ -88,12 +106,12 @@ if(!permission_check('transport_report')){
         
 
         <select name="report_type" id="report_type" class="form-control">
-          <option value="">Please Select One</option>
-          <option value="load">Truck Loading For Delivery</option>
-          <option value="unload">Truck Unloading for Remaining Product</option>
-          <option value="list">Transport list </option>
-          <option value="self">Self Transport</option>
-          <option value="rent">Rent Transport</option>
+          <!-- <option value="">Please Select One</option> -->
+          <option value="unload">Truck Unload Reaport</option>
+          <!-- <option value="load">Truck Loading For Delivery</option> -->
+          <!-- <option value="list">Transport list </option> -->
+          <!-- <option value="self">Self Transport</option> -->
+          <!-- <option value="rent">Rent Transport</option> -->
         </select>
       </div>
     </div>
@@ -173,8 +191,7 @@ if(!permission_check('transport_report')){
       var from_date = $("#from_date").val();
       var to_date = $("#to_date").val();
       var report_type = $("#report_type").val();
-      var vehicle_reg = $("#vehicle_reg").val();
-      var route = $("#route").val();
+      var ware_house_serial_no = $("#ware_house_serial_no").val();
 
       $("#show_table").html("");
 
@@ -186,8 +203,7 @@ if(!permission_check('transport_report')){
         	from_date:from_date,
 	        to_date:to_date,
 	        report_type:report_type,
-	        vehicle_reg:vehicle_reg,
-	        route:route
+	        ware_house_serial_no:ware_house_serial_no
 	    },
         dataType: "json",
         success:function(data){
@@ -199,36 +215,17 @@ if(!permission_check('transport_report')){
 
     });
 
-// what will happen while changing the report type is defined here 
-    $(document).on('change','#report_type',function(){
-    	var report_type = $(this).val();
-
-    	if (report_type == "list") {
-    		$("#Route").show('1500');
-    		$("#transport_info").hide('1500');
-    		$("#date_to").show('1500');
-    		$("#date_from").show('1500');
-    	}else if(report_type == "self"){
-    		$("#Route").hide('1500');
-    		$("#transport_info").hide('1500');
-    		$("#date_to").hide('1500');
-    		$("#date_from").hide('1500');
-    		
-    	}else if(report_type == "rent"){
-    		$("#Route").hide('1500');
-    		$("#transport_info").hide('1500');
-    		$("#date_to").hide('1500');
-    		$("#date_from").hide('1500');
-    		
-    	}else{
-    		$("#Route").hide('1500');
-    		$("#transport_info").show('1500');
-    		$("#date_to").show('1500');
-    		$("#date_from").show('1500');
-
-    	}
-    });
   });
+    function printContent(el){
+    var a = document.body.innerHTML;
+    var b = document.getElementById(el).innerHTML;
+    document.body.innerHTML = b;
+    window.print();
+    document.body.innerHTML = a;
+
+    return window.location.reload(true);
+
+  }
 </script>
 
 </body>

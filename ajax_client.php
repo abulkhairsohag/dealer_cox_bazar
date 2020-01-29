@@ -107,7 +107,7 @@ if (isset($_POST['submit'])) {
 				$query = "SELECT * FROM area_zone WHERE area_name = '$area_name'";
 				$get_zone = $dbOb->select($query);
 				if ($get_zone) {
-					$zone_serial_no = $get_zone->fetch_assoc()['zone_serial_no'];
+					$zone_serial_no = validation($get_zone->fetch_assoc()['zone_serial_no']);
 				}
 
 				$zone_name = '';
@@ -117,19 +117,19 @@ if (isset($_POST['submit'])) {
 				$get_zone_info = $dbOb->select($query);
 				if ($get_zone_info) {
 					$zone = $get_zone_info->fetch_assoc();
-					$zone_name = $zone['zone_name'];
+					$zone_name = validation($zone['zone_name']);
 					$ware_house_serial_no = $zone['ware_house_serial_no'];
 					$query = "SELECT * FROM ware_house WHERE serial_no = '$ware_house_serial_no'";
 					$get_ware_house = $dbOb->select($query);
 					if ($get_ware_house) {
-						$ware_house_name = $get_ware_house->fetch_assoc()['ware_house_name'];
+						$ware_house_name = validation($get_ware_house->fetch_assoc()['ware_house_name']);
 					}
 				}
 
 				$query ="INSERT INTO order_delivery 
-				(order_no,ware_house_serial_no,ware_house_name,zone_serial_no,zone_name,area,cust_id,customer_name,shop_name,address,mobile_no,payable_amt,pay,due,delivery_date,delivery_status,cancel_status)
+				(order_no,ware_house_serial_no,ware_house_name,zone_serial_no,zone_name,area,cust_id,customer_name,shop_name,address,mobile_no,payable_amt,pay,due,delivery_date,delivery_status,cancel_status,previous_due)
 				VALUES 
-				('$order_new_id','$ware_house_serial_no','$ware_house_name','$zone_serial_no','$zone_name','$area_name','$cust_id','$client_name','$organization_name','$address','$mobile_no','$previous_dew','0','$previous_dew','$dew_date','1','0')";
+				('$order_new_id','$ware_house_serial_no','$ware_house_name','$zone_serial_no','$zone_name','$area_name','$cust_id','$client_name','$organization_name','$address','$mobile_no','$previous_dew','0','$previous_dew','$dew_date','1','0','1')";
 				$insert_dew = $dbOb->insert($query);
 			}
 			$message = "Congratulaitons! Information Is Successfully Saved.";

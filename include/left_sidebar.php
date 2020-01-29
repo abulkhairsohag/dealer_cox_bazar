@@ -416,6 +416,16 @@ if ($user_type == "employee") {
         ?>
         <li><a href="employee_report.php"><i class="fas fa-user"></i> Employee Wise Report</a></li>
           <?php } 
+          if (permission_check('customer_report')) {
+            ?>
+          <li><a href="customer_report.php"><i class="fas fa-users-cog"></i> Customers Report</a></li>
+          <?php
+        } 
+          if (permission_check('transport_report')) {
+            ?>
+          <li><a href="Transport_report.php"><i class="fas fa-users-cog"></i> Transport Report</a></li>
+          <?php
+        }
         if (permission_check('own_shop_report')) {
         ?>
         <li><a href="own_shop_report.php"><i class="fas fa-user"></i> Own Shop Report</a></li>

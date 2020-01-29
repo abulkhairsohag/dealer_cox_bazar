@@ -87,7 +87,8 @@ if (isset($_POST['submit'])) {
 	$products_name = validation($_POST['products_name']);
 	$category = validation($_POST['category']);
 	$quantity = validation($_POST['quantity']);
-	$quantity_offer = validation($_POST['quantity_offer']);
+	$quantity_pcs = validation($_POST['quantity_pcs']);
+	$pack_size = validation($_POST['pack_size']);
 
 	
 	$query = "INSERT INTO truck_load 
@@ -97,18 +98,21 @@ if (isset($_POST['submit'])) {
     $main_tbl_last_insert_id = $dbOb->custom_insert($query);
 
     if ($main_tbl_last_insert_id) {
-
-    	for ($i=0; $i <count($product_id) ; $i++) { 
-    		$id = $product_id[$i];
+		
+		for ($i=0; $i <count($product_id) ; $i++) { 
+			$id = $product_id[$i];
     		$name = $products_name[$i];
     		$cat = $category[$i];
-    		$qty = $quantity[$i];
-    		$qty_offer = $quantity_offer[$i];
-			if ($qty != '') {
+    		$qty_packet = $quantity[$i];
+    		$qty_pcs = $quantity_pcs[$i];
+			$pak_siz = $pack_size[$i];
+			
+			$total_load_qty = $qty_packet*$pak_siz + $qty_pcs*1;
+			if ($total_load_qty > 0 ) {
 				$query ="INSERT INTO truck_loaded_products 
-				  (truck_load_tbl_id, product_id, products_name, category, quantity,quantity_offer) 
+				  (truck_load_tbl_id, product_id, products_name, category, quantity) 
 				  VALUES 
-				  ('$main_tbl_last_insert_id', '$id', '$name', '$cat', '$qty','$qty_offer') ";
+				  ('$main_tbl_last_insert_id', '$id', '$name', '$cat', '$total_load_qty') ";
 	
 				$insert_lad_product = $dbOb->insert($query);
 			}
@@ -154,7 +158,27 @@ if (isset($_POST['ware_serial'])) {
 		$product_id = validation($_POST['prod_id']);
 		$ware_house_stock = get_ware_house_stock($ware_house_serial_no, $product_id);
 		$query = "SELECT * FROM products WHERE products_id_no = '$product_id'";
-		$pack_size = $dbOb->find($query)['pack_size'];
-		die(json_encode(['available_qty'=>$ware_house_stock, 'pack_size'=>$pack_size]));
+		$get_products = $dbOb->find($query);
+		$pack_size = $get_products['pack_size'];
+
+		$query = "SELECT * FROM offers WHERE products_id = '$product_id' AND status = '1' ";
+			$get_offer  = $dbOb->select($query);
+			if ($get_offer) {
+				$offer = $get_offer->fetch_assoc();
+				$offer_pack = $offer['packet_qty'];
+				$offer_product = $offer['product_qty'];
+				$offer_product_with_unit_packet = $offer_product/$offer_pack;
+				
+				$new_pack_size = $pack_size*1 + $offer_product_with_unit_packet*1 ;
+				$original_sell_price = $get_products['sell_price'];
+				$sell_price_per_pece = round($original_sell_price /$new_pack_size,2);
+				// round($product_sell_profit,3)
+				// $new_packet_sell_price = round(($new_sell_p_unit*$pack_size),2);
+				
+			}else{
+				$original_sell_price = $get_products['sell_price'];
+				$sell_price_per_pece = round($original_sell_price /$pack_size,2);
+			}
+		die(json_encode(['available_qty'=>$ware_house_stock, 'pack_size'=>$pack_size,'sell_price_per_pece'=>$sell_price_per_pece]));
 	}
  ?>

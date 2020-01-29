@@ -171,24 +171,26 @@ if (!permission_check('add_product')) {
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">New Quantity (Packet)<span class="required" style="color: red">*</span>
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="number" min="0" step="1"  required=""id="new_quantity" name="new_quantity"  class="form-control col-md-7 col-xs-12">
+                      <input type="number" min="0" step="1" id="new_quantity_pack" name="new_quantity_pack"  class="form-control col-md-7 col-xs-12">
                     </div>
                   </div>
 
-
-                  <div class="form-group" style="display:none">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Total Quantity
-                    </label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="number" min="0" id="total_quantity" name="total_quantity"  class="form-control col-md-7 col-xs-12" readonly="">
-                    </div>
-                  </div>
 
                   <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Company Price
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">New Quantity (Pcs)<span class="required" style="color: red">*</span>
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="number" min="0" id="company_price_stock" name="company_price_stock"  class="form-control col-md-7 col-xs-12" >
+                      <input type="number" min="0" step="1" id="new_quantity_pcs" name="new_quantity_pcs"  class="form-control col-md-7 col-xs-12">
+                    </div>
+                  </div>
+
+
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Company Price(Per Pack)
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="number" min="0" id="company_price_stock" name="company_price_stock"  class="form-control col-md-7 col-xs-12" required="" >
                     </div>
                   </div>
 
@@ -200,53 +202,53 @@ if (!permission_check('add_product')) {
                     </div>
                   </div>
 
-                
-  <div class="form-group row">
-    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
-    <div class="col-md-6 col-6">
-        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
-          
-          <?php
-          if (Session::get("ware_house_serial_login")){
-                if (Session::get("ware_house_serial_login") != '-1') {
-                
-                ?>
-                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
-                <?php
-                }else{
-                  ?>
-                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
-                  <?php
-                }
-              }else{
 
-          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-          $get_ware_house = $dbOb->select($query);
-          if ($get_ware_house) {
-            ?>
-                <option value="">Please Select One</option>
-            <?php
-            while ($row = $get_ware_house->fetch_assoc()) {
+                  <div class="form-group row">
+                    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+                    <div class="col-md-6 col-6">
+                      <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
 
-            ?>
-            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
-              echo "selected";
-            } ?>
-            ><?php echo $row['ware_house_name']; ?></option>
-            <?php
-          }
-        }else{
-          ?>
-            <option value="">Please Add Ware House First</option>
-          <?php
-        }
-      }
+                        <?php
+                        if (Session::get("ware_house_serial_login")){
+                          if (Session::get("ware_house_serial_login") != '-1') {
 
-        ?>
+                            ?>
+                            <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                            <?php
+                          }else{
+                            ?>
+                            <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                            <?php
+                          }
+                        }else{
 
-    </select>
-    </div>
-  </div>
+                          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+                          $get_ware_house = $dbOb->select($query);
+                          if ($get_ware_house) {
+                            ?>
+                            <option value="">Please Select One</option>
+                            <?php
+                            while ($row = $get_ware_house->fetch_assoc()) {
+
+                              ?>
+                              <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+                                echo "selected";
+                              } ?>
+                              ><?php echo $row['ware_house_name']; ?></option>
+                              <?php
+                            }
+                          }else{
+                            ?>
+                            <option value="">Please Add Ware House First</option>
+                            <?php
+                          }
+                        }
+
+                        ?>
+
+                      </select>
+                    </div>
+                  </div>
 
                   <div class="ln_solid"></div>
                   <div class="form-group">
@@ -351,14 +353,14 @@ if (!permission_check('add_product')) {
 
 
                   <div class="form-group" id="company_price_div">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Company Price <span class="required" style="color: red"> *</span></label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Company Price (Packet)<span class="required" style="color: red"> *</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="number" min="0" step="0.01"  id="company_price" name="company_price" class="form-control col-md-7 col-xs-12" >
                     </div>
                   </div>
 
                   <div class="form-group" id="company_price_div">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Sell Price <span class="required" style="color: red"> *</span></label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Sell Price (Packet)<span class="required" style="color: red"> *</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="number" min="0" step="0.01"  id="sell_price" name="sell_price" class="form-control col-md-7 col-xs-12" >
                     </div>
@@ -366,7 +368,7 @@ if (!permission_check('add_product')) {
 
 
 
-                  <div class="form-group">
+                  <div class="form-group" >
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">MRP Price </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input  type="number" min="0" step="0.01" id="mrp_price" name="mrp_price" class="form-control col-md-7 col-xs-12" >
@@ -383,7 +385,14 @@ if (!permission_check('add_product')) {
                   <div class="form-group" id="quantity_div">
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity (Packet)<span class="required" style="color: red">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input  type="number" min="0" step="1" required="" id="quantity" name="quantity" class="form-control col-md-7 col-xs-12" >
+                      <input  type="number" min="0" step="1" required="" id="quantity_pkt" name="quantity_pkt" class="form-control col-md-7 col-xs-12" >
+                    </div>
+                  </div>
+
+                  <div class="form-group" id="quantity_div">
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity (Pcs)</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input  type="number" min="0" step="1" id="quantity_pcs" name="quantity_pcs" class="form-control col-md-7 col-xs-12" >
                     </div>
                   </div>
 
@@ -407,55 +416,62 @@ if (!permission_check('add_product')) {
                     </div>
                   </div>
 
+                  <div class="form-group">
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Stock Date <span class="required" style="color: red">*</span></label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="text" id="stock_date" name="stock_date"  class="form-control col-md-7 col-xs-12 datepicker" readonly="" required>
+                    </div>
+                  </div>
 
-                 
-  <div class="form-group row">
-    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
-    <div class="col-md-6 col-6">
-        <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
-          
-          <?php
-          if (Session::get("ware_house_serial_login")){
-                if (Session::get("ware_house_serial_login") != '-1') {
-                
-                ?>
-                  <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
-                <?php
-                }else{
-                  ?>
-                    <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
-                  <?php
-                }
-              }else{
 
-          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
-          $get_ware_house = $dbOb->select($query);
-          if ($get_ware_house) {
-            ?>
-                <option value="">Please Select One</option>
-            <?php
-            while ($row = $get_ware_house->fetch_assoc()) {
 
-            ?>
-            <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
-              echo "selected";
-            } ?>
-            ><?php echo $row['ware_house_name']; ?></option>
-            <?php
-          }
-        }else{
-          ?>
-            <option value="">Please Add Ware House First</option>
-          <?php
-        }
-      }
+                  <div class="form-group row">
+                    <label class="col-md-3 col-6 control-label" for="inputDefault">Select Ware House<span class="required" style="color: red">*</span></label>
+                    <div class="col-md-6 col-6">
+                      <select name="ware_house_serial_no" id="ware_house_serial_no"  required="" class="form-control ware_house_serial_no ">
 
-        ?>
+                        <?php
+                        if (Session::get("ware_house_serial_login")){
+                          if (Session::get("ware_house_serial_login") != '-1') {
 
-    </select>
-    </div>
-  </div>
-               
+                            ?>
+                            <option value='<?php echo Session::get("ware_house_serial_login"); ?>'><?php echo Session::get("ware_house_name_login"); ?></option>
+                            <?php
+                          }else{
+                            ?>
+                            <option value=''><?php echo Session::get("ware_house_name_login"); ?></option>
+                            <?php
+                          }
+                        }else{
+
+                          $query = "SELECT * FROM ware_house ORDER BY ware_house_name";
+                          $get_ware_house = $dbOb->select($query);
+                          if ($get_ware_house) {
+                            ?>
+                            <option value="">Please Select One</option>
+                            <?php
+                            while ($row = $get_ware_house->fetch_assoc()) {
+
+                              ?>
+                              <option value="<?php echo $row['serial_no']; ?>" <?php if (Session::get("ware_house_serial_no") == $row["serial_no"]) {
+                                echo "selected";
+                              } ?>
+                              ><?php echo $row['ware_house_name']; ?></option>
+                              <?php
+                            }
+                          }else{
+                            ?>
+                            <option value="">Please Add Ware House First</option>
+                            <?php
+                          }
+                        }
+
+                        ?>
+
+                      </select>
+                    </div>
+                  </div>
+
 
 
                   <div style="display: none;">
@@ -535,7 +551,7 @@ if (!permission_check('add_product')) {
                     <hr>
 
                     
-                     <div class="row" style="margin-top:10px">
+                    <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Description : </h5></div>
                       <div class="col-md-6"><h5 id="description_show"> </h5></div>
                     </div>
@@ -549,7 +565,7 @@ if (!permission_check('add_product')) {
                   <div class="col-md-6">
 
 
-                  
+
                     <div class="row" style="margin-top:10px">
                       <div class="col-md-6"><h5>Company Price : </h5></div>
                       <div class="col-md-6"><h5 id="company_price_show"> </h5></div>
@@ -606,7 +622,7 @@ if (!permission_check('add_product')) {
                     </div>
                     <hr>
 
-                   
+
 
 
 
@@ -700,7 +716,7 @@ if (!permission_check('add_product')) {
           $("#quantity").val(data.quantity);
           $("#quantity").val(data.quantity);
           $("#sell_price").val(data.sell_price);
-       
+
           $("#edit_id").val(data.serial_no);
 
           $("#photo_div").removeClass();
@@ -945,18 +961,18 @@ if (!permission_check('add_product')) {
   });
 
 
-    $(document).on('change','#ware_house_serial_no',function(){
-     var ware_house_serial_no = $(this).val();
-     $.ajax({
-        url:'ajax_new_order.php',
-        data:{ware_house_serial_no:ware_house_serial_no},
-        type:'POST',
-        dataType:'json',
-        success:function(data){
+  $(document).on('change','#ware_house_serial_no',function(){
+   var ware_house_serial_no = $(this).val();
+   $.ajax({
+    url:'ajax_new_order.php',
+    data:{ware_house_serial_no:ware_house_serial_no},
+    type:'POST',
+    dataType:'json',
+    success:function(data){
           // $("#cust_id").html(data);
         }
       });
-  });
+ });
 
   }); // end of document ready function
 

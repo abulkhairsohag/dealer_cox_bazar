@@ -29,7 +29,6 @@ if (isset($_POST['reg_no'])) {
 		$truck_load_tbl_id = $get_load_info['serial_no'];
 
 		$product_loaded_qty = [];
-		$product_loaded_offer_qty = [];
 	
 
 		if ($get_load_info) {
@@ -41,14 +40,12 @@ if (isset($_POST['reg_no'])) {
 		    	while ($res = $products_loaded ->fetch_assoc()) {
 		    		$product_id = $res['product_id'];
 					$product_loaded_qty[$product_id] = $res['quantity'];
-		    		$product_loaded_offer_qty[$product_id] = $res['quantity_offer'];
 		    	}
 			}
 
 		}
 
 		$product_delivered = [];
-		$product_delivered_offer = [];
 		foreach ($product_loaded_qty as $key => $value) {
 			$product_delivered_qty = 0 ;
 			$product_delivered_offer_qty = 0 ; 
@@ -59,16 +56,9 @@ if (isset($_POST['reg_no'])) {
 
 				while ($row = $get_delivery_info->fetch_assoc()) {
 					$product_delivered_qty += $row['qty'] ;
-					if ($row['offer_qty'] != 'N/A') {
-			
-						$product_delivered_offer_qty += $row['offer_qty'] ; 
-					}else{
-						$product_delivered_offer_qty = $row['offer_qty'];
-					}
 				}
 			}
 			$product_delivered[$key] = $product_delivered_qty; 
-			$product_delivered_offer[$key] = $product_delivered_offer_qty; 
 			
 		}
 
@@ -83,23 +73,35 @@ if (isset($_POST['reg_no'])) {
 	                <tr>
 	                  <th style="text-align: center;">Product ID</th>
 	                  <th style="text-align: center;">Product Name</th>
-	                  <th style="text-align: center;">Loaded(Packet)</th>
-	                  <th style="text-align: center;">Sold(Packet)</th>
-	                  <th style="text-align: center;">Back(Packet)</th>
+	                  <th style="text-align: center;">Loaded</th>
+	                  <th style="text-align: center;">Sold</th>
+	                  <th style="text-align: center;">Back</th>
 	                </tr>
 	              </thead>
 	              <tbody id="">';
 
-		foreach ($product_loaded_qty as $product_id => $loaded_packet) {
+		foreach ($product_loaded_qty as $product_id => $loaded_qty) {
+
 			$query = "SELECT * FROM products WHERE products_id_no = '$product_id'";
 			$get_product = $dbOb->find($query);
 			$name = $get_product['products_name'];
 			$category = $get_product['category'];
-			$loaded_offer_qty = $product_loaded_offer_qty[$product_id];
-			$sold_packet = $product_delivered[$product_id];
-			$sold_offer_qty = $product_delivered_offer[$product_id];
-			$back_packet = $loaded_packet - $sold_packet ;
-			$back_offer_qty = $loaded_offer_qty - $sold_offer_qty ;
+
+			$pack_size = $get_product['pack_size'];
+
+			// now calculating loaded qty
+			$load_pack =  floor($loaded_qty/$pack_size);
+			$load_pcs =  $loaded_qty%$pack_size;
+			// now calculating sold qty
+			$total_sold_pcs = $product_delivered[$product_id];
+			$sold_pack =  floor($total_sold_pcs/$pack_size);
+			$sold_pcs =  $total_sold_pcs%$pack_size;
+
+			// now calculating back
+
+			$total_back_pcs =  $loaded_qty - $total_sold_pcs; // here loaded qty is total loaded qty in pcs
+			$back_pack =   floor($total_back_pcs/$pack_size);
+			$back_pcs = $total_back_pcs%$pack_size;
 
 			$product_info .='<tr> <td> <input type="text" class="form-control main_product_id product_id" name="product_id[]" readonly="" value="';
 			$product_info .=$product_id;
@@ -108,15 +110,11 @@ if (isset($_POST['reg_no'])) {
 			$product_info .= '"></td>';
 
 			$product_info .=  '<td><input type="text" class="form-control main_loaded_packet loaded_packet" name="loaded_packet[]" readonly="" value="';
-			$product_info .=$loaded_packet;
+			$product_info .=$load_pack.' Pack & '.$load_pcs.' pcs';
 			$product_info .= '"></td>';
 
-			// $product_info .=  '<td><input type="text" class="form-control main_loaded_offer_qty loaded_offer_qty" name="loaded_offer_qty[]" readonly="" value="';
-			// $product_info .=$loaded_offer_qty;
-			// $product_info .= '"></td>';
-
 			$product_info .=  '<td><input type="text" class="form-control main_sold_packet sold_packet" name="sold_packet[]" readonly="" value="';
-			$product_info .=$sold_packet;
+			$product_info .=$sold_pack.' Pack & '.$sold_pcs.' pcs';
 			$product_info .= '"></td>';
 
 			// $product_info .=  '<td><input type="text" class="form-control main_sold_offer_qty sold_offer_qty" name="sold_offer_qty[]" readonly="" value="';
@@ -124,12 +122,22 @@ if (isset($_POST['reg_no'])) {
 			// $product_info .= '"></td>';
 
 			$product_info .=  '<td><input type="text" class="form-control main_back_packet back_packet" name="back_packet[]" readonly="" value="';
-			$product_info .=$back_packet;
+			$product_info .=$back_pack.' Pack & '.$back_pcs.' pcs';
 			$product_info .= '"></td>';
 
-			// $product_info .= ' <td><input type="text"   class="form-control main_back_offer_qty back_offer_qty" id="back_offer_qty" name="back_offer_qty[]" readonly=""  value="';
-			// $product_info .=$back_offer_qty;
-			// $product_info .= '" > </td> </tr>';
+			$product_info .=  '<td style="display:none"><input type="text" class="form-control main_loaded_pcs loaded_pcs" name="loaded_pcs[]" readonly="" value="';
+			$product_info .=$loaded_qty;
+			$product_info .= '"></td>';
+
+			$product_info .=  '<td style="display:none"><input type="text" class="form-control main_sold_pcs sold_pcs" name="sold_pcs[]" readonly="" value="';
+			$product_info .=$total_sold_pcs;
+			$product_info .= '"></td>';
+
+			$product_info .=  '<td style="display:none"><input type="text" class="form-control main_back_pcs back_pcs" name="back_pcs[]" readonly="" value="';
+			$product_info .=$total_back_pcs;
+			$product_info .= '"></td>';
+
+			
 			$product_info .= '</tr>';
 		}
 		$product_info .= ' </tbody>  </table>';
@@ -151,12 +159,9 @@ if (isset($_POST['submit'])) {
 
 	$product_id = validation($_POST['product_id']);
 	$products_name = validation($_POST['products_name']);
-	$loaded_packet = validation($_POST['loaded_packet']);
-	$loaded_offer_qty = validation($_POST['loaded_offer_qty']);
-	$sold_packet = validation($_POST['sold_packet']);
-	$sold_offer_qty = validation($_POST['sold_offer_qty']);
-	$back_packet = validation($_POST['back_packet']);
-	$back_offer_qty = validation($_POST['back_offer_qty']);
+	$loaded_pcs = validation($_POST['loaded_pcs']);
+	$sold_pcs = validation($_POST['sold_pcs']);
+	$back_pcs = validation($_POST['back_pcs']);
 
 
 
@@ -173,9 +178,9 @@ if (isset($_POST['submit'])) {
     	for ($i=0; $i <count($product_id) ; $i++) { 
     
     		$query ="INSERT INTO truck_unloaded_products 
-			  (truck_load_tbl_id,product_id,products_name,loaded_packet,loaded_offer_qty,sold_packet,sold_offer_qty,back_packet,back_offer_qty) 
+			  (truck_load_tbl_id,product_id,products_name,loaded_pcs,sold_pcs,back_pcs) 
 			  VALUES 
-			  ('$load_id', '$product_id[$i]','$products_name[$i]','$loaded_packet[$i]','$loaded_offer_qty[$i]','$sold_packet[$i]','$sold_offer_qty[$i]','$back_packet[$i]','$back_offer_qty[$i]') ";
+			  ('$load_id', '$product_id[$i]','$products_name[$i]','$loaded_pcs[$i]','$sold_pcs[$i]','$back_pcs[$i]') ";
 
 			$insert_unload = $dbOb->insert($query);
 

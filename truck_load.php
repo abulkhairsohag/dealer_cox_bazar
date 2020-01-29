@@ -245,8 +245,7 @@ if(!permission_check('truck_load_for_delivery')){
 	                  <th style="text-align: center;">Category</th>
                     <th style="text-align: center;">Available (Pack)</th>
                     <th style="text-align: center;">Available (PCS)</th>
-                    <th style="text-align: center;">All In PCS</th>
-                    <th style="text-align: center;">pack Size</th>
+                 
 	                  <th style="text-align: center;">Quantity (Packet)</th>
                     <th style="text-align: center;">Quantity (Pcs)</th>
 	                 
@@ -275,11 +274,11 @@ if(!permission_check('truck_load_for_delivery')){
                           <td>
                             <input type="text" class="form-control main_available_pcs available_pcs" name="available_pcs[]" readonly="" value="">
                           </td>
-                          <td>
-                            <input type="text" class="form-control main_all_in_pcs all_in_pcs" name="all_in_pcs[]" readonly="" value="">
+                          <td style="display:none">
+                            <input type="hidden" class="form-control main_all_in_pcs all_in_pcs" name="all_in_pcs[]" readonly="" value="">
                           </td>
-                          <td>
-                            <input type="text" class="form-control main_pack_size pack_size" name="pack_size[]" readonly="" value="">
+                          <td style="display:none">
+                            <input type="hidden" class="form-control main_pack_size pack_size" name="pack_size[]" readonly="" value="">
                           </td>
                           <td>
                             <input type="number" min="0" step="1" class="form-control main_quantity quantity" name="quantity[]"  value="">
@@ -465,47 +464,120 @@ if(!permission_check('truck_load_for_delivery')){
  
 
   $(document).on('change keyup blur','.quantity',function(){
-    var quantity = $(this).val();
+    var quantity_pack = $(this).val();
+    if (quantity_pack == '' || isNaN(quantity_pack)) {
+      quantity_pack = 0;
+    }
     var tr = $(this).parent().parent();
     var product_id = tr.find(".product_id").val();
     var ware_house_serial_no  = $("#ware_house_serial_no").val();
-    var available_qty  = tr.find(".available").val();
+    var all_in_pcs  = tr.find(".all_in_pcs").val();
+    if (all_in_pcs == '' || isNaN(all_in_pcs)) {
+      all_in_pcs = 0;
+    }
+    var pack_size  = tr.find(".pack_size").val();
+    if (pack_size == '' || isNaN(pack_size)) {
+      pack_size = 0;
+    }
+    var quantity_pcs  = tr.find(".quantity_pcs").val();
+    if (quantity_pcs == '' || isNaN(quantity_pcs)) {
+      quantity_pcs = 0;
+    }
+    
+    var available_packet  = tr.find(".available").val();
+    var available_pcs  = tr.find(".available_pcs").val();
+
 
      if (ware_house_serial_no == "") {
         
        $(".available").val("");
+       $(".available_pcs").val("");
+       $(".all_in_pcs").val("");
+       $(".pack_size").val("");
        $(".quantity").val("");
+       $(".quantity_pcs").val("");
        $(".quantity_offer").val("");
 
      }else{
-  
-        if ( parseInt(available_qty) < parseInt(quantity)) {
+
+       var provided_pcs = quantity_pack*pack_size + quantity_pcs*1;
+      console.log(provided_pcs);
+      
+        if ( parseInt(all_in_pcs) < parseInt(provided_pcs)) {
              swal({
                 title: 'warning',
-                text: "The Quantity You Have Provided Is Out Of Stock..",
+                text: 'The Quantity Is Out Of Stock. ',
                 icon: 'warning',
                 button: "Done",
               });
              tr.find(".quantity").val("");
              tr.find(".quantity_offer").val("");
-            //  tr.find(".quantity_pcs").val("");
-        }else{
-           $.ajax({
-            url:'ajax_truck_load.php',
-            data:{product_id_check:product_id},
-            type:'POST',
-            dataType:'json',
-            success:function(data){
-             if (data == 'N/A') {
-               tr.find(".quantity_offer").val(data);
-             }else{
-               var offer_integer = parseInt(quantity / data.packet_qty);
-               tr.find(".quantity_offer").val(offer_integer * data.product_qty);
-             }
-             
-            }
-          });
+             tr.find(".quantity_pcs").val("");
         }
+   }
+  });
+ 
+  // validating for product qty in pcs
+  $(document).on('change keyup blur','.quantity_pcs',function(){
+    var quantity_pcs = $(this).val();
+    if (quantity_pcs == '' || isNaN(quantity_pcs)) {
+      quantity_pcs = 0;
+    }
+    var tr = $(this).parent().parent();
+    var product_id = tr.find(".product_id").val();
+    var ware_house_serial_no  = $("#ware_house_serial_no").val();
+    var all_in_pcs  = tr.find(".all_in_pcs").val();
+    if (all_in_pcs == '' || isNaN(all_in_pcs)) {
+      all_in_pcs = 0;
+    }
+    var pack_size  = tr.find(".pack_size").val();
+    if (pack_size == '' || isNaN(pack_size)) {
+      pack_size = 0;
+    }
+    var quantity_pack  = tr.find(".quantity").val();
+    if (quantity_pack == '' || isNaN(quantity_pack)) {
+      quantity_pack = 0;
+    }
+    
+    var available_packet  = tr.find(".available").val();
+    if (available_packet == '' || isNaN(available_packet)) {
+      available_packet = 0;
+    }
+    var available_pcs  = tr.find(".available_pcs").val();
+     if (available_pcs == '' || isNaN(available_pcs)) {
+      available_pcs = 0;
+    }
+
+
+     if (ware_house_serial_no == "") {
+        
+       $(".available").val("");
+       $(".available_pcs").val("");
+       $(".all_in_pcs").val("");
+       $(".pack_size").val("");
+       $(".quantity").val("");
+       $(".quantity_pcs").val("");
+       $(".quantity_offer").val("");
+
+     }else{
+
+       var provided_pcs = quantity_pack*pack_size + quantity_pcs*1;
+
+       console.log(provided_pcs);
+       
+  
+        if ( parseInt(all_in_pcs) < parseInt(provided_pcs)) {
+             swal({
+                title: 'warning',
+                text: 'The Quantity Is Out Of Stock. Available QTY = ',
+                icon: 'warning',
+                button: "Done",
+              });
+             tr.find(".quantity").val("");
+             tr.find(".quantity_offer").val("");
+             tr.find(".quantity_pcs").val("");
+        }
+       
    }
   });
 
@@ -536,7 +608,14 @@ if(!permission_check('truck_load_for_delivery')){
           type:'POST',
           dataType:'json',
           success:function(data){
-           tr.find(".available").val(data.available_qty);
+           var total_pcs = data.available_qty;
+           var pack_size = data.pack_size;
+           var available_packet = Math.floor(total_pcs/pack_size);
+           var available_pcs = total_pcs%pack_size ;
+
+           tr.find(".available").val(available_packet);
+           tr.find(".available_pcs").val(available_pcs);
+           tr.find(".all_in_pcs").val(data.available_qty);
            tr.find(".pack_size").val(data.pack_size);
           }
         });
@@ -570,8 +649,15 @@ if(!permission_check('truck_load_for_delivery')){
           type:'POST',
           dataType:'json',
           success:function(data){
-           tr.find(".available").val(data.available_qty);
-           tr.find(".pack_size").val(data.pack_size);
+              var total_pcs = data.available_qty;
+              var pack_size = data.pack_size;
+              var available_packet = Math.floor(total_pcs/pack_size);
+              var available_pcs = total_pcs%pack_size ;
+
+              tr.find(".available").val(available_packet);
+              tr.find(".available_pcs").val(available_pcs);
+              tr.find(".all_in_pcs").val(data.available_qty);
+              tr.find(".pack_size").val(data.pack_size);
           }
         });
    } // end of else

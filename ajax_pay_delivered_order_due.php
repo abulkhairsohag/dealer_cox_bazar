@@ -81,11 +81,15 @@ if (isset($_POST["sohag"])) {
                 $i=0;
                 while ($row = $get_order_info->fetch_assoc()) {
                   $i++;
-
+ if ($row['previous_due'] == '1') {
+                     $prev_due = '<br><span><a  class="badge bg-red badge-sm">Previous due</a></span>';
+                   }else{
+                    $prev_due = "";
+                   }
                   ?>
                   <tr>
                     <td><?php echo $i; ?></td>
-                    <td><?php echo $row['order_no']; ?></td>
+                    <td><?php echo $row['order_no'].$prev_due; ?></td>
                     <td><?php echo $row['shop_name']; ?></td>
                     <td><?php echo $row['zone_name']; ?></td>
                     <td><?php echo $row['area']; ?></td>

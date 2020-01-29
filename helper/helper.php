@@ -55,17 +55,20 @@
 		 if (is_array($data)) {
 			 return $data;
 		 }
-		$data = trim($data);
-		$data = stripcslashes($data);
-		$data = htmlspecialchars($data);
-		$data = mysqli_real_escape_string($dbOb->link, $data);
-		return $data;
+			$data = trim($data);
+			$data = stripcslashes($data);
+			$data = htmlspecialchars($data);
+			$data = mysqli_real_escape_string($dbOb->link, $data);
+			return $data;
 	}
 
 // the following function will be used to get stock information of a product .
 	function get_ware_house_stock($ware_house_serial_no, $product_id){
 
 				global $dbOb;
+				// getting pack size
+				$query = "SELECT * FROM products WHERE products_id_no = '$product_id'";
+				$pack_size = $dbOb->find($query)['pack_size'];
 
 				// getting total stock quantity of the product
 				$query = "SELECT * FROM product_stock WHERE quantity > 0 AND ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id'";
@@ -117,7 +120,13 @@
 						}
 						$i++;
 					}
-				} // end of unloaded truck products
+				} 
+				
+				// here Truck loaded product qty is in piece. so converting it into packet
+				$truck_loaded_pack = floor($truck_loaded_product_qty/$pack_size);
+				$truck_loaded_pcs = $truck_loaded_product_qty%$pack_size;
+				
+				// end of unloaded truck products
 				
 				$truck_load_serial = Null;
 				$product_sell_qty = 0;
@@ -149,7 +158,9 @@
 						} 
 
 				}
-				
+				// here product sell qty is in piece so lets convert it into packet4
+				$product_sell_pack = floor($product_sell_qty/$pack_size);
+				$product_sell_pcs = $product_sell_qty%$pack_size;
 
 
 				// now getting own shop products that are taken from the ware house
@@ -158,13 +169,14 @@
 				$store_product_qty = 0;
 				if ($get_store_product) {
 					while ($row = $get_store_product->fetch_assoc()) {
-						$store_product_qty += $row['quantity_packet'];
+						$store_product_qty += $row['quantity_pcs'];
 					}
 				} // end of own shop products quantity 
 
 
-				// now its time to calculate in stock quantity 
-				$in_stock_qty = ($stock_qty*1 + $market_return_qty*1) - ($company_return_qty*1 + $product_sell_qty*1 + $truck_loaded_product_qty*1 + $store_product_qty*1);
+				// now its time to calculate in stock quantity . it is calculated in available product in piece
+				$in_stock_qty = ($stock_qty*1 + $market_return_qty*$pack_size) - ($company_return_qty*$pack_size + $product_sell_pack*$pack_size + $truck_loaded_pack*$pack_size + $store_product_qty*1 + $truck_loaded_pcs*1 + $product_sell_pcs*1);
+
 
 				return $in_stock_qty;
 	}

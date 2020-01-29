@@ -36,7 +36,7 @@ if(!permission_check('stock_list')){
               <th style="width: 150px">Name</th>
               <th style="width: 150px">Ware House</th>
               <th style="width: 100px">Stock Qty</th>
-              <th style="width: 100px">Company Price</th>
+              <th style="width: 100px">Company Price(Pkt)</th>
               <th style="width: 100px">Total Amt(Taka)</th>
               <th >Stock Date</th>
               <th >Action</th>
@@ -48,52 +48,45 @@ if(!permission_check('stock_list')){
             <?php 
             include_once('class/Database.php');
             $dbOb = new Database();
-            $query = "SELECT * FROM products";
-            $products = $dbOb->select($query);
-            $stock_serial_no = [];
-            if ($products) {
-                $j = 0;
-                while ($prod = $products->fetch_assoc()) {
-                    $products_id = $prod['products_id_no'];
-                    $query = "SELECT * FROM product_stock WHERE quantity > 0 AND products_id_no = '$products_id' ORDER BY serial_no DESC";
-                    $get_stock_info = $dbOb->select($query);
-                    if ($get_stock_info) {
-                        $stock_serial_no[$j] = $get_stock_info->fetch_assoc()['serial_no'];
-                        $j++;
-                    }
-                }
+       $query = "SELECT * FROM products";
+    $products = $dbOb->select($query);
+    $stock_serial_no = [];
+    if ($products) {
+        $j = 0;
+        while ($prod = $products->fetch_assoc()) {
+            $products_id = $prod['products_id_no'];
+            $query = "SELECT * FROM product_stock WHERE quantity > 0 AND products_id_no = '$products_id' ORDER BY serial_no DESC";
+            $get_stock_info = $dbOb->select($query);
+            if ($get_stock_info) {
+                $stock_serial_no[$j] = $get_stock_info->fetch_assoc()['serial_no'];
+                $j++;
             }
-
-            if (Session::get("ware_house_serial_login")){
-              if (Session::get("ware_house_serial_login") != '-1') {
-                $ware_house_serial = Session::get("ware_house_serial_login");
-                $query = "SELECT * FROM product_stock WHERE quantity > 0 AND ware_house_serial_no = '$ware_house_serial' ORDER BY serial_no DESC";
-              }
-            }else{
-              $query = "SELECT * FROM product_stock WHERE quantity > 0 ORDER BY serial_no DESC";
-            }
-            $get_products = $dbOb->select($query);
-            if ($get_products) {
-              $i=0;
-              while ($row = $get_products->fetch_assoc()) {
-                  $products_id = $row['products_id_no'];
-                  $query = "SELECT * FROM products WHERE products_id_no = '$products_id'";
-                  $get_info = $dbOb->select($query);
-                  $product_name = '';
-                  if ($get_info) {
-                      $product_name = $get_info->fetch_assoc()['products_name'];
-                  }
-                $i++;
-                ?>
-                <tr>
-                  <td><?php echo $i; ?></td>
-                  <td><?php echo $products_id; ?></td>
-                  <td><?php echo $product_name; ?></td>
-                  <td><?php echo $row['ware_house_name']; ?></td>
-                  <td><?php echo $row['quantity']; ?></td>
-                  <td><?php echo $row['company_price']; ?></td>
-                  <td><?php echo $row['company_price'] * $row['quantity']; ?></td>
-                  <td><?php echo $row['stock_date']; ?></td>
+        }
+    }
+    $query = "SELECT * FROM product_stock WHERE quantity > 0 ORDER BY serial_no DESC";
+    $get_products = $dbOb->select($query);
+    if ($get_products) {
+      $i=0;
+      while ($row = $get_products->fetch_assoc()) {
+          $products_id = $row['products_id_no'];
+          $query = "SELECT * FROM products WHERE products_id_no = '$products_id'";
+          $get_info = $dbOb->select($query);
+          $product_name = '';
+          if ($get_info) {
+              $prod_info = $get_info->fetch_assoc();
+              $product_name = $prod_info['products_name'];
+          }
+        $i++;
+        ?>
+        <tr>
+          <td><?php echo $i; ?></td>
+          <td><?php echo $products_id; ?></td>
+          <td><?php echo $product_name; ?></td>
+          <td><?php echo $row['ware_house_name']; ?></td>
+          <td><?php echo floor($row['quantity']/$prod_info['pack_size']).' pkt<br>'.$row['quantity']%$prod_info['pack_size'].' Pcs'; ?></td>
+          <td><?php echo $row['company_price']*$prod_info['pack_size']; ?></td>
+          <td><?php echo $row['company_price'] * $row['quantity']; ?></td>
+          <td><?php echo $row['stock_date']; ?></td>
 
                   <td align="center">
                    <?php 
@@ -142,18 +135,20 @@ if(!permission_check('stock_list')){
                   
 
                   <div class="form-group">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity<span class="required" style="color: red">*</span></label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity Packet<span class="required" style="color: red">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="number" id="quantity" name="quantity" class="form-control col-md-7 col-xs-12"  required>
+                      <input type="number" id="quantity_pkt" name="quantity_pkt" class="form-control col-md-7 col-xs-12"  required>
                     </div>
                   </div>
-                  
-                  <div class="form-group" style="display:none"> 
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Existing Quantity<span class="required" style="color: red">*</span> </label>
+
+                  <div class="form-group">
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Quantity Pcs<span class="required" style="color: red">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="number" id="existing_quantity" name="existing_quantity" class="form-control col-md-7 col-xs-12"  required>
+                      <input type="number" id="quantity_pcs" name="quantity_pcs" class="form-control col-md-7 col-xs-12"  required>
                     </div>
                   </div>
+              
+                 
                   
                   <div class="form-group" style="display:none">
                     <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Product ID<span class="required" style="color: red">*</span></label>
@@ -163,7 +158,7 @@ if(!permission_check('stock_list')){
                   </div>
 
                   <div class="form-group">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Company Price<span class="required" style="color: red">*</span> </label>
+                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Company Price(Pkt)<span class="required" style="color: red">*</span> </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input type="number" id="company_price" name="company_price" class="form-control col-md-7 col-xs-12"  required>
                     </div>
@@ -271,12 +266,13 @@ if(!permission_check('stock_list')){
         type:"POST",
         dataType:'json',
         success:function(data){
-          $("#quantity").val(data.quantity);
-          $("#existing_quantity").val(data.quantity);
-          $("#products_id_no").val(data.products_id_no);
-          $("#company_price").val(data.company_price);
-          $("#ware_house_serial_no").val(data.ware_house_serial_no);
-          $("#stock_date").val(data.stock_date);
+          $("#quantity_pkt").val(data.stocked_pack);
+          $("#quantity_pcs").val(data.stocked_pcs);
+          $("#pack_size").val(data.pack_size);
+          $("#products_id_no").val(data.get_stock.products_id_no);
+          $("#company_price").val(data.company_price_per_pack);
+          $("#ware_house_serial_no").val(data.get_stock.ware_house_serial_no);
+          $("#stock_date").val(data.get_stock.stock_date);
           $("#serial_no_edit").val(serial_no_edit);
         }
       });

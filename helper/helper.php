@@ -201,71 +201,93 @@
 
 			global $dbOb;
 
-		// calculating total stocks 
-		$stock_qty = 0;
-		$query = "SELECT * FROM offered_products_stock WHERE products_id = '$product_id' AND ware_house_serial_no = '$ware_house_serial_no'";
-		$get_total_stock = $dbOb->select($query);
-		if ($get_total_stock) {
-			while ($row = $get_total_stock->fetch_assoc()) {
-				$stock_qty += $row['quantity'];
+			// calculating total stocks 
+			$stock_qty = 0;
+			$query = "SELECT * FROM offered_products_stock WHERE products_id = '$product_id' AND ware_house_serial_no = '$ware_house_serial_no'";
+			$get_total_stock = $dbOb->select($query);
+			if ($get_total_stock) {
+				while ($row = $get_total_stock->fetch_assoc()) {
+					$stock_qty += $row['quantity'];
+				}
 			}
-		}
 
 
-		// Now getting Unloaded trucks Products 
-		$truck_load_serial_no = [];
-		$query = "SELECT * FROM truck_load WHERE unload_status = 0 AND ware_house_serial_no = '$ware_house_serial_no'";
-		$get_unloaded_truck = $dbOb->select($query);
-		$truck_loaded_product_qty = 0;
-		if ($get_unloaded_truck) {
-			$i = 0 ;
-			while ($row = $get_unloaded_truck->fetch_assoc()) {
-				$truck_load_serial_no[] = $row['serial_no'];
-				$truck_load_tbl_id = $row['serial_no'];
-				$query = "SELECT * FROM truck_loaded_products WHERE truck_load_tbl_id = '$truck_load_tbl_id' AND product_id = '$product_id'";
-				$get_unloaded_product = $dbOb->select($query);
-				if ($get_unloaded_product) {
-					$unload = $get_unloaded_product->fetch_assoc();
-					if ($unload['quantity_offer'] != 'N/A') {
-						$truck_loaded_product_qty += $unload['quantity_offer'];
+			// Now getting Unloaded trucks Products 
+			$truck_load_serial_no = [];
+			$query = "SELECT * FROM truck_load WHERE unload_status = 0 AND ware_house_serial_no = '$ware_house_serial_no'";
+			$get_unloaded_truck = $dbOb->select($query);
+			$truck_loaded_product_qty = 0;
+			if ($get_unloaded_truck) {
+				$i = 0 ;
+				while ($row = $get_unloaded_truck->fetch_assoc()) {
+					$truck_load_serial_no[] = $row['serial_no'];
+					$truck_load_tbl_id = $row['serial_no'];
+					$query = "SELECT * FROM truck_loaded_products WHERE truck_load_tbl_id = '$truck_load_tbl_id' AND product_id = '$product_id'";
+					$get_unloaded_product = $dbOb->select($query);
+					if ($get_unloaded_product) {
+						$unload = $get_unloaded_product->fetch_assoc();
+						if ($unload['quantity_offer'] != 'N/A') {
+							$truck_loaded_product_qty += $unload['quantity_offer'];
+						}
+					}
+				}
+			} // end of unloaded truck products
+
+			// getting those delivered products that are unloaded from truck
+			$truck_load_serial = Null;
+			$product_sell_qty = 0;
+			if ($truck_load_serial_no) {
+				$truck_load_serial = implode(',',$truck_load_serial_no);
+			}
+			if ($truck_load_serial) {
+				// now getting Product sell
+				$query = "SELECT * FROM order_delivery_expense WHERE ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id' 	AND delivery_status = 1 AND truck_load_serial_no NOT IN ($truck_load_serial) " ;
+				$get_product_sell = $dbOb->select($query);
+			
+				if ($get_product_sell) {
+					while ($product_sell = $get_product_sell->fetch_assoc()) {
+						if ($product_sell['offer_qty'] != 'N/A') {
+							$product_sell_qty += $product_sell['offer_qty'];
+						}
+					}
+				} // end of Product sell
+			}
+
+			// now calculating own shop stock history 
+			$own_shop_stock = 0;
+			$query = "SELECT * FROM `own_shop_stock_history` WHERE products_id = '$product_id' AND ware_house_serial_no = '$ware_house_serial_no'";
+			$get_own_stock = $dbOb->select($query);
+			if ($get_own_stock) {
+				while ($row = $get_own_stock->fetch_assoc()) {
+					if ($row['quantity_offer'] != 'N/A') {
+						$own_shop_stock += $row['quantity_offer'];
 					}
 				}
 			}
-		} // end of unloaded truck products
 
-		// getting those delivered products that are unloaded from truck
-		$truck_load_serial = Null;
-		$product_sell_qty = 0;
-		if ($truck_load_serial_no) {
-			$truck_load_serial = implode(',',$truck_load_serial_no);
-		}
-		if ($truck_load_serial) {
-			// now getting Product sell
-			$query = "SELECT * FROM order_delivery_expense WHERE ware_house_serial_no = '$ware_house_serial_no' AND products_id_no = '$product_id' 	AND delivery_status = 1 AND truck_load_serial_no NOT IN ($truck_load_serial) " ;
-			$get_product_sell = $dbOb->select($query);
+			$available = $stock_qty - ($truck_loaded_product_qty*1 + $product_sell_qty*1 + $own_shop_stock*1);
+			return $available ;
+	}
+
+	function salary_calculation($emp_id,$month){
+		global $dbOb;
 		
-			if ($get_product_sell) {
-				while ($product_sell = $get_product_sell->fetch_assoc()) {
-					if ($product_sell['offer_qty'] != 'N/A') {
-						$product_sell_qty += $product_sell['offer_qty'];
-					}
-				}
-			} // end of Product sell
-		}
+	  	$query = "SELECT *  FROM employee_main_info WHERE id_no = '$emp_id'";
+	  	$get_emp  =  $dbOb->find($query);
+	  	$total_salary = $get_emp['total_salary'];
 
-		// now calculating own shop stock history 
-		$own_shop_stock = 0;
-		$query = "SELECT * FROM `own_shop_stock_history` WHERE products_id = '$product_id' AND ware_house_serial_no = '$ware_house_serial_no'";
-		$get_own_stock = $dbOb->select($query);
-		if ($get_own_stock) {
-			while ($row = $get_own_stock->fetch_assoc()) {
-				if ($row['quantity_offer'] != 'N/A') {
-					$own_shop_stock += $row['quantity_offer'];
-				}
-			}
-		}
+	  	$query = "SELECT * FROM employee_payments WHERE id_no = '$emp_id' AND month = '$month'";
+	  	$get_paid_salary = $dbOb->select($query);
+	  	$paid = 0;
+	  	if ($get_paid_salary) {
+	  		while ($paid_salary = $get_paid_salary->fetch_assoc()) {
+	  			$paid += $paid_salary['salary_paid'];
+	  		}
+	  	}
 
-		$available = $stock_qty - ($truck_loaded_product_qty*1 + $product_sell_qty*1 + $own_shop_stock*1);
-		return $available ;
+	  	$present_slary = $total_salary - $paid ;
+
+	  	return $present_slary;
+
 	}
  ?>

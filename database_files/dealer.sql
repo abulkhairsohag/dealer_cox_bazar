@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 29, 2020 at 05:48 AM
--- Server version: 5.7.28-0ubuntu0.18.04.4
+-- Generation Time: Feb 04, 2020 at 12:03 PM
+-- Server version: 5.7.29-0ubuntu0.18.04.1
 -- PHP Version: 7.2.24-0ubuntu0.18.04.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -620,20 +620,32 @@ INSERT INTO `employee_main_info` (`serial_no`, `id_no`, `area_name`, `designatio
 
 CREATE TABLE `employee_payments` (
   `serial_no` int(11) NOT NULL,
-  `id_no` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `designation` varchar(255) NOT NULL,
-  `total_salary` varchar(255) NOT NULL,
-  `month` varchar(255) NOT NULL,
-  `attendance` varchar(255) NOT NULL,
-  `pay_type` varchar(255) NOT NULL,
-  `advance_amount` varchar(255) NOT NULL,
-  `salary_paid` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `date` varchar(255) NOT NULL,
+  `id_no` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `designation` varchar(255) DEFAULT NULL,
+  `total_salary` varchar(255) DEFAULT NULL,
+  `month` varchar(255) DEFAULT NULL,
+  `attendance` varchar(255) DEFAULT NULL,
+  `pay_type` varchar(255) DEFAULT NULL,
+  `advance_amount` varchar(255) DEFAULT NULL,
+  `salary_paid` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `date` varchar(255) DEFAULT NULL,
   `zone_serial_no` varchar(255) DEFAULT NULL,
-  `zone_name` varchar(255) DEFAULT NULL
+  `zone_name` varchar(255) DEFAULT NULL,
+  `previous_pay_serial_no` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `employee_payments`
+--
+
+INSERT INTO `employee_payments` (`serial_no`, `id_no`, `name`, `designation`, `total_salary`, `month`, `attendance`, `pay_type`, `advance_amount`, `salary_paid`, `description`, `date`, `zone_serial_no`, `zone_name`, `previous_pay_serial_no`) VALUES
+(9, 'EMP-000001', 'Mr. Bikas Kanti Day', 'Salesman', '10000', '01-2020', '0', 'Full Salary', '', '10000', '', '30-01-2020', '1', 'Cox\'s Bazar', NULL),
+(10, 'EMP-000001', 'Mr. Bikas Kanti Day', 'Salesman', '10000', '02-2020', '0', 'Salary Advance', '5000', '5000', '', '30-01-2020', '1', 'Cox\'s Bazar', NULL),
+(11, 'EMP-000001', 'Mr. Bikas Kanti Day', 'Salesman', '5000', '02-2020', '0', 'Salary Advance', '8000', '5000', '', '30-01-2020', '1', 'Cox\'s Bazar', NULL),
+(14, 'EMP-000001', 'Mr. Bikas Kanti Day', 'Salesman', '10000', '03-2020', '0', 'Salary Advance', '11000', '10000', '', '30-01-2020', '1', 'Cox\'s Bazar', NULL),
+(15, 'EMP-000001', 'Mr. Bikas Kanti Day', 'Salesman', '10000', '04-2020', '0', 'Salary Advance', '1000', '1000', '', '30-01-2020', '1', 'Cox\'s Bazar', '14');
 
 -- --------------------------------------------------------
 
@@ -2848,7 +2860,7 @@ ALTER TABLE `employee_main_info`
 -- AUTO_INCREMENT for table `employee_payments`
 --
 ALTER TABLE `employee_payments`
-  MODIFY `serial_no` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `serial_no` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `expense`
 --

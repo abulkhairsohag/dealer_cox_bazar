@@ -44,7 +44,6 @@ if(!permission_check('employee_payments')){
                 <th style="text-align: center;">Month</th>
                 <th style="text-align: center;">Attendance</th>
                 <th style="text-align: center;">Pay Type</th>
-                <th style="text-align: center;">Advance Salary</th>
                 <th style="text-align: center;">Salary Paid</th>
                 <th style="text-align: center;">Description</th>
                 <th style="text-align: center;">Date</th>
@@ -129,7 +128,6 @@ if(!permission_check('employee_payments')){
                     <td><?php echo $month_name; ?></td>
                     <td><?php echo $row['attendance']; ?></td>
                     <td><?php echo $row['pay_type']; ?></td>
-                    <td><?php echo $row['advance_amount']; ?></td>
                     <td><?php echo $row['salary_paid']; ?></td>
                     <td><?php echo $row['description']; ?></td>
                     <td><?php echo $row['date']; ?></td>
@@ -503,30 +501,9 @@ if(!permission_check('employee_payments')){
     // getting employee information while changing the employee id 
     $(document).on('change','#id_no',function(){
       var employee_id_no = $(this).val();
+      var month_nam = $('#month').val();
       
-
-      $.ajax({
-        url:"ajax_employee_payments.php",
-        data:{employee_id_no:employee_id_no},
-        type:"POST",
-        dataType:'json',
-        success:function(data){
-         
-         $("#name").val(data.name);
-         $("#designation").val(data.designation);
-         $("#total_salary").val(data.total_salary);
-
-         var advance_amount = parseInt($("#advance_amount").val());
-         if(isNaN(advance_amount) || advance_amount == ""){
-          advance_amount = 0;
-        }
-
-        var salary_to_be_paid = parseInt(data.total_salary) + parseInt(advance_amount); 
-
-        $("#salary_to_be_paid").val(salary_to_be_paid);
-
-      }
-    });
+      get_salary(employee_id_no,month_nam);
       get_attendance();
 
     });
@@ -536,17 +513,38 @@ if(!permission_check('employee_payments')){
         $(".salary_div").hide(500);
         $('#advance_amount').removeAttr('required');
         $('#advance_amount').val("");
-        salary_calculation();
+        $("#salary_to_be_paid").val($("#total_salary").val());
       }else if (type =='Salary Advance'){ 
         $(".salary_div").show(500); 
         $('#advance_amount').attr('required', 'true'); 
-        salary_calculation();
       } 
     });
 
 
-    $(document).on('keyup blur','#advance_amount',function(){
-      salary_calculation();
+    $(document).on('blur','#advance_amount',function(){
+      var total_salary = $("#total_salary").val();
+      var advance_amt = $(this).val();
+      if (parseInt(advance_amt) > parseInt(total_salary)) {
+
+         swal({
+              title: "Are you sure to Provide More Than The Salary?",
+              text: "If You Do That Then The Extra Amount Will Be Added As Advance Payment Of The Next Month!",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+            })
+            .then((willDelete) => {
+              if (willDelete) {
+                 $("#salary_to_be_paid").val(advance_amt);
+              } else{
+                $("#salary_to_be_paid").val('');
+                $("#advance_amount").val('');
+              }
+            });
+
+      }else{
+        $("#salary_to_be_paid").val(advance_amt);
+      }
     });
 
   }); // end of document ready function 
@@ -554,6 +552,9 @@ if(!permission_check('employee_payments')){
 
 // the following section for getting employee attendance 
 $(document).on('change',"#month",function(){
+  var employee_id_no = $("#id_no").val();
+  var month_nam = $('#month').val();
+  get_salary(employee_id_no,month_nam)
   get_attendance();
 });
 
@@ -574,21 +575,6 @@ function get_data_table(){
   });
 }
 
-function salary_calculation(){
-  var total_salary = parseInt($("#total_salary").val());
-  if(isNaN(total_salary) || total_salary == ""){
-    total_salary = 0;
-  }
-  var advance_amount = $("#advance_amount").val();
-
-  if(isNaN(advance_amount) || advance_amount == ""){
-    advance_amount = 0;
-  }
-
-  $("#salary_to_be_paid").val(parseInt(total_salary)+parseInt(advance_amount));
-
-}
-
 function get_attendance(){
   var emp_id_no = $("#id_no").val();
   var payment_month = $("#month").val();
@@ -604,6 +590,30 @@ function get_attendance(){
             }
           });
 
+}
+function get_salary(employee_id_no,month_nam){
+
+  // alert(month_nam);
+
+      $.ajax({
+        url:"ajax_employee_payments.php",
+        data:{employee_id_no:employee_id_no,month_nam:month_nam},
+        type:"POST",
+        dataType:'json',
+        success:function(data){
+         
+         $("#name").val(data.employee_info.name);
+         $("#designation").val(data.employee_info.designation);
+         $("#total_salary").val(data.salary);
+
+        advance_amount = 0
+
+        var salary_to_be_paid = parseInt(data.salary) + parseInt(advance_amount); 
+
+        $("#salary_to_be_paid").val(salary_to_be_paid);
+
+      }
+    });
 }
 </script>
 

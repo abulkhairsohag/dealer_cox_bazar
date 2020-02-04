@@ -35,15 +35,35 @@ if (isset($_POST['submit'])) {
           $id_no = validation($_POST['id_no']);
           $name = validation($_POST['name']);
           $designation = validation($_POST['designation']);
+          $advance_amount = validation($_POST['advance_amount']);
           $total_salary = validation($_POST['total_salary']);
+          $salary_to_be_paid = validation($_POST['salary_to_be_paid']);
+          $salary_paid = $salary_to_be_paid;
+
           $month = validation($_POST['month']);
+
+          $next_month = null;
+          $extra_for_next_month = 0;
+
+          if ($salary_to_be_paid > $total_salary) {
+            $salary_paid = $total_salary;
+            $extra_for_next_month = $salary_to_be_paid - $total_salary ;
+            $month_calc = explode('-', $month);
+
+            $month_no = $month_calc[0];
+            $year = $month_calc[1];
+            $month_no =$month_no*1 + 1*1;
+            if ($month_no > 12) {
+              $month_no = 1;
+              $year = $year*1 + 1*1;
+            }
+            $next_month = '0'.$month_no.'-'.$year;
+          }
+
           $attendance = validation($_POST['attendance']);
           $pay_type = validation($_POST['pay_type']);
-          $advance_amount = validation($_POST['advance_amount']);
-          if ($advance_amount=="") {
-            $advance_amount = 0;
-          }
-          $salary_paid =  (int)$total_salary + (int)$advance_amount;
+          
+
           $description = validation($_POST['description']);
           $date = date("d-m-Y");
           $edit_id = validation($_POST['edit_id']);
@@ -58,87 +78,88 @@ if (isset($_POST['submit'])) {
           }
 
 
-	if ($edit_id) {
-    $query = "SELECT * FROM employee_payments WHERE serial_no <> $edit_id";
-    $get_payment_data = $dbOb->select($query);
-    $confirmation = true;
-    if ($get_payment_data) {
-      while ($row = $get_payment_data->fetch_assoc()) {
-        if ($row['id_no'] == $id_no && $row['month'] == $month) {
-          $confirmation = false;
-        }
+  	if ($edit_id) {
+      $query = "SELECT * FROM employee_payments WHERE previous_pay_serial_no = $edit_id";
+      $get_extra_payment = $dbOb->select($query);
+
+      if ($get_extra_payment) {
+        $query = "DELETE FROM employee_payments WHERE previous_pay_serial_no = $edit_id";
       }
-    }
-
-    if ($confirmation) {
-        $query = "UPDATE employee_payments 
-              SET 
-              id_no = '$id_no',
-              name = '$name',
-              designation = '$designation',
-              total_salary = '$total_salary',
-              month = '$month',
-              attendance = '$attendance',
-              pay_type = '$pay_type',
-              advance_amount = '$advance_amount',
-              salary_paid = '$salary_paid',
-              description   ='$description',
-              date = '$date',
-              zone_serial_no = '$zone_serial_no',
-              zone_name = '$zone_name'
-              WHERE
-              serial_no = '$edit_id' ";
-
-        $update = $dbOb->update($query);
-        if ($update) {
-          $message = "Congratulaitons! Information Is Successfully Updated.";
-          $type = 'success';
-          echo json_encode(['message'=>$message,'type'=>$type]);
-        }else{
-          $message = "Sorry! Information Is Not Updated.";
-          $type = 'warning';
-          echo json_encode(['message'=>$message,'type'=>$type]);
-
-        }
       
-    }else{
-          $message = "Payment Of This Employee Already Given.";
-          $type = 'warning';
-          echo json_encode(['message'=>$message,'type'=>$type]);
-        }
-	}else{
-    $query = "SELECT * FROM employee_payments WHERE id_no = '$id_no' AND month = '$month'";
-    $get_pay_info = $dbOb->find($query);
 
-    $confirmation = true;
-    if ($get_pay_info) {
-       $confirmation = false;
-    }
+          $query = "UPDATE employee_payments 
+                SET 
+                id_no = '$id_no',
+                name = '$name',
+                designation = '$designation',
+                total_salary = '$total_salary',
+                month = '$month',
+                attendance = '$attendance',
+                pay_type = '$pay_type',
+                advance_amount = '$advance_amount',
+                salary_paid = '$salary_paid',
+                description   ='$description',
+                date = '$date',
+                zone_serial_no = '$zone_serial_no',
+                zone_name = '$zone_name'
+                WHERE
+                serial_no = '$edit_id' ";
 
-    if ($confirmation) {
+          $update = $dbOb->update($query);
 
-        $query = "INSERT INTO employee_payments 
-              (id_no,name,designation,total_salary,month,attendance,pay_type,advance_amount,salary_paid,description,date,zone_serial_no,zone_name)
-              VALUES 
-                ('$id_no','$name','$designation','$total_salary','$month','$attendance','$pay_type','$advance_amount','$salary_paid','$description','$date','$zone_serial_no','$zone_name')";
+          if ($next_month) {
+            $total_salary = salary_calculation($id_no,$next_month);
+            $query = "INSERT INTO employee_payments 
+                (id_no,name,designation,total_salary,month,attendance,pay_type,advance_amount,salary_paid,description,date,zone_serial_no,zone_name,previous_pay_serial_no)
+                VALUES 
+                  ('$id_no','$name','$designation','$total_salary','$next_month','$attendance','$pay_type','$extra_for_next_month','$extra_for_next_month','$description','$date','$zone_serial_no','$zone_name','$insert_id')";
 
-        $insert = $dbOb->insert($query);
-        if ($insert) {
-          $message = "Congratulaitons! Information Is Successfully Saved.";
-          $type = 'success';
-          echo json_encode(['message'=>$message,'type'=>$type]);
-        }else{
-          $message = "Sorry! Information Is Not Saved.";
-          $type = 'warning';
-          echo json_encode(['message'=>$message,'type'=>$type]);
-        }
-      
-    }else{
-      $message = "Payment Is Already Given.";
-      $type = 'warning';
-      echo json_encode(['message'=>$message,'type'=>$type]);
-    }
-	}
+            $insert_next = $dbOb->insert($query);
+          }
+
+          if ($update) {
+            $message = "Congratulaitons! Information Is Successfully Updated.";
+            $type = 'success';
+            echo json_encode(['message'=>$message,'type'=>$type]);
+          }else{
+            $message = "Sorry! Information Is Not Updated.";
+            $type = 'warning';
+            echo json_encode(['message'=>$message,'type'=>$type]);
+
+          }
+        
+        
+  	}else{
+
+
+          $query = "INSERT INTO employee_payments 
+                (id_no,name,designation,total_salary,month,attendance,pay_type,advance_amount,salary_paid,description,date,zone_serial_no,zone_name)
+                VALUES 
+                  ('$id_no','$name','$designation','$total_salary','$month','$attendance','$pay_type','$advance_amount','$salary_paid','$description','$date','$zone_serial_no','$zone_name')";
+
+          $insert_id = $dbOb->custom_insert($query);
+
+          if ($next_month) {
+            $total_salary = salary_calculation($id_no,$next_month);
+            $query = "INSERT INTO employee_payments 
+                (id_no,name,designation,total_salary,month,attendance,pay_type,advance_amount,salary_paid,description,date,zone_serial_no,zone_name,previous_pay_serial_no)
+                VALUES 
+                  ('$id_no','$name','$designation','$total_salary','$next_month','$attendance','$pay_type','$extra_for_next_month','$extra_for_next_month','$description','$date','$zone_serial_no','$zone_name','$insert_id')";
+
+            $insert_next = $dbOb->insert($query);
+          }
+          if ($insert_id) {
+            $message = "Congratulaitons! Information Is Successfully Saved.";
+            $type = 'success';
+            echo json_encode(['message'=>$message,'type'=>$type]);
+          }else{
+            $message = "Sorry! Information Is Not Saved.";
+            $type = 'warning';
+            echo json_encode(['message'=>$message,'type'=>$type]);
+          }
+        
+       
+  	}
 
 }
 // the following block of code is for deleting data 
@@ -170,6 +191,7 @@ if (isset($_POST['emp_id_no'])) {
     $attendance = 0;
   }
   echo json_encode( $attendance);
+  die();
 }
 
 // the following section is for fetching data from database 
@@ -247,7 +269,6 @@ if (isset($_POST["sohag"])) {
                     <td><?php echo $month_name; ?></td>
                     <td><?php echo $row['attendance']; ?></td>
                     <td><?php echo $row['pay_type']; ?></td>
-                    <td><?php echo $row['advance_amount']; ?></td>
                     <td><?php echo $row['salary_paid']; ?></td>
                     <td><?php echo $row['description']; ?></td>
                     <td><?php echo $row['date']; ?></td>
@@ -274,10 +295,15 @@ if (isset($_POST["sohag"])) {
 
 /// now gettting employee information 
 if (isset($_POST['employee_id_no'])) {
-  $id_no = $_POST['employee_id_no'] ; 
-  $query = "SELECT *  FROM employee_main_info WHERE id_no = '$id_no'";
+  $emp_id = $_POST['employee_id_no'];
+  $month = $_POST['month_nam'];
+
+  $query = "SELECT *  FROM employee_main_info WHERE id_no = '$emp_id'";
   $get_emp  =  $dbOb->find($query);
-  echo json_encode($get_emp);
+  $salary = salary_calculation($emp_id,$month);
+
+
+  die(json_encode(['employee_info'=>$get_emp,'salary'=>$salary]));
 }
 
  ?>

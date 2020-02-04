@@ -198,7 +198,7 @@ if (!permission_check('add_product')) {
                     <label class="control-label col-md-3 col-sm-3 col-xs-12" for="stock_date">Stock Date
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" id="stock_date" name="stock_date"  class="form-control col-md-7 col-xs-12 datepicker" value="" readonly="" required>
+                      <input type="text" id="stock_date" name="stock_date"  class="form-control col-md-7 col-xs-12 datepicker" readonly="" required>
                     </div>
                   </div>
 
@@ -417,9 +417,9 @@ if (!permission_check('add_product')) {
                   </div>
 
                   <div class="form-group">
-                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Stock Date <span class="required" style="color: red">*</span></label>
+                    <label for="stock_date" class="control-label col-md-3 col-sm-3 col-xs-12">Stock Date <span class="required" style="color: red">*</span></label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" id="stock_date" name="stock_date"  class="form-control col-md-7 col-xs-12 datepicker" readonly="" required>
+                      <input type="text" id="to_date" name="stock_date"  class="form-control col-md-7 col-xs-12 " value="" readonly="" required>
                     </div>
                   </div>
 
